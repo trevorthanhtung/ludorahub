@@ -21,6 +21,13 @@ export default function Home() {
     game.title.toLowerCase().includes((searchQuery || '').toLowerCase())
   );
 
+  const scrollToGames = () => {
+    const gamesSection = document.getElementById('games-section');
+    if (gamesSection) {
+      gamesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div style={{ padding: '0 40px 60px 40px', maxWidth: '1400px', margin: '0 auto' }}>
       
@@ -80,6 +87,7 @@ export default function Home() {
                 {lang === 'vi' ? 'Kết nối bạn bè và gia đình qua những trò chơi thú vị' : 'Connect friends and family through exciting games'}
               </p>
               <motion.button 
+                onClick={scrollToGames}
                 whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(91,140,255,0.4)' }}
                 whileTap={{ scale: 0.95 }}
                 style={{
@@ -101,7 +109,7 @@ export default function Home() {
           </motion.section>
 
           {/* Featured Games */}
-          <section style={{ marginBottom: '60px' }}>
+          <section id="games-section" style={{ marginBottom: '60px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
                 {lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games'}
