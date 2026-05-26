@@ -163,7 +163,7 @@ export default function Home() {
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)'
           }}>
-            {lang === 'vi' ? '+ Đang phát triển...' : '+ Coming soon...'}
+            {lang === 'vi' ? 'Đang phát triển...' : 'Coming soon...'}
           </div>
         </motion.div>
       </section>
