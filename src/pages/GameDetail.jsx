@@ -17,89 +17,59 @@ export default function GameDetail() {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }} 
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      exit={{ opacity: 0 }}
       style={{ 
-        padding: 'clamp(15px, 4vw, 40px)', 
-        maxWidth: '1200px', 
-        margin: '0 auto', 
-        height: '100%',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+        background: '#000',
         display: 'flex',
         flexDirection: 'column'
       }}
     >
       <Link to="/" style={{ 
-        display: 'inline-flex', 
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        zIndex: 10000,
+        display: 'flex', 
         alignItems: 'center', 
         gap: '8px', 
-        color: 'var(--text-subtext)', 
-        marginBottom: '20px',
+        color: '#fff', 
+        background: 'rgba(0,0,0,0.5)',
+        padding: '10px 16px',
+        borderRadius: '30px',
         fontWeight: 600,
-        transition: 'color 0.2s',
-        alignSelf: 'flex-start'
+        transition: 'all 0.2s',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.2)'
       }}
-      onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent-blue)'}
-      onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-subtext)'}
+      onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'scale(1.05)' }}
+      onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.5)'; e.currentTarget.style.transform = 'scale(1)' }}
       >
-        <ArrowLeft size={20} /> {lang === 'vi' ? 'Quay lại Hub' : 'Back to Hub'}
+        <ArrowLeft size={20} /> {lang === 'vi' ? 'Thoát' : 'Exit'}
       </Link>
       
-      <div style={{ 
-        background: 'var(--glass-bg)', 
-        border: '1px solid var(--glass-border)', 
-        borderRadius: 'clamp(20px, 4vw, 40px)', 
-        padding: 'clamp(10px, 3vw, 30px)',
-        textAlign: 'center',
-        backdropFilter: 'blur(20px)',
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1
-      }}>
-        <h1 style={{ 
-          fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', 
-          fontWeight: 800, 
-          marginBottom: '10px' 
-        }}>
-          {game ? game.title : (lang === 'vi' ? 'Đang phát triển' : 'Coming Soon')}
-        </h1>
-        
-        {/* Game Canvas / Iframe */}
-        <div style={{ 
-          background: '#05070a', 
-          borderRadius: 'clamp(12px, 3vw, 24px)', 
-          width: '100%',
-          flex: 1,
-          minHeight: 'min(70vh, 600px)',
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center', 
-          justifyContent: 'center',
-          color: 'var(--text-secondary)',
-          border: '1px solid var(--glass-border)',
-          boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8)',
-          overflow: 'hidden',
-          marginTop: '15px'
-        }}>
-          {game && game.url ? (
-            <iframe 
-              src={game.url}
-              title={game.title}
-              style={{ width: '100%', height: '100%', border: 'none' }}
-              allowFullScreen
-            />
-          ) : (
-            <>
-              <span style={{ fontSize: '2rem', fontWeight: 700, opacity: 0.3 }}>
-                {lang === 'vi' ? '[ Trò chơi đang phát triển ]' : '[ Game under development ]'}
-              </span>
-              <p style={{ marginTop: '20px', opacity: 0.5 }}>
-                {lang === 'vi' ? 'Trò chơi thực tế sẽ được nhúng vào đây' : 'The actual game will be embedded here'}
-              </p>
-            </>
-          )}
-        </div>
+      <div style={{ flex: 1, width: '100%', height: '100%' }}>
+        {game && game.url ? (
+          <iframe 
+            src={game.url}
+            title={game.title}
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            allowFullScreen
+          />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-subtext)' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 700, opacity: 0.5 }}>
+              {lang === 'vi' ? '[ Trò chơi đang phát triển ]' : '[ Game under development ]'}
+            </span>
+          </div>
+        )}
       </div>
     </motion.div>
   );
