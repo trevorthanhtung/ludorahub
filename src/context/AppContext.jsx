@@ -6,6 +6,7 @@ export const AppProvider = ({ children }) => {
   // Get initial state from localStorage or default
   const [theme, setTheme] = useState(() => localStorage.getItem('playnest_theme') || 'dark');
   const [lang, setLang] = useState(() => localStorage.getItem('playnest_lang') || 'vi');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Sync Theme to HTML class
   useEffect(() => {
@@ -29,7 +30,7 @@ export const AppProvider = ({ children }) => {
   const toggleLang = () => setLang((prev) => (prev === 'vi' ? 'en' : 'vi'));
 
   return (
-    <AppContext.Provider value={{ theme, toggleTheme, lang, toggleLang }}>
+    <AppContext.Provider value={{ theme, toggleTheme, lang, toggleLang, searchQuery, setSearchQuery }}>
       {children}
     </AppContext.Provider>
   );

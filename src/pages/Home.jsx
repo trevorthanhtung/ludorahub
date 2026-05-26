@@ -7,7 +7,7 @@ const MOCK_GAMES = [
 ];
 
 export default function Home() {
-  const { lang } = useAppContext();
+  const { lang, searchQuery } = useAppContext();
 
   const container = {
     hidden: { opacity: 0 },
@@ -17,136 +17,151 @@ export default function Home() {
     }
   };
 
+  const filteredGames = MOCK_GAMES.filter(game => 
+    game.title.toLowerCase().includes((searchQuery || '').toLowerCase())
+  );
+
   return (
     <div style={{ padding: '0 40px 60px 40px', maxWidth: '1400px', margin: '0 auto' }}>
       
-      {/* Hero Section */}
-      <motion.section 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, type: 'spring' }}
-        style={{ 
-          textAlign: 'center', 
-          padding: '100px 0 80px 0',
-          position: 'relative'
-        }}
-      >
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
-          {/* Glow Trái */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '20%',
-            transform: 'translate(-50%, -50%)',
-            width: '30vw',
-            height: '30vw',
-            background: '#5B8CFF',
-            opacity: 0.2,
-            filter: 'blur(100px)',
-            zIndex: -1,
-            pointerEvents: 'none',
-            borderRadius: '50%'
-          }}></div>
-          {/* Glow Phải */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            right: '20%',
-            transform: 'translate(50%, -50%)',
-            width: '30vw',
-            height: '30vw',
-            background: '#FF7BCB',
-            opacity: 0.15,
-            filter: 'blur(100px)',
-            zIndex: -1,
-            pointerEvents: 'none',
-            borderRadius: '50%'
-          }}></div>
-
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
-              Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
-            </h2>
-          <p style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
-            {lang === 'vi' ? 'Một nơi — nhiều trò chơi' : 'One place — many games'}
-          </p>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px', marginBottom: '40px' }}>
-            {lang === 'vi' ? 'Chơi cùng bạn bè và gia đình' : 'Play with friends and family'}
-          </p>
-          <motion.button 
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(91,140,255,0.4)' }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              background: 'var(--btn-gradient)',
-              color: '#fff',
-              border: 'none',
-              padding: '18px 40px',
-              borderRadius: '30px',
-              fontSize: '1.1rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+      {!searchQuery && (
+        <>
+          {/* Hero Section */}
+          <motion.section 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, type: 'spring' }}
+            style={{ 
+              textAlign: 'center', 
+              padding: '100px 0 80px 0',
+              position: 'relative'
             }}
           >
-            {lang === 'vi' ? 'Khám phá ngay' : 'Explore Now'}
-          </motion.button>
-        </div>
-        </div>
-      </motion.section>
+            <div style={{ position: 'relative', zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
+              {/* Glow Trái */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '20%',
+                transform: 'translate(-50%, -50%)',
+                width: '30vw',
+                height: '30vw',
+                background: '#5B8CFF',
+                opacity: 0.2,
+                filter: 'blur(100px)',
+                zIndex: -1,
+                pointerEvents: 'none',
+                borderRadius: '50%'
+              }}></div>
+              {/* Glow Phải */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                right: '20%',
+                transform: 'translate(50%, -50%)',
+                width: '30vw',
+                height: '30vw',
+                background: '#FF7BCB',
+                opacity: 0.15,
+                filter: 'blur(100px)',
+                zIndex: -1,
+                pointerEvents: 'none',
+                borderRadius: '50%'
+              }}></div>
 
-      {/* Featured Games */}
-      <section style={{ marginBottom: '60px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
-            {lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games'}
-          </h2>
-          <button style={{ 
-            background: 'transparent', 
-            border: 'none', 
-            color: 'var(--accent-blue)', 
-            fontWeight: 600, 
-            cursor: 'pointer',
-            fontSize: '1rem'
-          }}>
-            {lang === 'vi' ? 'Xem tất cả' : 'View All'}
-          </button>
-        </div>
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
+                  Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
+                </h2>
+              <p style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
+                {lang === 'vi' ? 'Một nơi, vô vàn cuộc vui' : 'One place, endless fun'}
+              </p>
+              <p style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px', marginBottom: '40px' }}>
+                {lang === 'vi' ? 'Kết nối bạn bè và gia đình qua những trò chơi thú vị' : 'Connect friends and family through exciting games'}
+              </p>
+              <motion.button 
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(91,140,255,0.4)' }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  background: 'var(--btn-gradient)',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '18px 40px',
+                  borderRadius: '30px',
+                  fontSize: '1.1rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                }}
+              >
+                {lang === 'vi' ? 'Khám phá ngay' : 'Explore Now'}
+              </motion.button>
+            </div>
+            </div>
+          </motion.section>
 
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          animate="show"
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-            gap: '30px' 
-          }}
-        >
-          {MOCK_GAMES.map(game => (
-            <GameCard key={game.id} game={game} />
-          ))}
-        </motion.div>
-      </section>
+          {/* Featured Games */}
+          <section style={{ marginBottom: '60px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
+                {lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games'}
+              </h2>
+              <button style={{ 
+                background: 'transparent', 
+                border: 'none', 
+                color: 'var(--accent-blue)', 
+                fontWeight: 600, 
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}>
+                {lang === 'vi' ? 'Xem tất cả' : 'View All'}
+              </button>
+            </div>
 
-      {/* All Games */}
-      <section>
+            <motion.div 
+              variants={container}
+              initial="hidden"
+              animate="show"
+              style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+                gap: '30px' 
+              }}
+            >
+              {MOCK_GAMES.map(game => (
+                <GameCard key={game.id} game={game} />
+              ))}
+            </motion.div>
+          </section>
+        </>
+      )}
+
+      {/* All Games / Search Results */}
+      <section style={{ paddingTop: searchQuery ? '40px' : '0' }}>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '30px' }}>
-          {lang === 'vi' ? 'Tất Cả Trò Chơi' : 'All Games'}
+          {searchQuery 
+            ? (lang === 'vi' ? `Kết quả tìm kiếm cho "${searchQuery}"` : `Search results for "${searchQuery}"`) 
+            : (lang === 'vi' ? 'Tất Cả Trò Chơi' : 'All Games')}
         </h2>
         
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          animate="show"
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-            gap: '30px' 
-          }}
-        >
-          {MOCK_GAMES.map(game => (
-            <GameCard key={`all-${game.id}`} game={game} />
-          ))}
+        {filteredGames.length === 0 && searchQuery ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-subtext)', fontSize: '1.1rem' }}>
+            {lang === 'vi' ? 'Không tìm thấy trò chơi nào phù hợp.' : 'No games found.'}
+          </div>
+        ) : (
+          <motion.div 
+            variants={container}
+            initial="hidden"
+            animate="show"
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+              gap: '30px' 
+            }}
+          >
+            {filteredGames.map(game => (
+              <GameCard key={`all-${game.id}`} game={game} />
+            ))}
           
           {/* Coming soon placeholder card */}
           <div style={{

@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Settings, Sun, Moon, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 
 export default function Navigation() {
-  const { theme, toggleTheme, lang, toggleLang } = useAppContext();
+  const { theme, toggleTheme, lang, toggleLang, searchQuery, setSearchQuery } = useAppContext();
   const [showSettings, setShowSettings] = useState(false);
   const settingsRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Đóng Menu khi click ra ngoài
   useEffect(() => {
@@ -19,6 +21,13 @@ export default function Navigation() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [settingsRef]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+  };
 
   return (
     <nav style={{
@@ -65,6 +74,8 @@ export default function Navigation() {
         <Search size={18} color="var(--text-subtext)" />
         <input 
           type="text" 
+          value={searchQuery}
+          onChange={handleSearchChange}
           placeholder={lang === 'vi' ? "Tìm kiếm mini game..." : "Search for games..."}
           style={{
             background: 'transparent',
