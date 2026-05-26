@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-
-# Chặn bot quét các thư mục không cần thiết (nếu có sau này)
-# Disallow: /private/
-
-Sitemap: https://www.yourdomain.com/sitemap.xml
