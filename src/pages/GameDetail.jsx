@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
@@ -13,7 +13,17 @@ const GAME_INFO = {
 export default function GameDetail() {
   const { id } = useParams();
   const { lang } = useAppContext();
+  const navigate = useNavigate();
   const game = GAME_INFO[id];
+
+  const handleExit = () => {
+    const message = lang === 'vi' 
+      ? 'Bạn có chắc chắn muốn thoát khỏi trò chơi?' 
+      : 'Are you sure you want to exit the game?';
+    if (window.confirm(message)) {
+      navigate('/');
+    }
+  };
 
   return (
     <motion.div 
@@ -32,7 +42,7 @@ export default function GameDetail() {
         flexDirection: 'column'
       }}
     >
-      <Link to="/" style={{ 
+      <button onClick={handleExit} style={{ 
         position: 'absolute',
         top: '20px',
         left: '20px',
@@ -47,13 +57,14 @@ export default function GameDetail() {
         fontWeight: 600,
         transition: 'all 0.2s',
         backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.2)'
+        border: '1px solid rgba(255,255,255,0.2)',
+        cursor: 'pointer'
       }}
       onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'scale(1.05)' }}
       onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.5)'; e.currentTarget.style.transform = 'scale(1)' }}
       >
         <ArrowLeft size={20} /> {lang === 'vi' ? 'Thoát' : 'Exit'}
-      </Link>
+      </button>
       
       <div style={{ flex: 1, width: '100%', height: '100%' }}>
         {game && game.url ? (
