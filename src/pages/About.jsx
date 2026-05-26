@@ -27,7 +27,7 @@ export default function About() {
         {lang === 'vi' ? (
           <>
             <p style={{ marginBottom: '20px' }}>
-              Chào mừng đến với <strong>PlayNest</strong> – Tổ ấm của những cuộc vui! 🎮
+              Chào mừng đến với <strong>PlayNest</strong> – Tổ ấm của những cuộc vui!
             </p>
             <p style={{ marginBottom: '20px' }}>
               PlayNest là một Game Hub / Minigames Hub được tạo ra với mục tiêu mang mọi người đến gần nhau hơn thông qua những trò chơi vui nhộn và mang tính tương tác. Dù là chơi cùng bạn bè, gia đình hay trong những buổi gặp gỡ, party, bạn đều có thể tìm thấy những phút giây giải trí thú vị tại một nơi duy nhất.
@@ -39,13 +39,13 @@ export default function About() {
               Dự án được phát triển và duy trì bởi <strong>thanhtungg.</strong> với mong muốn tạo ra nhiều hơn một nền tảng trò chơi — đó là nơi lưu giữ tiếng cười, những khoảnh khắc đáng nhớ và sự kết nối giữa mọi người.
             </p>
             <p>
-              Hãy chọn trò chơi yêu thích và bắt đầu cuộc vui. 🚀
+              Hãy chọn trò chơi yêu thích và bắt đầu cuộc vui.
             </p>
           </>
         ) : (
           <>
             <p style={{ marginBottom: '20px' }}>
-              Welcome to <strong>PlayNest</strong> – The nest of fun! 🎮
+              Welcome to <strong>PlayNest</strong> – The nest of fun!
             </p>
             <p style={{ marginBottom: '20px' }}>
               PlayNest is a Game Hub / Minigames Hub created with the goal of bringing people closer together through fun and interactive games. Whether playing with friends, family, or at gatherings and parties, you can find exciting moments of entertainment all in one place.
@@ -57,7 +57,7 @@ export default function About() {
               The project is developed and maintained by <strong>thanhtungg.</strong> with the desire to create more than just a gaming platform — it's a place to preserve laughter, memorable moments, and human connection.
             </p>
             <p>
-              Choose your favorite game and let the fun begin. 🚀
+              Choose your favorite game and let the fun begin.
             </p>
           </>
         )}
