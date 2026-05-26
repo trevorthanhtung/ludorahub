@@ -4,11 +4,8 @@ import GameCard from '../components/GameCard';
 import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
-  { id: 'true-or-dare', title: 'True or Dare', players: '2-10', time: '∞', tag: 'HOT', categories: ['party', 'pass-and-play'], image: '/tod-banner.webp' },
-  { id: 'uno', title: 'Uno', players: '2-4', time: '15', tag: 'WIFI', categories: ['local-wifi', 'small-group'], image: null },
-  { id: 'spyfall', title: 'Spyfall', players: '3-8', time: '10', tag: 'NEW', categories: ['local-wifi', 'party'], image: null },
-  { id: 'mafia', title: 'Ma Sói', players: '8-15', time: '30', tag: '', categories: ['party', 'pass-and-play'], image: null },
-  { id: 'tic-tac-toe', title: 'Cờ Caro', players: '2', time: '5', tag: '', categories: ['small-group', 'pass-and-play'], image: null },
+  { id: 'true-or-dare', title: 'True or Dare', players: '2-10', time: '∞', tag: 'HOT', categories: ['party', 'pass-and-play'], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
+  { id: 'mafia', title: 'Ma Sói', players: '8-15', time: '30', tag: 'NEW', categories: ['party', 'pass-and-play'], image: null },
 ];
 
 const CATEGORY_TABS = [
