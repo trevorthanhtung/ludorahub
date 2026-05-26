@@ -39,17 +39,19 @@ export default function Navigation() {
       zIndex: 50,
       boxShadow: '0 4px 30px rgba(0,0,0,0.05)'
     }}>
-      {/* Logo */}
-      <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: 'inherit' }}>
-        <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
-          <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
-        </motion.div>
-        <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
-          Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
-        </h1>
-      </a>
+      {/* Logo (Left, flex: 1) */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: 'inherit' }}>
+          <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
+            <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
+          </motion.div>
+          <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
+            Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
+          </h1>
+        </a>
+      </div>
 
-      {/* Search */}
+      {/* Search (Center) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -77,8 +79,8 @@ export default function Navigation() {
         />
       </div>
 
-      {/* Icons */}
-      <div style={{ display: 'flex', gap: '20px', position: 'relative' }} ref={settingsRef}>
+      {/* Icons (Right, flex: 1) */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', position: 'relative' }} ref={settingsRef}>
         
         {/* Settings Button */}
         <motion.button 
@@ -101,7 +103,7 @@ export default function Navigation() {
               style={{
                 position: 'absolute',
                 top: '40px',
-                right: '40px',
+                right: '0',
                 background: 'var(--bg-surface)',
                 border: '1px solid var(--glass-border)',
                 borderRadius: '16px',
@@ -148,7 +150,6 @@ export default function Navigation() {
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </nav>
   );
