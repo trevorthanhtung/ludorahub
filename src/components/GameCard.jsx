@@ -1,8 +1,12 @@
-import { Users, Clock, Star } from 'lucide-react';
+// Cập nhật lại file để sửa lỗi HMR của Vite
+import { Users, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 
 export default function GameCard({ game }) {
+  const { lang } = useAppContext();
+  
   const item = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
@@ -13,7 +17,7 @@ export default function GameCard({ game }) {
       whileHover={{ 
         scale: 1.03, 
         y: -10, 
-        boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 20px var(--glass-glow)' 
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3), 0 0 20px var(--glass-glow)' 
       }}
       whileTap={{ scale: 0.98 }}
       style={{
@@ -43,8 +47,8 @@ export default function GameCard({ game }) {
             position: 'absolute', 
             top: '16px', 
             right: '16px', 
-            background: game.tag === 'HOT' ? 'var(--accent)' : '#ff2a7a', 
-            color: '#000', 
+            background: game.tag === 'HOT' ? 'var(--btn-gradient)' : 'var(--accent-pink)', 
+            color: '#fff', 
             padding: '6px 14px', 
             borderRadius: '20px', 
             fontSize: '0.75rem', 
@@ -59,15 +63,12 @@ export default function GameCard({ game }) {
       <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '16px' }}>{game.title}</h3>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: 'auto', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: 'auto', fontSize: '0.9rem', color: 'var(--text-subtext)', fontWeight: 500 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Users size={18} /> <span>{game.players}</span>
+            <Users size={18} /> <span>{game.players} {lang === 'vi' ? 'người' : 'players'}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Clock size={18} /> <span>{game.time}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#fbbf24' }}>
-            <Star size={18} fill="currentColor" /> <span style={{ color: 'var(--text-primary)' }}>{game.rating}</span>
+            <Clock size={18} /> <span>{game.time} {lang === 'vi' ? 'phút' : 'min'}</span>
           </div>
         </div>
       </div>
@@ -76,15 +77,9 @@ export default function GameCard({ game }) {
 
   return (
     <motion.div variants={item} style={{ height: '100%' }}>
-      {game.externalUrl ? (
-        <a href={game.externalUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', height: '100%' }}>
-          <CardContent />
-        </a>
-      ) : (
-        <Link to={`/game/${game.id}`} style={{ display: 'block', height: '100%' }}>
-          <CardContent />
-        </Link>
-      )}
+      <Link to={`/game/${game.id}`} style={{ display: 'block', height: '100%' }}>
+        <CardContent />
+      </Link>
     </motion.div>
   );
 }

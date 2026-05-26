@@ -1,15 +1,32 @@
-import { Search, User, Settings, Gamepad2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, User, Settings, Sun, Moon, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAppContext } from '../context/AppContext';
 
 export default function Navigation() {
+  const { theme, toggleTheme, lang, toggleLang } = useAppContext();
+  const [showSettings, setShowSettings] = useState(false);
+  const settingsRef = useRef(null);
+
+  // Đóng Menu khi click ra ngoài
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setShowSettings(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [settingsRef]);
+
   return (
     <nav style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '20px 40px',
-      background: 'rgba(11, 16, 32, 0.6)',
+      background: 'rgba(11, 16, 32, 0.6)', /* Giữ nền tối cho menu trên cùng */
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
       borderBottom: '1px solid var(--glass-border)',
@@ -22,8 +39,8 @@ export default function Navigation() {
         <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
           <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
         </motion.div>
-        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '0.5px' }}>
-          Play<span style={{ color: 'var(--accent)' }}>Nest</span>
+        <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
+          Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
         </h1>
       </Link>
 
@@ -38,15 +55,15 @@ export default function Navigation() {
         border: '1px solid var(--glass-border)',
         boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.2)'
       }}>
-        <Search size={18} color="var(--text-secondary)" />
+        <Search size={18} color="var(--text-subtext)" />
         <input 
           type="text" 
-          placeholder="Search for games..." 
+          placeholder={lang === 'vi' ? "Tìm kiếm mini game..." : "Search for games..."}
           style={{
             background: 'transparent',
             border: 'none',
             outline: 'none',
-            color: 'var(--text-primary)',
+            color: 'var(--text-title)',
             marginLeft: '12px',
             width: '100%',
             fontFamily: 'inherit',
@@ -56,18 +73,89 @@ export default function Navigation() {
       </div>
 
       {/* Icons */}
-      <div style={{ display: 'flex', gap: '20px' }}>
+      <div style={{ display: 'flex', gap: '20px', position: 'relative' }} ref={settingsRef}>
+        
+        {/* Settings Button */}
         <motion.button 
-          whileHover={{ scale: 1.1, color: 'var(--accent)' }}
+          onClick={() => setShowSettings(!showSettings)}
+          whileHover={{ scale: 1.1, color: 'var(--accent-blue)' }}
           whileTap={{ scale: 0.95 }}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-title)' }}
         >
           <Settings size={24} />
         </motion.button>
+        
+        {/* Settings Dropdown */}
+        <AnimatePresence>
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                position: 'absolute',
+                top: '40px',
+                right: '40px',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '16px',
+                padding: '16px',
+                minWidth: '220px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                zIndex: 100
+              }}
+            >
+              <h3 style={{ fontSize: '1rem', fontWeight: 600, borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px', marginBottom: '4px', color: 'var(--text-title)' }}>
+                {lang === 'vi' ? 'Cài đặt' : 'Settings'}
+              </h3>
+              
+              {/* Theme Toggle */}
+              <div 
+                onClick={toggleTheme}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)' }}
+              >
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-body)' }}>
+                  {lang === 'vi' ? 'Giao diện' : 'Theme'}
+                </span>
+                {theme === 'dark' ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-purple)' }}>
+                    <Moon size={18} />
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>DARK</span>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-yellow)' }}>
+                    <Sun size={18} />
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>LIGHT</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Lang Toggle */}
+              <div 
+                onClick={toggleLang}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)' }}
+              >
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-body)' }}>
+                  {lang === 'vi' ? 'Ngôn ngữ' : 'Language'}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)' }}>
+                  <Globe size={18} />
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{lang.toUpperCase()}</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* User Button */}
         <motion.button 
-          whileHover={{ scale: 1.1, color: 'var(--accent)' }}
+          whileHover={{ scale: 1.1, color: 'var(--accent-blue)' }}
           whileTap={{ scale: 0.95 }}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-title)' }}
         >
           <User size={24} />
         </motion.button>

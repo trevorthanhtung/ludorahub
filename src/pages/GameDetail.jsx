@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAppContext } from '../context/AppContext';
 
 const GAME_INFO = {
   'g1': {
@@ -11,6 +12,7 @@ const GAME_INFO = {
 
 export default function GameDetail() {
   const { id } = useParams();
+  const { lang } = useAppContext();
   const game = GAME_INFO[id];
 
   return (
@@ -25,15 +27,15 @@ export default function GameDetail() {
         display: 'inline-flex', 
         alignItems: 'center', 
         gap: '8px', 
-        color: 'var(--text-secondary)', 
+        color: 'var(--text-subtext)', 
         marginBottom: '20px',
         fontWeight: 600,
         transition: 'color 0.2s'
       }}
-      onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent)'}
-      onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+      onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent-blue)'}
+      onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-subtext)'}
       >
-        <ArrowLeft size={20} /> Quay lại Hub
+        <ArrowLeft size={20} /> {lang === 'vi' ? 'Quay lại Hub' : 'Back to Hub'}
       </Link>
       
       <div style={{ 
@@ -72,8 +74,12 @@ export default function GameDetail() {
             />
           ) : (
             <>
-              <span style={{ fontSize: '2rem', fontWeight: 700, opacity: 0.3 }}>[ Trò chơi đang phát triển ]</span>
-              <p style={{ marginTop: '20px', opacity: 0.5 }}>Trò chơi thực tế sẽ được nhúng vào đây</p>
+              <span style={{ fontSize: '2rem', fontWeight: 700, opacity: 0.3 }}>
+                {lang === 'vi' ? '[ Trò chơi đang phát triển ]' : '[ Game under development ]'}
+              </span>
+              <p style={{ marginTop: '20px', opacity: 0.5 }}>
+                {lang === 'vi' ? 'Trò chơi thực tế sẽ được nhúng vào đây' : 'The actual game will be embedded here'}
+              </p>
             </>
           )}
         </div>

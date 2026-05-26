@@ -1,14 +1,49 @@
 :root {
-  --bg-gradient-start: #0B1020;
-  --bg-gradient-end: #111827;
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --accent: #45f3ff;
-  
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-hover: rgba(255, 255, 255, 0.08);
-  --glass-glow: rgba(69, 243, 255, 0.15);
+  /* DARK MODE (Default) */
+  --bg-primary: #0B1020;
+  --bg-secondary: #111827;
+  --bg-surface: #1A2235;
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-glow: rgba(108, 168, 255, 0.2); /* Dựa trên màu Blue */
+
+  --text-title: #FFFFFF;
+  --text-body: #D2D8E3;
+  --text-subtext: #9AA6BD;
+
+  --btn-gradient: linear-gradient(90deg, #6CA8FF, #C28CFF, #FF88D5);
+
+  --accent-blue: #6CA8FF;
+  --accent-purple: #C28CFF;
+  --accent-pink: #FF88D5;
+  --accent-mint: #7BFFD7;
+  --accent-cyan: #6DE6FF;
+  --accent-yellow: #FFD95F;
+}
+
+/* Người dùng chủ động đổi sang Light Mode thông qua nút Toggle */
+html.light {
+  --bg-primary: #F7F8FA;
+  --bg-secondary: #FFFFFF;
+  --bg-surface: #F7F8FA;
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-glow: rgba(91, 140, 255, 0.15); /* Dựa trên màu Blue */
+
+  --text-title: #121826;
+  --text-body: #4B5563;
+  --text-subtext: #8A94A6;
+
+  --btn-gradient: linear-gradient(90deg, #5B8CFF, #B07DFF, #FF7BCB);
+
+  --accent-blue: #5B8CFF;
+  --accent-purple: #B07DFF;
+  --accent-pink: #FF7BCB;
+  --accent-mint: #78FFD7;
+  --accent-cyan: #62D9FF;
+  --accent-yellow: #FFD76A;
 }
 
 * {
@@ -19,11 +54,15 @@
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
   background-attachment: fixed;
-  color: var(--text-primary);
+  color: var(--text-body);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-title);
 }
 
 a {
@@ -35,7 +74,7 @@ ul {
   list-style: none;
 }
 
-/* Scrollbar styling for horizontal scroll */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   height: 8px;
   width: 8px;
@@ -44,11 +83,11 @@ ul {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--glass-border);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(128, 128, 128, 0.5);
 }
 
 /* Background Particles effect */
@@ -63,7 +102,18 @@ ul {
   top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none;
   z-index: 0;
-  background-image: radial-gradient(rgba(69, 243, 255, 0.03) 2px, transparent 2px);
+  background-image: radial-gradient(var(--glass-glow) 2px, transparent 2px);
   background-size: 60px 60px;
   animation: float 15s ease-in-out infinite;
+}
+
+/* Ultility classes based on the new design system */
+.btn-primary {
+  background: var(--btn-gradient);
+  color: #fff !important;
+  border: none;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  filter: brightness(110%);
 }

@@ -1,0 +1,38 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const AppContext = createContext();
+
+export const AppProvider = ({ children }) => {
+  // Get initial state from localStorage or default
+  const [theme, setTheme] = useState(() => localStorage.getItem('playnest_theme') || 'dark');
+  const [lang, setLang] = useState(() => localStorage.getItem('playnest_lang') || 'vi');
+
+  // Sync Theme to HTML class
+  useEffect(() => {
+    const htmlRoot = document.documentElement;
+    if (theme === 'light') {
+      htmlRoot.classList.add('light');
+      htmlRoot.classList.remove('dark');
+    } else {
+      htmlRoot.classList.add('dark');
+      htmlRoot.classList.remove('light');
+    }
+    localStorage.setItem('playnest_theme', theme);
+  }, [theme]);
+
+  // Sync Lang
+  useEffect(() => {
+    localStorage.setItem('playnest_lang', lang);
+  }, [lang]);
+
+  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  const toggleLang = () => setLang((prev) => (prev === 'vi' ? 'en' : 'vi'));
+
+  return (
+    <AppContext.Provider value={{ theme, toggleTheme, lang, toggleLang }}>
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+export const useAppContext = () => useContext(AppContext);
