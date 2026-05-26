@@ -27,35 +27,73 @@ export default function Privacy() {
         {lang === 'vi' ? (
           <>
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>1. Thu thập dữ liệu</h3>
-            <p style={{ marginBottom: '20px' }}>
-              PlayNest cam kết bảo vệ quyền riêng tư của bạn. Vì bản chất của chúng tôi là một nền tảng trò chơi giải trí cục bộ, <strong>chúng tôi KHÔNG thu thập, lưu trữ hay chia sẻ</strong> bất kỳ thông tin cá nhân nhạy cảm nào (như tên thật, địa chỉ, số điện thoại, mật khẩu) từ người dùng.
+            <p style={{ marginBottom: '15px' }}>
+              PlayNest tôn trọng và cam kết bảo vệ quyền riêng tư của người dùng. Hiện tại, nền tảng không yêu cầu người dùng cung cấp các thông tin cá nhân nhạy cảm như họ tên, địa chỉ, số điện thoại hoặc mật khẩu để sử dụng các tính năng cơ bản.
+            </p>
+            <p style={{ marginBottom: '25px' }}>
+              Trong quá trình sử dụng, một số dữ liệu kỹ thuật cơ bản có thể được trình duyệt xử lý nhằm đảm bảo website hoạt động ổn định và mang lại trải nghiệm tốt hơn.
             </p>
             
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>2. Lưu trữ cục bộ (Local Storage)</h3>
-            <p style={{ marginBottom: '20px' }}>
-              Trang web chỉ sử dụng tính năng lưu trữ tạm thời trên trình duyệt của bạn (Local Storage) để ghi nhớ các tùy chọn cá nhân như: Ngôn ngữ (Tiếng Việt/English) và Chế độ giao diện (Dark/Light mode) nhằm mang lại trải nghiệm tiện lợi nhất cho các lần truy cập sau.
+            <p style={{ marginBottom: '10px' }}>
+              PlayNest sử dụng Local Storage trên trình duyệt để lưu một số tùy chọn cá nhân của người dùng, bao gồm:
+            </p>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '20px', marginBottom: '15px' }}>
+              <li>Ngôn ngữ hiển thị (Tiếng Việt / English)</li>
+              <li>Chế độ giao diện (Dark Mode / Light Mode)</li>
+              <li>Một số cài đặt hoặc tùy chọn trải nghiệm khác (nếu có)</li>
+            </ul>
+            <p style={{ marginBottom: '25px' }}>
+              Dữ liệu này chỉ được lưu trên thiết bị của bạn và không được sử dụng để nhận dạng cá nhân.
             </p>
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>3. Trải nghiệm an toàn</h3>
+            <p style={{ marginBottom: '15px' }}>
+              Các trò chơi trên PlayNest được phát triển với mục đích mang lại trải nghiệm giải trí lành mạnh dành cho bạn bè, gia đình và các buổi gặp gỡ.
+            </p>
+            <p style={{ marginBottom: '25px' }}>
+              Người dùng tự chịu trách nhiệm đối với các hoạt động hoặc hình thức thử thách ngoài đời thực được áp dụng trong quá trình chơi.
+            </p>
+
+            <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>4. Thay đổi chính sách</h3>
             <p>
-              Tất cả các trò chơi trên nền tảng PlayNest đều được thiết kế với mục đích giải trí lành mạnh giữa bạn bè và người thân. Vui lòng tự chịu trách nhiệm nếu các bạn áp dụng các hình phạt bên ngoài đời thực (như uống nước, phạt ca hát,...) khi tham gia chơi nhóm.
+              PlayNest có thể cập nhật hoặc điều chỉnh nội dung của chính sách này trong tương lai nhằm phù hợp với các tính năng mới và trải nghiệm người dùng.
             </p>
           </>
         ) : (
           <>
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>1. Data Collection</h3>
-            <p style={{ marginBottom: '20px' }}>
-              PlayNest is committed to protecting your privacy. Since our platform is designed for local entertainment, <strong>we DO NOT collect, store, or share</strong> any sensitive personal information (such as real name, address, phone number, password) from our users.
+            <p style={{ marginBottom: '15px' }}>
+              PlayNest respects and is committed to protecting user privacy. Currently, the platform does not require users to provide sensitive personal information such as full name, address, phone number, or password to use basic features.
+            </p>
+            <p style={{ marginBottom: '25px' }}>
+              During use, some basic technical data may be processed by the browser to ensure the website operates stably and provides a better experience.
             </p>
             
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>2. Local Storage</h3>
-            <p style={{ marginBottom: '20px' }}>
-              The website only uses your browser's temporary storage (Local Storage) to remember personal preferences such as: Language (Vietnamese/English) and Theme mode (Dark/Light mode) to provide the most convenient experience for your subsequent visits.
+            <p style={{ marginBottom: '10px' }}>
+              PlayNest uses Local Storage on your browser to save some personal preferences, including:
+            </p>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '20px', marginBottom: '15px' }}>
+              <li>Display language (Vietnamese / English)</li>
+              <li>Theme mode (Dark Mode / Light Mode)</li>
+              <li>Some other settings or experience preferences (if any)</li>
+            </ul>
+            <p style={{ marginBottom: '25px' }}>
+              This data is only stored on your device and is not used for personal identification.
             </p>
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>3. Safe Experience</h3>
+            <p style={{ marginBottom: '15px' }}>
+              Games on PlayNest are developed with the purpose of providing a wholesome entertainment experience for friends, family, and gatherings.
+            </p>
+            <p style={{ marginBottom: '25px' }}>
+              Users are personally responsible for real-life activities or challenges applied during gameplay.
+            </p>
+
+            <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>4. Policy Changes</h3>
             <p>
-              All games on the PlayNest platform are designed for wholesome entertainment among friends and family. Please take personal responsibility if you apply real-life penalties (like drinking water, singing penalties, etc.) when participating in group games.
+              PlayNest may update or adjust the content of this policy in the future to adapt to new features and user experiences.
             </p>
           </>
         )}
