@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 
 const GAME_INFO = {
@@ -15,14 +16,10 @@ export default function GameDetail() {
   const { lang } = useAppContext();
   const navigate = useNavigate();
   const game = GAME_INFO[id];
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const handleExit = () => {
-    const message = lang === 'vi' 
-      ? 'Bạn có chắc chắn muốn thoát khỏi trò chơi?' 
-      : 'Are you sure you want to exit the game?';
-    if (window.confirm(message)) {
-      navigate('/');
-    }
+    setShowExitConfirm(true);
   };
 
   return (
@@ -82,6 +79,94 @@ export default function GameDetail() {
           </div>
         )}
       </div>
+
+      {/* Custom Exit Confirmation Modal */}
+      <AnimatePresence>
+        {showExitConfirm && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0, left: 0, right: 0, bottom: 0,
+              zIndex: 99999,
+              background: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              style={{
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '24px',
+                padding: '30px',
+                width: '100%',
+                maxWidth: '400px',
+                textAlign: 'center',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+              }}
+            >
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '15px', color: 'var(--text-title)' }}>
+                {lang === 'vi' ? 'Thoát trò chơi?' : 'Exit game?'}
+              </h3>
+              <p style={{ color: 'var(--text-subtext)', marginBottom: '30px', lineHeight: 1.5 }}>
+                {lang === 'vi' 
+                  ? 'Bạn có chắc chắn muốn thoát? Quá trình chơi có thể sẽ không được lưu lại.' 
+                  : 'Are you sure you want to exit? Your progress may not be saved.'}
+              </p>
+              
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <button 
+                  onClick={() => setShowExitConfirm(false)}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '12px',
+                    border: '1px solid var(--glass-border)',
+                    background: 'transparent',
+                    color: 'var(--text-body)',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'var(--glass-bg)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  {lang === 'vi' ? 'Hủy' : 'Cancel'}
+                </button>
+                <button 
+                  onClick={() => navigate('/')}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'var(--btn-gradient)',
+                    color: '#fff',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.filter = 'brightness(1.1)'}
+                  onMouseOut={(e) => e.currentTarget.style.filter = 'none'}
+                >
+                  {lang === 'vi' ? 'Thoát luôn' : 'Exit Now'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
