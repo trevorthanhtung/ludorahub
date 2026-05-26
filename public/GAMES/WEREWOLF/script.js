@@ -19,14 +19,17 @@ const soundToggleText = document.getElementById("soundToggleText");
 const volumeSlider = document.getElementById("volumeSlider");
 const volumeValue = document.getElementById("volumeValue");
 const roleSummary = document.getElementById("roleSummary");
-const werewolfCountInput = document.getElementById("werewolfCount");
+const wolfPlanText = document.getElementById("wolfPlanText");
+const wolfRuleText = document.getElementById("wolfRuleText");
 const discussionTimeInput = document.getElementById("discussionTime");
 const rebuttalTimeInput = document.getElementById("rebuttalTime");
 const voteTimeInput = document.getElementById("voteTime");
 const roleToggleButtons = {
   seer: document.getElementById("seerToggle"),
   doctor: document.getElementById("doctorToggle"),
-  hunter: document.getElementById("hunterToggle")
+  hunter: document.getElementById("hunterToggle"),
+  fox: document.getElementById("foxToggle"),
+  jester: document.getElementById("jesterToggle")
 };
 
 const roleImages = [
@@ -35,10 +38,29 @@ const roleImages = [
   "assest/seer.png",
   "assest/doctor.png",
   "assest/werewolf.png",
-  "assest/alphawolf.png"
+  "assest/alphawolf.png",
+  "assest/fox.png",
+  "assest/jester.png"
 ];
 
-const roles = ["Hunter", "Villager", "Seer", "Doctor", "Werewolf", "Alpha Wolf"];
+const roles = ["Hunter", "Villager", "Seer", "Doctor", "Werewolf", "Alpha Wolf", "Fox", "Jester"];
+
+const maxPlayers = 15;
+const wolfRules = {
+  4: { werewolf: 1, alphaWolf: 0 },
+  5: { werewolf: 1, alphaWolf: 0 },
+  6: { werewolf: 2, alphaWolf: 0 },
+  7: { werewolf: 2, alphaWolf: 0 },
+  8: { werewolf: 1, alphaWolf: 1 },
+  9: { werewolf: 1, alphaWolf: 1 },
+  10: { werewolf: 2, alphaWolf: 1 },
+  11: { werewolf: 2, alphaWolf: 1 },
+  12: { werewolf: 2, alphaWolf: 1 },
+  13: { werewolf: 3, alphaWolf: 1 },
+  14: { werewolf: 3, alphaWolf: 1 },
+  15: { werewolf: 3, alphaWolf: 1 }
+};
+const specialRoleOrder = ["seer", "doctor", "hunter", "fox", "jester"];
 
 const dictionary = {
   en: {
@@ -55,9 +77,16 @@ const dictionary = {
     firstGameConfig: "First Game Setup",
     firstGameHint: "Set roles and speaking timers before starting.",
     werewolfCount: "Werewolves",
+    wolfTeam: "Wolf Team",
+    wolfWaiting: "Add 4-15 players",
+    wolfRuleHint: "Auto-locked by player count.",
+    wolfRole: "Werewolf",
+    alphaWolf: "Alpha Wolf",
     seer: "Seer",
     doctor: "Doctor",
     hunter: "Hunter",
+    fox: "Fox",
+    jester: "Jester",
     villagerAuto: "Villagers auto-fill the remaining seats.",
     timingConfig: "Speaking Time",
     timingHint: "Used for discussion, rebuttal and voting.",
@@ -86,7 +115,9 @@ const dictionary = {
     off: "Off",
     playerPlaceholder: "Enter player name",
     needMinPlayers: "Need at least 4 players to start.",
-    rolesTooMany: "Selected roles exceed the player count.",
+    maxPlayers: "Maximum 15 players for this role table.",
+    rolesTooMany: "Selected roles exceed the player count. Keep at least 1 villager.",
+    rolesAdjusted: "Some roles were turned off because there are not enough seats.",
     roleCardAlert: "Role Card",
     noVote: "Choose a player to vote.",
     eliminated: "has been eliminated.",
@@ -112,11 +143,12 @@ const dictionary = {
     hostDiscussion: "Discussion timer is running. Let the table speak.",
     hostRebuttal: "Each suspect gets a short defense before the vote.",
     hostVote: "Voting is open. Confirm the village decision when ready.",
-    specialRoleTriggered: "A special role effect has been triggered."
+    specialRoleTriggered: "A special role effect has been triggered.",
+    playersCount: "👥 {n} Players"
   },
   vi: {
     directTitle: "Chơi Trực Tiếp",
-    directSubtitle: "Chơi cùng quản trò thật",
+    directSubtitle: "Quản trò thủ công",
     directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Thiết lập vai ván đầu, thời gian và danh sách người chơi trước khi bắt đầu.",
     playDirect: "Chơi Trực Tiếp",
     wifiTitle: "WiFi Nội Bộ",
@@ -124,17 +156,24 @@ const dictionary = {
     wifiDescription: "Người chơi kết nối cùng mạng Wi-Fi. Hệ thống tự động quản lý vai trò, chu kỳ ngày/đêm, bỏ phiếu và toàn bộ tiến trình trò chơi.",
     playLocal: "Chơi WiFi",
     add: "Thêm",
-    emptyPlayers: "Nhập tên người chơi để bắt đầu.",
-    firstGameConfig: "Cấu Hình Ván Đầu",
-    firstGameHint: "Chỉnh vai trò và thời gian nói trước khi bắt đầu.",
+    emptyPlayers: "Danh sách người chơi sẽ hiển thị tại đây.",
+    firstGameConfig: "Thiết Lập Ván Chơi",
+    firstGameHint: "Tùy chỉnh vai trò và thiết lập trước khi bắt đầu.",
     werewolfCount: "Ma Sói",
+    wolfTeam: "Phe Sói",
+    wolfWaiting: "Cần 4-15 người",
+    wolfRuleHint: "Tự khóa theo số người chơi.",
+    wolfRole: "Ma Sói",
+    alphaWolf: "Sói Alpha",
     seer: "Tiên Tri",
     doctor: "Bảo Vệ",
     hunter: "Thợ Săn",
-    villagerAuto: "Dân làng tự lấp phần còn lại.",
-    timingConfig: "Thời Gian Nói",
-    timingHint: "Dùng cho tranh luận, phản biện và bỏ phiếu.",
-    discussionTime: "Tranh Luận",
+    fox: "Cáo",
+    jester: "Hề",
+    villagerAuto: "Các vị trí còn lại sẽ tự động là Dân Làng.",
+    timingConfig: "Thiết Lập Thời Gian",
+    timingHint: "Cài đặt thời lượng cho từng giai đoạn thảo luận.",
+    discussionTime: "Thảo Luận Chung",
     rebuttalTime: "Phản Biện",
     voteTime: "Bỏ Phiếu",
     roleCard: "Thẻ Vai",
@@ -157,9 +196,11 @@ const dictionary = {
     saveSettings: "Lưu Thay Đổi",
     on: "Bật",
     off: "Tắt",
-    playerPlaceholder: "Nhập tên người chơi",
+    playerPlaceholder: "Nhập tên người chơi...",
     needMinPlayers: "Cần ít nhất 4 người chơi để bắt đầu.",
-    rolesTooMany: "Số vai đã chọn vượt quá số người chơi.",
+    maxPlayers: "Bảng vai hiện hỗ trợ tối đa 15 người chơi.",
+    rolesTooMany: "Số vai đã chọn vượt quá số người chơi. Cần chừa ít nhất 1 Dân làng.",
+    rolesAdjusted: "Một vài vai đã được tắt vì không đủ chỗ.",
     roleCardAlert: "Thẻ vai",
     noVote: "Hãy chọn một người để vote.",
     eliminated: "đã bị loại.",
@@ -185,7 +226,8 @@ const dictionary = {
     hostDiscussion: "Đồng hồ tranh luận đang chạy. Cả bàn cùng nói và lắng nghe.",
     hostRebuttal: "Cho người bị nghi ngờ phản biện ngắn trước khi bỏ phiếu.",
     hostVote: "Đã tới lượt bỏ phiếu. Xác nhận quyết định của làng khi sẵn sàng.",
-    specialRoleTriggered: "Hiệu ứng vai đặc biệt đã được kích hoạt."
+    specialRoleTriggered: "Hiệu ứng vai đặc biệt đã được kích hoạt.",
+    playersCount: "👥 {n} Người Chơi"
   }
 };
 
@@ -196,10 +238,11 @@ let currentMode = "direct";
 let phase = "night";
 let timeLeft = 30;
 let firstGameConfig = {
-  werewolves: 1,
   seer: true,
   doctor: true,
   hunter: false,
+  fox: false,
+  jester: false,
   discussion: 180,
   rebuttal: 45,
   vote: 60
@@ -355,31 +398,81 @@ function clampNumber(value, min, max) {
   return Math.min(max, Math.max(min, Math.round(number)));
 }
 
+function getWolfRule(playerCount = players.length) {
+  return wolfRules[playerCount] || { werewolf: 0, alphaWolf: 0 };
+}
+
+function wolfRoleCount(playerCount = players.length) {
+  const rule = getWolfRule(playerCount);
+  return rule.werewolf + rule.alphaWolf;
+}
+
+function selectedSpecialRoles() {
+  return specialRoleOrder.filter(role => firstGameConfig[role]);
+}
+
 function selectedRoleCount() {
-  return firstGameConfig.werewolves
-    + (firstGameConfig.seer ? 1 : 0)
-    + (firstGameConfig.doctor ? 1 : 0)
-    + (firstGameConfig.hunter ? 1 : 0);
+  if (!wolfRules[players.length]) return 0;
+  return wolfRoleCount() + selectedSpecialRoles().length;
+}
+
+function getWolfPlanText() {
+  const rule = getWolfRule();
+  const parts = [];
+  if (rule.werewolf) parts.push(`${rule.werewolf} ${t("wolfRole")}`);
+  if (rule.alphaWolf) parts.push(`${rule.alphaWolf} ${t("alphaWolf")}`);
+  return parts.length ? parts.join(" + ") : t("wolfWaiting");
+}
+
+function enforceRoleLimits(changedRole = "") {
+  const wolfCount = wolfRoleCount();
+  const maxSpecialRoles = Math.max(0, players.length - wolfCount - 1);
+
+  if (changedRole && firstGameConfig[changedRole] && selectedSpecialRoles().length > maxSpecialRoles) {
+    firstGameConfig[changedRole] = false;
+    alert(t("rolesTooMany"));
+    return;
+  }
+
+  let adjusted = false;
+  for (const role of [...specialRoleOrder].reverse()) {
+    if (selectedSpecialRoles().length <= maxSpecialRoles) break;
+    if (firstGameConfig[role]) {
+      firstGameConfig[role] = false;
+      adjusted = true;
+    }
+  }
+
+  if (adjusted && players.length > 0) softSound("thump");
 }
 
 function updateFirstGameUI() {
-  werewolfCountInput.value = firstGameConfig.werewolves;
+  enforceRoleLimits();
+
+  const hasWolfRule = Boolean(wolfRules[players.length]);
+  const wolfCount = wolfRoleCount();
+  const specialSlotsLeft = Math.max(0, players.length - wolfCount - 1 - selectedSpecialRoles().length);
+  wolfPlanText.textContent = getWolfPlanText();
+  wolfRuleText.textContent = `${t("wolfRuleHint")} ${players.length}/${maxPlayers}`;
   discussionTimeInput.value = firstGameConfig.discussion;
   rebuttalTimeInput.value = firstGameConfig.rebuttal;
   voteTimeInput.value = firstGameConfig.vote;
 
   Object.entries(roleToggleButtons).forEach(([role, button]) => {
-    button.classList.toggle("is-on", firstGameConfig[role]);
-    button.setAttribute("aria-pressed", String(firstGameConfig[role]));
+    const isOn = firstGameConfig[role];
+    const isDisabled = !hasWolfRule || (!isOn && specialSlotsLeft <= 0);
+    button.classList.toggle("is-on", isOn);
+    button.classList.toggle("is-disabled", isDisabled);
+    button.disabled = isDisabled;
+    button.setAttribute("aria-pressed", String(isOn));
   });
 
-  roleSummary.textContent = `${selectedRoleCount()}/${players.length}`;
-  roleSummary.classList.toggle("is-warning", selectedRoleCount() > players.length);
+  roleSummary.textContent = t("playersCount").replace("{n}", players.length);
+  roleSummary.classList.toggle("is-warning", selectedRoleCount() > players.length || !wolfRules[players.length]);
 }
 
 function updateFirstGameConfig(key, value) {
   const limits = {
-    werewolves: [1, 4],
     discussion: [30, 900],
     rebuttal: [15, 300],
     vote: [15, 300]
@@ -391,7 +484,9 @@ function updateFirstGameConfig(key, value) {
 }
 
 function toggleRole(role) {
+  if (!specialRoleOrder.includes(role)) return;
   firstGameConfig[role] = !firstGameConfig[role];
+  enforceRoleLimits(role);
   updateFirstGameUI();
   softSound("click");
 }
@@ -399,6 +494,10 @@ function toggleRole(role) {
 function addPlayer() {
   const name = playerNameInput.value.trim();
   if (!name) return;
+  if (players.length >= maxPlayers) {
+    alert(t("maxPlayers"));
+    return;
+  }
 
   players.push(name);
   playerNameInput.value = "";
@@ -433,7 +532,7 @@ function startGame() {
     return;
   }
 
-  if (selectedRoleCount() > players.length) {
+  if (!wolfRules[players.length] || selectedRoleCount() > players.length) {
     alert(t("rolesTooMany"));
     return;
   }

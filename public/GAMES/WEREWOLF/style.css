@@ -364,6 +364,48 @@ body.day .moon {
   padding: 28px;
 }
 
+.setup-panel {
+  max-height: calc(100dvh - 154px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.setup-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-right: -8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.55) rgba(255, 255, 255, 0.05);
+}
+
+.setup-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.setup-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+.setup-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.55);
+  border-radius: 999px;
+}
+
+.setup-footer {
+  flex: 0 0 auto;
+  padding-top: 14px;
+  background: linear-gradient(180deg, rgba(22, 27, 38, 0), rgba(22, 27, 38, 0.92) 26%, rgba(22, 27, 38, 0.96));
+  position: relative;
+  z-index: 2;
+}
+
+.setup-footer .primary-action {
+  margin-top: 0;
+}
+
 .glass-panel > p,
 .phase-card p,
 .host-card p {
@@ -521,7 +563,7 @@ input:focus {
 }
 
 .role-config-grid {
-  grid-template-columns: 1fr repeat(3, minmax(0, 0.92fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .time-config-grid {
@@ -529,7 +571,8 @@ input:focus {
 }
 
 .number-field,
-.toggle-card {
+.toggle-card,
+.wolf-plan {
   min-height: 74px;
   border: 1px solid var(--border);
   border-radius: 20px;
@@ -544,14 +587,38 @@ input:focus {
   padding: 12px;
 }
 
+.wolf-plan {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-color: rgba(239, 68, 68, 0.32);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(139, 92, 246, 0.1));
+}
+
+.wolf-plan strong {
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.wolf-plan em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .number-field span,
-.toggle-card span {
+.toggle-card span,
+.wolf-plan span {
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
 }
 
-.number-field input {
+.number-field input,
+.number-field select {
   width: 100%;
   height: 34px;
   border: 0;
@@ -563,6 +630,19 @@ input:focus {
   font-family: var(--number);
   font-size: 24px;
   font-weight: 800;
+}
+
+.number-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.number-field select option {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  font-family: var(--ui);
 }
 
 .toggle-card {
@@ -582,6 +662,18 @@ input:focus {
 
 .toggle-card.is-on span {
   color: var(--text);
+}
+
+.toggle-card.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  filter: grayscale(0.75);
+}
+
+.toggle-card.is-disabled:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 .glass-panel > .primary-action {

@@ -59,77 +59,112 @@
         <button class="icon-button" type="button" onclick="openSettings('setupScreen')" aria-label="Settings">⚙</button>
       </nav>
 
-      <div class="glass-panel">
+      <div class="glass-panel setup-panel">
         <h2 id="setupTitle">🎭 Direct Play</h2>
         <p id="setupSubtitle">Play with a human game master</p>
 
-        <div class="input-row">
-          <input id="playerName" type="text" placeholder="Nhập tên người chơi" autocomplete="off">
-          <button type="button" class="small-button" onclick="addPlayer()" data-i18n="add">Add</button>
+        <div class="setup-scroll">
+          <div class="input-row">
+            <input id="playerName" type="text" placeholder="Nhập tên người chơi..." autocomplete="off">
+            <button type="button" class="small-button" onclick="addPlayer()" data-i18n="add">Add</button>
+          </div>
+
+          <div id="playerList" class="player-list"></div>
+
+          <div class="setup-config">
+            <article class="config-card">
+              <div class="config-head">
+                <div>
+                  <h3 data-i18n="firstGameConfig">Thiết Lập Ván Chơi</h3>
+                  <p data-i18n="firstGameHint">Tùy chỉnh vai trò và thiết lập trước khi bắt đầu.</p>
+                </div>
+                <span id="roleSummary" class="config-pill">0/0</span>
+              </div>
+
+              <div class="role-config-grid">
+                <div class="wolf-plan">
+                  <span data-i18n="wolfTeam">Phe Sói</span>
+                  <strong id="wolfPlanText">Chưa đủ người</strong>
+                  <em id="wolfRuleText">Tự tính theo số người chơi.</em>
+                </div>
+
+                <button id="seerToggle" class="toggle-card is-on" type="button" onclick="toggleRole('seer')">
+                  <span data-i18n="seer">Tiên Tri</span>
+                </button>
+
+                <button id="doctorToggle" class="toggle-card is-on" type="button" onclick="toggleRole('doctor')">
+                  <span data-i18n="doctor">Bảo Vệ</span>
+                </button>
+
+                <button id="hunterToggle" class="toggle-card" type="button" onclick="toggleRole('hunter')">
+                  <span data-i18n="hunter">Thợ Săn</span>
+                </button>
+
+                <button id="foxToggle" class="toggle-card" type="button" onclick="toggleRole('fox')">
+                  <span data-i18n="fox">Cáo</span>
+                </button>
+
+                <button id="jesterToggle" class="toggle-card" type="button" onclick="toggleRole('jester')">
+                  <span data-i18n="jester">Hề</span>
+                </button>
+              </div>
+
+              <p class="config-note" data-i18n="villagerAuto">Các vị trí còn lại sẽ tự động là Dân Làng.</p>
+            </article>
+
+            <article class="config-card">
+              <div class="config-head">
+                <div>
+                  <h3 data-i18n="timingConfig">Thiết Lập Thời Gian</h3>
+                  <p data-i18n="timingHint">Cài đặt thời lượng cho từng giai đoạn thảo luận.</p>
+                </div>
+              </div>
+
+              <div class="time-config-grid">
+                <label class="number-field">
+                  <span data-i18n="discussionTime">Thảo Luận Chung</span>
+                  <select id="discussionTime" onchange="updateFirstGameConfig('discussion', this.value)">
+                    <option value="60">01:00</option>
+                    <option value="90">01:30</option>
+                    <option value="120">02:00</option>
+                    <option value="150">02:30</option>
+                    <option value="180">03:00</option>
+                    <option value="240">04:00</option>
+                    <option value="300">05:00</option>
+                  </select>
+                </label>
+
+                <label class="number-field">
+                  <span data-i18n="rebuttalTime">Phản Biện</span>
+                  <select id="rebuttalTime" onchange="updateFirstGameConfig('rebuttal', this.value)">
+                    <option value="15">00:15</option>
+                    <option value="30">00:30</option>
+                    <option value="45">00:45</option>
+                    <option value="60">01:00</option>
+                    <option value="90">01:30</option>
+                    <option value="120">02:00</option>
+                  </select>
+                </label>
+
+                <label class="number-field">
+                  <span data-i18n="voteTime">Bỏ Phiếu</span>
+                  <select id="voteTime" onchange="updateFirstGameConfig('vote', this.value)">
+                    <option value="15">00:15</option>
+                    <option value="30">00:30</option>
+                    <option value="45">00:45</option>
+                    <option value="60">01:00</option>
+                    <option value="90">01:30</option>
+                    <option value="120">02:00</option>
+                  </select>
+                </label>
+              </div>
+            </article>
+          </div>
         </div>
 
-        <div id="playerList" class="player-list"></div>
-
-        <div class="setup-config">
-          <article class="config-card">
-            <div class="config-head">
-              <div>
-                <h3 data-i18n="firstGameConfig">Cấu Hình Ván Đầu</h3>
-                <p data-i18n="firstGameHint">Chỉnh vai trò và thời gian nói trước khi bắt đầu.</p>
-              </div>
-              <span id="roleSummary" class="config-pill">0/0</span>
-            </div>
-
-            <div class="role-config-grid">
-              <label class="number-field">
-                <span data-i18n="werewolfCount">Ma Sói</span>
-                <input id="werewolfCount" type="number" min="1" max="4" value="1" inputmode="numeric" oninput="updateFirstGameConfig('werewolves', this.value)">
-              </label>
-
-              <button id="seerToggle" class="toggle-card is-on" type="button" onclick="toggleRole('seer')">
-                <span data-i18n="seer">Tiên Tri</span>
-              </button>
-
-              <button id="doctorToggle" class="toggle-card is-on" type="button" onclick="toggleRole('doctor')">
-                <span data-i18n="doctor">Bảo Vệ</span>
-              </button>
-
-              <button id="hunterToggle" class="toggle-card" type="button" onclick="toggleRole('hunter')">
-                <span data-i18n="hunter">Thợ Săn</span>
-              </button>
-            </div>
-
-            <p class="config-note" data-i18n="villagerAuto">Dân làng tự lấp phần còn lại.</p>
-          </article>
-
-          <article class="config-card">
-            <div class="config-head">
-              <div>
-                <h3 data-i18n="timingConfig">Thời Gian Nói</h3>
-                <p data-i18n="timingHint">Dùng cho tranh luận, phản biện và bỏ phiếu.</p>
-              </div>
-            </div>
-
-            <div class="time-config-grid">
-              <label class="number-field">
-                <span data-i18n="discussionTime">Tranh Luận</span>
-                <input id="discussionTime" type="number" min="30" max="900" step="15" value="180" inputmode="numeric" oninput="updateFirstGameConfig('discussion', this.value)">
-              </label>
-
-              <label class="number-field">
-                <span data-i18n="rebuttalTime">Phản Biện</span>
-                <input id="rebuttalTime" type="number" min="15" max="300" step="15" value="45" inputmode="numeric" oninput="updateFirstGameConfig('rebuttal', this.value)">
-              </label>
-
-              <label class="number-field">
-                <span data-i18n="voteTime">Bỏ Phiếu</span>
-                <input id="voteTime" type="number" min="15" max="300" step="15" value="60" inputmode="numeric" oninput="updateFirstGameConfig('vote', this.value)">
-              </label>
-            </div>
-          </article>
+        <div class="setup-footer">
+          <button type="button" class="primary-action" onclick="startGame()" data-i18n="startGame">Start Game</button>
         </div>
-
-        <button type="button" class="primary-action" onclick="startGame()" data-i18n="startGame">Start Game</button>
       </div>
     </section>
 
