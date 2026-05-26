@@ -239,9 +239,9 @@ input:focus {
 /* 3D Flip Card */
 .card-container {
   perspective: 1000px;
-  margin: 32px auto;
-  width: 240px;
-  height: 340px;
+  margin: 24px auto;
+  width: 280px;
+  height: 392px;
 }
 
 .card-inner {
@@ -266,11 +266,12 @@ input:focus {
   backface-visibility: hidden;
   border-radius: 12px;
   border: 2px solid var(--gold);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  overflow: hidden;
 }
 
 .card-front {
-  background: var(--card-bg) url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0L40 20L20 40L0 20L20 0Z" fill="rgba(200,164,93,0.05)"/></svg>') repeat;
+  background: radial-gradient(circle at center, #1A1F30, #0B0F1A);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,7 +280,7 @@ input:focus {
 .card-front::after {
   content: '';
   position: absolute;
-  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  top: 12px; left: 12px; right: 12px; bottom: 12px;
   border: 1px solid rgba(200,164,93,0.3);
   border-radius: 8px;
 }
@@ -293,28 +294,32 @@ input:focus {
 }
 
 .card-back {
-  background: linear-gradient(135deg, #1A1F30, #0B0F1A);
+  background: #000;
   transform: rotateY(180deg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  position: relative;
+  padding: 0;
 }
 
 .role-image {
-  width: 140px;
-  height: 140px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 16px;
-  border: 3px solid var(--gold);
-  box-shadow: 0 0 20px rgba(200, 164, 93, 0.4);
+  display: block;
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  box-shadow: none;
 }
 
-.card-back h3 {
+.role-info {
+  text-align: center;
+  margin-top: 16px;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.role-info h3 {
   font-size: 26px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .role-desc {

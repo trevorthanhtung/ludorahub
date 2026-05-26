@@ -136,7 +136,7 @@ export default function Footer() {
                 boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
               }}>
                 <img 
-                  src="/donate_qr.webp" 
+                  src="https://img.vietqr.io/image/MB-0816158215-compact2.png?accountName=TRAN%20THANH%20TUNG" 
                   alt="Donate QR Code" 
                   style={{ width: '100%', maxWidth: '250px', height: 'auto', borderRadius: '12px' }} 
                   onError={(e) => {

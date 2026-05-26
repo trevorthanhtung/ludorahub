@@ -170,6 +170,7 @@ function prepareRoleScreen() {
   const cardInner = document.getElementById("roleCardInner");
   cardInner.classList.remove("is-flipped");
   
+  document.getElementById("roleInfo").classList.add("hidden");
   document.getElementById("nextPlayerBtn").classList.add("hidden");
 }
 
@@ -192,6 +193,7 @@ function showRole() {
   if (!cardInner.classList.contains("is-flipped")) {
     cardInner.classList.add("is-flipped");
     setTimeout(() => {
+      document.getElementById("roleInfo").classList.remove("hidden");
       document.getElementById("nextPlayerBtn").classList.remove("hidden");
     }, 600);
   }
