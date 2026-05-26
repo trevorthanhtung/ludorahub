@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, User, Settings, Sun, Moon, Globe } from 'lucide-react';
+import { Search, Settings, Sun, Moon, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
@@ -156,14 +156,6 @@ export default function Navigation() {
           )}
         </AnimatePresence>
 
-        {/* User Button */}
-        <motion.button 
-          whileHover={{ scale: 1.1, color: 'var(--accent-blue)' }}
-          whileTap={{ scale: 0.95 }}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-title)' }}
-        >
-          <User size={24} />
-        </motion.button>
       </div>
     </nav>
   );
