@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 
 const GAME_INFO = {
-  'g1': {
+  'true-or-dare': {
     title: 'True or Dare',
     url: '/GAMES/TRUE OR DARE/index.html'
   }

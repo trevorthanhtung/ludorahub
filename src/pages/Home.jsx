@@ -3,7 +3,7 @@ import GameCard from '../components/GameCard';
 import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
-  { id: 'g1', title: 'True or Dare', players: '∞', time: '∞', tag: 'HOT', image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' }
+  { id: 'true-or-dare', title: 'True or Dare', players: '∞', time: '∞', tag: 'HOT', image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' }
 ];
 
 export default function Home() {
