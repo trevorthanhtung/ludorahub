@@ -3,11 +3,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 export default function GameCard({ game }) {
+  // Variants for staggered animation
   const item = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
+  // Nội dung chính của Card (để có thể tái sử dụng cho cả thẻ a và Link)
   const CardContent = () => (
     <motion.div
       whileHover={{ 
@@ -29,6 +31,7 @@ export default function GameCard({ game }) {
         WebkitBackdropFilter: 'blur(16px)'
       }}
     >
+      {/* Thumbnail */}
       <div style={{ height: '200px', width: '100%', background: '#1f2937', position: 'relative' }}>
         {game.image ? (
           <img src={game.image} alt={game.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -38,6 +41,7 @@ export default function GameCard({ game }) {
           </div>
         )}
         
+        {/* Tag */}
         {game.tag && (
           <div style={{ 
             position: 'absolute', 
@@ -56,9 +60,11 @@ export default function GameCard({ game }) {
         )}
       </div>
 
+      {/* Content */}
       <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '16px' }}>{game.title}</h3>
         
+        {/* Meta Data */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: 'auto', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Users size={18} /> <span>{game.players}</span>
@@ -77,10 +83,12 @@ export default function GameCard({ game }) {
   return (
     <motion.div variants={item} style={{ height: '100%' }}>
       {game.externalUrl ? (
-        <a href={game.externalUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', height: '100%' }}>
+        // Chuyển hướng thẳng qua trang web HTML riêng
+        <a href={game.externalUrl} style={{ display: 'block', height: '100%' }}>
           <CardContent />
         </a>
       ) : (
+        // Chuyển hướng trong nội bộ React (Trang GameDetail)
         <Link to={`/game/${game.id}`} style={{ display: 'block', height: '100%' }}>
           <CardContent />
         </Link>

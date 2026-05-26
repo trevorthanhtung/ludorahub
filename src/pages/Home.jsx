@@ -2,11 +2,7 @@ import { motion } from 'framer-motion';
 import GameCard from '../components/GameCard';
 
 const MOCK_GAMES = [
-  { id: 'g1', title: 'True or Dare', players: '2–8 players', time: '5–15 min', rating: '4.9', tag: 'HOT' },
-  { id: 'g2', title: 'Caro Pro', players: '2 players', time: '10 min', rating: '4.7' },
-  { id: 'g3', title: 'Snake 3D', players: '1 player', time: 'Unlimited', rating: '4.5', tag: 'NEW' },
-  { id: 'g4', title: 'Tetris Sprint', players: '1 player', time: '5 min', rating: '4.8' },
-  { id: 'g5', title: 'Word Guess', players: '1–4 players', time: '10 min', rating: '4.6' }
+  { id: 'g1', title: 'True or Dare', players: '2–8 players', time: '5–15 min', rating: '4.9', tag: 'HOT', externalUrl: '/GAMES/TRUE OR DARE/BẠN CÓ DÁM CHƠI.html' }
 ];
 
 export default function Home() {

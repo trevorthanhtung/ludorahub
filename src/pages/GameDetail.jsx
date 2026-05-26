@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const GAME_INFO = {
   'g1': {
     title: 'True or Dare',
-    url: '/GAMES/TRUE OR DARE/BẠN CÓ DÁM CHƠI.html'
+    url: '/GAMES/TRUE OR DARE/index.html'
   }
 };
 
