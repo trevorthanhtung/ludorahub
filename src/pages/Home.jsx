@@ -29,7 +29,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '0 40px 60px 40px', maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="home-container" style={{ padding: '0 40px 60px 40px', maxWidth: '1400px', margin: '0 auto' }}>
       
       {!searchQuery && (
         <>
@@ -40,7 +40,7 @@ export default function Home() {
             transition={{ duration: 0.8, type: 'spring' }}
             style={{ 
               textAlign: 'center', 
-              padding: '100px 0 80px 0',
+              padding: 'clamp(60px, 10vw, 100px) 0 clamp(40px, 8vw, 80px) 0',
               position: 'relative'
             }}
           >
@@ -77,13 +77,13 @@ export default function Home() {
               }}></div>
 
               <div style={{ position: 'relative', zIndex: 2 }}>
-                <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
+                <h2 className="hero-title" style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
                   Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
                 </h2>
-              <p style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
+              <p className="hero-subtitle" style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
                 {lang === 'vi' ? 'Một nơi, vô vàn cuộc vui' : 'One place, endless fun'}
               </p>
-              <p style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px', marginBottom: '40px' }}>
+              <p className="hero-description" style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px', marginBottom: '40px' }}>
                 {lang === 'vi' ? 'Kết nối bạn bè và gia đình qua những trò chơi thú vị' : 'Connect friends and family through exciting games'}
               </p>
               <motion.button 

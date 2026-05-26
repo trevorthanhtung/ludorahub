@@ -30,7 +30,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav style={{
+    <nav className="nav-container" style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -54,20 +54,21 @@ export default function Navigation() {
           <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
             <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
           </motion.div>
-          <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
+          <h1 className="nav-logo-text" style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
             Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
           </h1>
         </a>
       </div>
 
       {/* Search (Center) */}
-      <div style={{
+      <div className="nav-search-wrapper" style={{
         display: 'flex',
         alignItems: 'center',
         background: 'var(--glass-bg)',
         padding: '10px 20px',
         borderRadius: '30px',
-        width: '350px'
+        width: '100%',
+        maxWidth: '350px'
       }}>
         <Search size={18} color="var(--text-subtext)" />
         <input 
