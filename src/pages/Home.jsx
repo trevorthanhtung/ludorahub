@@ -114,14 +114,22 @@ export default function Home() {
               <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
                 {lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games'}
               </h2>
-              <button style={{ 
-                background: 'transparent', 
-                border: 'none', 
-                color: 'var(--accent-blue)', 
-                fontWeight: 600, 
-                cursor: 'pointer',
-                fontSize: '1rem'
-              }}>
+              <button 
+                onClick={() => {
+                  const allGamesSection = document.getElementById('all-games-section');
+                  if (allGamesSection) {
+                    allGamesSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                style={{ 
+                  background: 'transparent', 
+                  border: 'none', 
+                  color: 'var(--accent-blue)', 
+                  fontWeight: 600, 
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
                 {lang === 'vi' ? 'Xem tất cả' : 'View All'}
               </button>
             </div>
@@ -145,7 +153,7 @@ export default function Home() {
       )}
 
       {/* All Games / Search Results */}
-      <section style={{ paddingTop: searchQuery ? '40px' : '0' }}>
+      <section id="all-games-section" style={{ paddingTop: searchQuery ? '40px' : '0' }}>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '30px' }}>
           {searchQuery 
             ? (lang === 'vi' ? `Kết quả tìm kiếm cho "${searchQuery}"` : `Search results for "${searchQuery}"`) 
