@@ -181,6 +181,7 @@ export default function Home() {
             {lang === 'vi' ? 'Đang phát triển...' : 'Coming soon...'}
           </div>
         </motion.div>
+        )}
       </section>
     </div>
   );
