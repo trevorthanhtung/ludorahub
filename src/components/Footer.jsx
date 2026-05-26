@@ -19,10 +19,10 @@ export default function Footer() {
   
   return (
     <footer style={{
-      borderTop: '1px solid var(--nav-border, rgba(255,255,255,0.4))',
+      borderTop: '1px solid var(--nav-border, var(--glass-border))',
       padding: '40px 20px',
       marginTop: '80px',
-      background: 'var(--nav-bg, rgba(255,255,255,0.35))',
+      background: 'var(--nav-bg, var(--glass-bg))',
       backdropFilter: 'blur(18px)',
       WebkitBackdropFilter: 'blur(18px)',
       textAlign: 'center',
