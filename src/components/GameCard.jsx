@@ -1,10 +1,12 @@
 import { Users, Clock, Wifi, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { useState } from 'react';
 
 export default function GameCard({ game }) {
   const { lang } = useAppContext();
+  const [showModal, setShowModal] = useState(false);
   
   const item = {
     hidden: { opacity: 0, y: 30 },
@@ -94,10 +96,61 @@ export default function GameCard({ game }) {
   );
 
   return (
-    <motion.div variants={item} style={{ height: '100%' }}>
-      <Link to={`/game/${game.id}`} style={{ display: 'block', height: '100%' }}>
-        <CardContent />
-      </Link>
-    </motion.div>
+    <>
+      <motion.div variants={item} style={{ height: '100%' }}>
+        {game.comingSoon ? (
+          <div onClick={() => setShowModal(true)} style={{ display: 'block', height: '100%' }}>
+            <CardContent />
+          </div>
+        ) : (
+          <Link to={`/game/${game.id}`} style={{ display: 'block', height: '100%' }}>
+            <CardContent />
+          </Link>
+        )}
+      </motion.div>
+
+      <AnimatePresence>
+        {showModal && (
+          <div 
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+              zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
+            }} 
+            onClick={() => setShowModal(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                padding: '40px 30px', borderRadius: '32px', maxWidth: '420px', width: '100%',
+                textAlign: 'center', position: 'relative',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              <div style={{ fontSize: '4.5rem', marginBottom: '20px', textShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>🚧</div>
+              <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {lang === 'vi' ? 'Sắp Ra Mắt!' : 'Coming Soon!'}
+              </h2>
+              <p style={{ color: 'var(--text-subtext)', marginBottom: '32px', lineHeight: 1.6, fontSize: '1.1rem' }}>
+                {lang === 'vi' 
+                  ? `Trò chơi ${game.title} đang được đội ngũ cấp tốc phát triển. Hãy quay lại sau nhé!` 
+                  : `The game ${game.title} is currently under development. Please check back later!`}
+              </p>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="btn-primary"
+                style={{ width: '100%', padding: '16px', fontSize: '1.1rem', borderRadius: '16px' }}
+              >
+                {lang === 'vi' ? 'Đã hiểu' : 'Got it'}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
