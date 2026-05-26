@@ -13,9 +13,9 @@ const MOCK_GAMES = [
 
 const CATEGORY_TABS = [
   { id: 'all', label_vi: 'Tất cả', label_en: 'All Games' },
-  { id: 'local-wifi', label_vi: 'Local WiFi 📶', label_en: 'Local WiFi 📶' },
-  { id: 'small-group', label_vi: 'Nhỏ (2-4 ng) 👥', label_en: 'Small (2-4p) 👥' },
-  { id: 'party', label_vi: 'Nhóm đông 🚀', label_en: 'Party 🚀' }
+  { id: 'local-wifi', label_vi: 'Local WiFi', label_en: 'Local WiFi' },
+  { id: 'small-group', label_vi: '2–4 người', label_en: '2-4 players' },
+  { id: 'party', label_vi: '5+ người', label_en: '5+ players' }
 ];
 
 export default function Home() {
