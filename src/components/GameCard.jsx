@@ -1,5 +1,4 @@
-// Cập nhật lại file để sửa lỗi HMR của Vite
-import { Users, Clock } from 'lucide-react';
+import { Users, Clock, Wifi, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
@@ -70,11 +69,25 @@ export default function GameCard({ game }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Clock size={18} /> <span>{game.time} {lang === 'vi' ? 'phút' : 'min'}</span>
           </div>
-          {game.categories && game.categories.includes('local-wifi') && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent-cyan)' }}>
-              <span style={{ fontSize: '1rem' }}>📶</span> <span>Local WiFi</span>
-            </div>
-          )}
+          
+          {/* Nhãn phân loại */}
+          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '4px' }}>
+            {game.categories && game.categories.includes('local-wifi') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-cyan)' }}>
+                <Wifi size={16} /> <span style={{ fontWeight: 600 }}>Local WiFi</span>
+              </div>
+            )}
+            {game.categories && game.categories.includes('small-group') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-purple)' }}>
+                <Users size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '2–4 người' : '2-4 players'}</span>
+              </div>
+            )}
+            {game.categories && game.categories.includes('party') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-pink)' }}>
+                <Zap size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '5+ người' : '5+ players'}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
