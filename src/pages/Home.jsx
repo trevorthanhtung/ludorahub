@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
   { id: 'true-or-dare', title: 'True or Dare', players: '2-20', time: '∞', tag: 'HOT', categories: ['party', 'pass-and-play'], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
-  { id: 'mafia', title: 'Ma Sói', players: '8-15', time: '30', tag: 'SOON', comingSoon: true, categories: ['party', 'local-wifi'], image: '/ww-banner.webp' },
+  { id: 'mafia', title: 'Ma Sói', players: '4-15', time: '30+', tag: 'SOON', comingSoon: true, categories: ['party', 'local-wifi'], image: '/ww-banner.webp' },
 ];
 
 const CATEGORY_TABS = [

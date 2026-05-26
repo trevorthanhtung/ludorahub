@@ -22,30 +22,33 @@
 
   <main class="shell">
     <section id="homeScreen" class="screen active">
+      <button class="floating-settings" type="button" onclick="openSettings('homeScreen')" aria-label="Settings">⚙</button>
+
       <header class="hero">
         <div class="mark">☾</div>
         <h1>WEREWOLF</h1>
+        <p data-i18n="heroSubtitle">PlayNest mystery party</p>
       </header>
 
       <div class="mode-grid">
         <article class="mode-card" data-sound="wolf">
           <div class="mode-icon">🎭</div>
           <div class="mode-copy">
-            <h2>Direct Play</h2>
-            <p class="mode-subtitle">Play with a human game master</p>
-            <p class="mode-description">Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.</p>
+            <h2 data-i18n="directTitle">Direct Play</h2>
+            <p class="mode-subtitle" data-i18n="directSubtitle">Play with a human game master</p>
+            <p class="mode-description" data-i18n="directDescription">Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.</p>
           </div>
-          <button class="play-button" type="button" onclick="chooseMode('direct')">Play Direct</button>
+          <button class="play-button" type="button" onclick="chooseMode('direct')" data-i18n="playDirect">Play Direct</button>
         </article>
 
         <article class="mode-card" data-sound="magic">
           <div class="mode-icon">📡</div>
           <div class="mode-copy">
-            <h2>Local WiFi</h2>
-            <p class="mode-subtitle">Device acts as AI game master</p>
-            <p class="mode-description">Players connect through the same Wi-Fi network. The system manages roles, day/night cycle, voting and game flow.</p>
+            <h2 data-i18n="wifiTitle">Local WiFi</h2>
+            <p class="mode-subtitle" data-i18n="wifiSubtitle">Device acts as AI game master</p>
+            <p class="mode-description" data-i18n="wifiDescription">Players connect through the same Wi-Fi network. The system manages roles, day/night cycle, voting and game flow.</p>
           </div>
-          <button class="play-button" type="button" onclick="chooseMode('wifi')">Play Local</button>
+          <button class="play-button" type="button" onclick="chooseMode('wifi')" data-i18n="playLocal">Play Local</button>
         </article>
       </div>
     </section>
@@ -54,6 +57,7 @@
       <nav class="topbar">
         <button class="icon-button" type="button" onclick="showScreen('homeScreen')" aria-label="Back">←</button>
         <span id="modeBadge" class="mode-badge">Direct Play</span>
+        <button class="icon-button" type="button" onclick="openSettings('setupScreen')" aria-label="Settings">⚙</button>
       </nav>
 
       <div class="glass-panel">
@@ -62,18 +66,18 @@
 
         <div class="input-row">
           <input id="playerName" type="text" placeholder="Nhập tên người chơi" autocomplete="off">
-          <button type="button" class="small-button" onclick="addPlayer()">Add</button>
+          <button type="button" class="small-button" onclick="addPlayer()" data-i18n="add">Add</button>
         </div>
 
         <div id="playerList" class="player-list"></div>
 
         <div class="tool-row">
-          <button type="button" onclick="drawRole()">Role Card</button>
-          <button type="button" onclick="toggleTimer()">Timer</button>
-          <button type="button" onclick="showScreen('voteScreen')">Vote</button>
+          <button type="button" onclick="drawRole()" data-i18n="roleCard">Role Card</button>
+          <button type="button" onclick="toggleTimer()" data-i18n="timer">Timer</button>
+          <button type="button" onclick="showScreen('voteScreen')" data-i18n="vote">Vote</button>
         </div>
 
-        <button type="button" class="primary-action" onclick="startGame()">Start Game</button>
+        <button type="button" class="primary-action" onclick="startGame()" data-i18n="startGame">Start Game</button>
       </div>
     </section>
 
@@ -81,6 +85,7 @@
       <nav class="topbar">
         <button class="icon-button" type="button" onclick="showScreen('setupScreen')" aria-label="Back">←</button>
         <span id="phaseLabel" class="mode-badge">🌙 Night</span>
+        <button class="icon-button" type="button" onclick="openSettings('gameScreen')" aria-label="Settings">⚙</button>
       </nav>
 
       <div class="game-layout">
@@ -100,8 +105,8 @@
         </div>
 
         <div class="game-actions">
-          <button type="button" class="danger" onclick="playSpecialRole()">Special Role</button>
-          <button type="button" onclick="nextPhase()">Next Phase</button>
+          <button type="button" class="danger" onclick="playSpecialRole()" data-i18n="specialRole">Special Role</button>
+          <button type="button" onclick="nextPhase()" data-i18n="nextPhase">Next Phase</button>
         </div>
       </div>
     </section>
@@ -109,14 +114,63 @@
     <section id="voteScreen" class="screen">
       <nav class="topbar">
         <button class="icon-button" type="button" onclick="showScreen('gameScreen')" aria-label="Back">←</button>
-        <span class="mode-badge">Vote</span>
+        <span class="mode-badge" data-i18n="vote">Vote</span>
+        <button class="icon-button" type="button" onclick="openSettings('voteScreen')" aria-label="Settings">⚙</button>
       </nav>
 
       <div class="glass-panel">
-        <h2>Village Vote</h2>
-        <p>Choose the player the village suspects most.</p>
+        <h2 data-i18n="villageVote">Village Vote</h2>
+        <p data-i18n="voteDescription">Choose the player the village suspects most.</p>
         <div id="voteGrid" class="avatar-grid vote-grid"></div>
-        <button type="button" class="primary-action danger" onclick="confirmVote()">Confirm Vote</button>
+        <button type="button" class="primary-action danger" onclick="confirmVote()" data-i18n="confirmVote">Confirm Vote</button>
+      </div>
+    </section>
+
+    <section id="settingsScreen" class="screen">
+      <nav class="topbar">
+        <button id="settingsBackBtn" class="icon-button" type="button" onclick="closeSettings()" aria-label="Back">←</button>
+        <span class="mode-badge" data-i18n="settings">Settings</span>
+        <span class="topbar-spacer" aria-hidden="true"></span>
+      </nav>
+
+      <div class="glass-panel settings-panel">
+        <h2 data-i18n="settingsTitle">Game Settings</h2>
+        <p data-i18n="settingsSubtitle">Tune language and sound for the table before the night begins.</p>
+
+        <div class="settings-list">
+          <article class="setting-card">
+            <div class="setting-icon">🌐</div>
+            <div class="setting-content">
+              <h3 data-i18n="language">Language</h3>
+              <p data-i18n="languageHint">Switch interface text between English and Vietnamese.</p>
+              <div class="segmented" role="group" aria-label="Language">
+                <button id="langEnBtn" type="button" onclick="setLanguage('en')">English</button>
+                <button id="langViBtn" type="button" onclick="setLanguage('vi')">Tiếng Việt</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="setting-card">
+            <div class="setting-icon">♪</div>
+            <div class="setting-content">
+              <h3 data-i18n="sound">Sound</h3>
+              <p data-i18n="soundHint">Forest ambience, soft clicks, whoosh transitions and role effects.</p>
+              <div class="sound-controls">
+                <button id="soundToggle" class="switch-button" type="button" onclick="toggleSound()" aria-pressed="true">
+                  <span class="switch-knob"></span>
+                  <span id="soundToggleText">On</span>
+                </button>
+                <label class="volume-control">
+                  <span data-i18n="volume">Volume</span>
+                  <input id="volumeSlider" type="range" min="0" max="100" value="80" oninput="setVolume(this.value)">
+                  <strong id="volumeValue">80%</strong>
+                </label>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <button type="button" class="primary-action" onclick="closeSettings()" data-i18n="saveSettings">Save Settings</button>
       </div>
     </section>
   </main>
