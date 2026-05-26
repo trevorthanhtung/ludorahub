@@ -1,4 +1,5 @@
 import { useAppContext } from '../context/AppContext';
+import { Link } from 'react-router-dom';
 import { Home, Info, Shield, Mail } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa6';
 import { motion } from 'framer-motion';
@@ -28,16 +29,22 @@ export default function Footer() {
       color: 'var(--text-subtext)'
     }}>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginBottom: '30px', flexWrap: 'wrap' }}>
-        <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="#" style={iconStyle}>
-          <Home size={18} /> Hub
-        </motion.a>
-        <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="#" style={iconStyle}>
-          <Info size={18} /> About
-        </motion.a>
-        <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="#" style={iconStyle}>
-          <Shield size={18} /> Privacy
-        </motion.a>
-        <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="#" style={iconStyle}>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
+            <Home size={18} /> Hub
+          </motion.div>
+        </Link>
+        <Link to="/about" style={{ textDecoration: 'none' }}>
+          <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
+            <Info size={18} /> About
+          </motion.div>
+        </Link>
+        <Link to="/privacy" style={{ textDecoration: 'none' }}>
+          <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
+            <Shield size={18} /> Privacy
+          </motion.div>
+        </Link>
+        <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="mailto:trevorthanhtung@gmail.com" style={iconStyle}>
           <Mail size={18} /> Contact
         </motion.a>
       </div>

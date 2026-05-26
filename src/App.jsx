@@ -3,6 +3,8 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import GameDetail from './pages/GameDetail';
+import About from './pages/About';
+import Privacy from './pages/Privacy';
 import { AppProvider } from './context/AppContext';
 import './index.css';
 
@@ -19,6 +21,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/game/:id" element={<GameDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </main>
           <Footer />
