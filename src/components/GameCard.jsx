@@ -70,6 +70,11 @@ export default function GameCard({ game }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Clock size={18} /> <span>{game.time} {lang === 'vi' ? 'phút' : 'min'}</span>
           </div>
+          {game.categories && game.categories.includes('local-wifi') && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent-cyan)' }}>
+              <span style={{ fontSize: '1rem' }}>📶</span> <span>Local WiFi</span>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

@@ -1,13 +1,26 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import GameCard from '../components/GameCard';
 import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
-  { id: 'true-or-dare', title: 'True or Dare', players: '∞', time: '∞', tag: 'HOT', image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' }
+  { id: 'true-or-dare', title: 'True or Dare', players: '2-10', time: '∞', tag: 'HOT', categories: ['party', 'pass-and-play'], image: '/tod-banner.webp' },
+  { id: 'uno', title: 'Uno', players: '2-4', time: '15', tag: 'WIFI', categories: ['local-wifi', 'small-group'], image: null },
+  { id: 'spyfall', title: 'Spyfall', players: '3-8', time: '10', tag: 'NEW', categories: ['local-wifi', 'party'], image: null },
+  { id: 'mafia', title: 'Ma Sói', players: '8-15', time: '30', tag: '', categories: ['party', 'pass-and-play'], image: null },
+  { id: 'tic-tac-toe', title: 'Cờ Caro', players: '2', time: '5', tag: '', categories: ['small-group', 'pass-and-play'], image: null },
+];
+
+const CATEGORY_TABS = [
+  { id: 'all', label_vi: 'Tất cả', label_en: 'All Games' },
+  { id: 'local-wifi', label_vi: 'Local WiFi 📶', label_en: 'Local WiFi 📶' },
+  { id: 'small-group', label_vi: 'Nhỏ (2-4 ng) 👥', label_en: 'Small (2-4p) 👥' },
+  { id: 'party', label_vi: 'Nhóm đông 🚀', label_en: 'Party 🚀' }
 ];
 
 export default function Home() {
   const { lang, searchQuery } = useAppContext();
+  const [activeCategory, setActiveCategory] = useState('all');
 
   const container = {
     hidden: { opacity: 0 },
@@ -17,9 +30,11 @@ export default function Home() {
     }
   };
 
-  const filteredGames = MOCK_GAMES.filter(game => 
-    game.title.toLowerCase().includes((searchQuery || '').toLowerCase())
-  );
+  const filteredGames = MOCK_GAMES.filter(game => {
+    const matchSearch = game.title.toLowerCase().includes((searchQuery || '').toLowerCase());
+    const matchCat = activeCategory === 'all' || game.categories.includes(activeCategory);
+    return matchSearch && matchCat;
+  });
 
   const scrollToGames = () => {
     const gamesSection = document.getElementById('games-section');
@@ -108,30 +123,57 @@ export default function Home() {
             </div>
           </motion.section>
 
+          {/* Filter Categories */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
+            {CATEGORY_TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id)}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '20px',
+                  border: activeCategory === tab.id ? 'none' : '1px solid var(--glass-border)',
+                  background: activeCategory === tab.id ? 'var(--btn-gradient)' : 'var(--glass-bg)',
+                  color: activeCategory === tab.id ? '#fff' : 'var(--text-body)',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: activeCategory === tab.id ? '0 5px 15px rgba(91,140,255,0.3)' : 'none'
+                }}
+              >
+                {lang === 'vi' ? tab.label_vi : tab.label_en}
+              </button>
+            ))}
+          </div>
+
           {/* Featured Games */}
           <section id="games-section" style={{ marginBottom: '60px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
-                {lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games'}
+                {activeCategory === 'all' 
+                  ? (lang === 'vi' ? 'Trò Chơi Nổi Bật' : 'Featured Games')
+                  : CATEGORY_TABS.find(t => t.id === activeCategory)?.[lang === 'vi' ? 'label_vi' : 'label_en']}
               </h2>
-              <button 
-                onClick={() => {
-                  const allGamesSection = document.getElementById('all-games-section');
-                  if (allGamesSection) {
-                    allGamesSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-                style={{ 
-                  background: 'transparent', 
-                  border: 'none', 
-                  color: 'var(--accent-blue)', 
-                  fontWeight: 600, 
-                  cursor: 'pointer',
-                  fontSize: '1rem'
-                }}
-              >
-                {lang === 'vi' ? 'Xem tất cả' : 'View All'}
-              </button>
+              {activeCategory === 'all' && (
+                <button 
+                  onClick={() => {
+                    const allGamesSection = document.getElementById('all-games-section');
+                    if (allGamesSection) {
+                      allGamesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none', 
+                    color: 'var(--accent-blue)', 
+                    fontWeight: 600, 
+                    cursor: 'pointer',
+                    fontSize: '1rem'
+                  }}
+                >
+                  {lang === 'vi' ? 'Xem tất cả' : 'View All'}
+                </button>
+              )}
             </div>
 
             <motion.div 
@@ -144,7 +186,7 @@ export default function Home() {
                 gap: '30px' 
               }}
             >
-              {MOCK_GAMES.map(game => (
+              {filteredGames.slice(0, activeCategory === 'all' ? 4 : filteredGames.length).map(game => (
                 <GameCard key={game.id} game={game} />
               ))}
             </motion.div>
