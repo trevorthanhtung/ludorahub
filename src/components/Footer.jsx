@@ -1,11 +1,13 @@
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Home, Info, Shield, Mail } from 'lucide-react';
+import { Home, Info, Shield, Mail, Heart, X } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa6';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 export default function Footer() {
   const { lang } = useAppContext();
+  const [showDonate, setShowDonate] = useState(false);
 
   const iconStyle = { 
     display: 'flex', 
@@ -47,6 +49,9 @@ export default function Footer() {
         <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="mailto:trevorthanhtung@gmail.com" style={iconStyle}>
           <Mail size={18} /> {lang === 'vi' ? 'Liên hệ' : 'Contact'}
         </motion.a>
+        <motion.div onClick={() => setShowDonate(true)} whileHover={{ scale: 1.05, color: 'var(--accent-pink)' }} style={{ ...iconStyle, cursor: 'pointer' }}>
+          <Heart size={18} /> {lang === 'vi' ? 'Ủng hộ' : 'Donate'}
+        </motion.div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '30px' }}>
@@ -72,6 +77,95 @@ export default function Footer() {
         {lang === 'vi' ? 'Được phát triển bởi ' : 'Developed by '}
         <a href="https://github.com/trevorthanhtung" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>thanhtungg.</a>
       </p>
+
+      {/* Donate Modal */}
+      <AnimatePresence>
+        {showDonate && (
+          <div 
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+              zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
+            }} 
+            onClick={() => setShowDonate(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                padding: '40px 30px', borderRadius: '32px', maxWidth: '420px', width: '100%',
+                textAlign: 'center', position: 'relative',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              <button 
+                onClick={() => setShowDonate(false)}
+                style={{
+                  position: 'absolute', top: '20px', right: '20px',
+                  background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff',
+                  borderRadius: '50%', width: '36px', height: '36px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', transition: 'background 0.2s'
+                }}
+              >
+                <X size={20} />
+              </button>
+
+              <div style={{ color: 'var(--accent-pink)', marginBottom: '16px' }}>
+                <Heart size={48} fill="currentColor" style={{ margin: '0 auto' }} />
+              </div>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {lang === 'vi' ? 'Ủng hộ dự án' : 'Support PlayNest'}
+              </h2>
+              <p style={{ color: 'var(--text-subtext)', marginBottom: '24px', lineHeight: 1.6, fontSize: '1.05rem' }}>
+                {lang === 'vi' 
+                  ? 'Mọi sự đóng góp của bạn đều là nguồn động lực lớn để tôi duy trì và phát triển PlayNest!' 
+                  : 'Your support is a great motivation for me to maintain and develop PlayNest!'}
+              </p>
+              
+              {/* QR Code Container */}
+              <div style={{ 
+                background: '#fff', 
+                padding: '16px', 
+                borderRadius: '20px', 
+                display: 'inline-block',
+                marginBottom: '20px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+              }}>
+                <img 
+                  src="/donate_qr.webp" 
+                  alt="Donate QR Code" 
+                  style={{ width: '100%', maxWidth: '250px', height: 'auto', borderRadius: '12px' }} 
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={{ 
+                  display: 'none', 
+                  width: '250px', 
+                  height: '250px', 
+                  background: '#f3f4f6', 
+                  borderRadius: '12px',
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  color: '#6b7280',
+                  fontWeight: 600
+                }}>
+                  Đang cập nhật mã QR...
+                </div>
+              </div>
+              
+              <p style={{ color: 'var(--text-subtext)', fontSize: '0.9rem', fontWeight: 500 }}>
+                {lang === 'vi' ? 'Quét mã QR bằng ứng dụng ngân hàng' : 'Scan QR code with your banking app'}
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </footer>
   );
 }

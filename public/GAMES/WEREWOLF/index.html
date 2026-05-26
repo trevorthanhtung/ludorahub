@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma Sói - Dark Fantasy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="night-mode">
+  <div class="bg-layer"></div>
+  <div class="moon-layer"></div>
+
+  <main class="app glass-panel">
+    <section id="homeScreen" class="screen active">
+      <div class="title-container">
+        <h1 class="title">Ma Sói</h1>
+        <p class="subtitle">Ngôi làng bóng tối</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="selectMode('direct')">Chơi Trực Tiếp</button>
+        <button class="btn-ghost" onclick="selectMode('local')">Local Wi-Fi</button>
+      </div>
+    </section>
+
+    <section id="setupScreen" class="screen">
+      <h2 id="modeTitle" class="section-title">Danh sách dân làng</h2>
+      
+      <div class="input-row">
+        <input id="playerName" type="text" placeholder="Nhập tên..." onkeydown="if(event.key === 'Enter') addPlayer()" />
+        <button class="btn-primary btn-small" onclick="addPlayer()">Thêm</button>
+      </div>
+
+      <ul id="playerList" class="player-list"></ul>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="startGame()">Bắt Đầu Đêm</button>
+        <button class="btn-ghost" onclick="goHome()">Quay Lại</button>
+      </div>
+    </section>
+
+    <section id="roleScreen" class="screen">
+      <h2 class="section-title">Nhận Diện</h2>
+      <p id="currentPlayer" class="gm-text typewriter-text"></p>
+
+      <div class="card-container">
+        <div id="roleCardInner" class="card-inner">
+          <div class="card-front" onclick="showRole()">
+            <div class="card-pattern">
+              <span class="tap-text">Chạm để lật bài</span>
+            </div>
+          </div>
+          <div class="card-back">
+            <img id="roleImage" class="role-image" src="" alt="Role" />
+            <h3 id="roleName" class="role-title"></h3>
+            <p id="roleDesc" class="role-desc"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons mt-4">
+        <button id="nextPlayerBtn" class="btn-primary hidden" onclick="nextPlayer()">Tiếp Theo</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <h2 id="phaseTitle" class="section-title phase-title">🌙 Đêm</h2>
+      <div class="gm-panel">
+        <p id="phaseText" class="gm-text typewriter-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="nextPhase()">Tiếp Tục</button>
+      </div>
+    </section>
+
+    <section id="voteScreen" class="screen">
+      <h2 class="section-title text-red">Phán Xét</h2>
+      <p class="subtitle text-red">Ai là Kẻ Phản Bội?</p>
+
+      <div id="voteList" class="vote-grid"></div>
+
+      <div class="action-buttons">
+        <button class="btn-danger shake-hover" onclick="finishVote()">Hành Quyết</button>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <h2 class="section-title">Kết Cục</h2>
+      <div class="gm-panel">
+        <p id="resultText" class="gm-text typewriter-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="restartGame()">Chơi Lại</button>
+        <button class="btn-ghost" onclick="goHome()">Về Trang Chính</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
