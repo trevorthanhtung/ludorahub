@@ -116,12 +116,12 @@ export default function GameDetail() {
               }}
             >
               <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '15px', color: 'var(--text-title)' }}>
-                {lang === 'vi' ? 'Thoát trò chơi?' : 'Exit game?'}
+                {lang === 'vi' ? 'Thoát khỏi trò chơi?' : 'Exit from game?'}
               </h3>
               <p style={{ color: 'var(--text-subtext)', marginBottom: '30px', lineHeight: 1.5 }}>
                 {lang === 'vi' 
-                  ? 'Bạn có chắc chắn muốn thoát? Quá trình chơi có thể sẽ không được lưu lại.' 
-                  : 'Are you sure you want to exit? Your progress may not be saved.'}
+                  ? 'Bạn có chắc chắn muốn thoát? Tiến trình hiện tại có thể sẽ không được lưu.' 
+                  : 'Are you sure you want to exit? Your current progress may not be saved.'}
               </p>
               
               <div style={{ display: 'flex', gap: '15px' }}>
@@ -141,7 +141,7 @@ export default function GameDetail() {
                   onMouseOver={(e) => e.currentTarget.style.background = 'var(--glass-bg)'}
                   onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                 >
-                  {lang === 'vi' ? 'Hủy' : 'Cancel'}
+                  {lang === 'vi' ? 'Ở lại' : 'Stay'}
                 </button>
                 <button 
                   onClick={() => navigate('/')}
@@ -160,7 +160,7 @@ export default function GameDetail() {
                   onMouseOver={(e) => e.currentTarget.style.filter = 'brightness(1.1)'}
                   onMouseOut={(e) => e.currentTarget.style.filter = 'none'}
                 >
-                  {lang === 'vi' ? 'Thoát luôn' : 'Exit Now'}
+                  {lang === 'vi' ? 'Thoát' : 'Exit'}
                 </button>
               </div>
             </motion.div>
