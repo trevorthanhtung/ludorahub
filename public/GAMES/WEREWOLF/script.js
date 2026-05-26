@@ -2,8 +2,14 @@ let mode = "direct";
 let players = [];
 let assignedPlayers = [];
 let currentRoleIndex = 0;
-let phaseIndex = 0;
 let selectedVote = null;
+
+// Pass-and-play night state
+let nightActionQueue = [];
+let currentNightPlayerIndex = 0;
+let killedByWolf = null;
+let savedByDoc = null;
+let selectedActionTarget = null;
 
 const roles = [
   {
@@ -28,29 +34,6 @@ const roles = [
   }
 ];
 
-const phases = [
-  {
-    title: "🌙 Đêm Buông Xuống",
-    text: "Ngôi làng chìm trong bóng tối.\nTất cả nhắm mắt lại."
-  },
-  {
-    title: "🛡️ Bảo Vệ Thức Giấc",
-    text: "Hỡi người Bảo Vệ, hãy chọn một người để che chở đêm nay..."
-  },
-  {
-    title: "🐺 Sói Thức Giấc",
-    text: "Bầy sói mở mắt.\nHãy chọn con mồi của đêm nay..."
-  },
-  {
-    title: "🔮 Tiên Tri Thức Giấc",
-    text: "Nhà Tiên Tri vĩ đại, ngài muốn soi rọi tâm hồn của ai?"
-  },
-  {
-    title: "☀️ Bình Minh",
-    text: "Trời đã sáng, mọi người mở mắt.\nHãy xem chuyện gì đã xảy ra đêm qua..."
-  }
-];
-
 // Utility: Typewriter effect
 function typeWriter(element, text, speed = 30) {
   element.innerHTML = "";
@@ -58,7 +41,6 @@ function typeWriter(element, text, speed = 30) {
   void element.offsetWidth; // trigger reflow
   
   let i = 0;
-  // Xử lý xuống dòng cho text
   const formattedText = text.replace(/\n/g, '<br>');
   
   function type() {
@@ -92,7 +74,6 @@ function goHome() {
   players = [];
   assignedPlayers = [];
   currentRoleIndex = 0;
-  phaseIndex = 0;
   selectedVote = null;
   document.body.classList.remove("day-mode");
   document.body.classList.add("night-mode");
@@ -203,8 +184,14 @@ function nextPlayer() {
   currentRoleIndex++;
 
   if (currentRoleIndex >= assignedPlayers.length) {
-    phaseIndex = 0;
-    renderPhase();
+    // All roles viewed, start night phase
+    document.getElementById("phaseTitle").textContent = "🌙 Đêm Buông Xuống";
+    const textElement = document.getElementById("phaseText");
+    typeWriter(textElement, "Ngôi làng chìm trong bóng tối.\nTất cả nhắm mắt lại.\nTrò chơi sinh tử bắt đầu...");
+    
+    document.body.classList.remove("day-mode");
+    document.body.classList.add("night-mode");
+    
     showScreen("gameScreen");
     return;
   }
@@ -212,34 +199,169 @@ function nextPlayer() {
   prepareRoleScreen();
 }
 
-function renderPhase() {
-  const phase = phases[phaseIndex];
+// ---- NIGHT PHASE LOGIC ----
 
-  document.getElementById("phaseTitle").textContent = phase.title;
+function startNightPhases() {
+  killedByWolf = null;
+  savedByDoc = null;
+  currentNightPlayerIndex = 0;
   
-  const textElement = document.getElementById("phaseText");
-  typeWriter(textElement, phase.text);
-
-  // Day / Night background logic
-  if (phase.title.includes("Bình Minh")) {
-    document.body.classList.remove("night-mode");
-    document.body.classList.add("day-mode");
-  } else {
-    document.body.classList.remove("day-mode");
-    document.body.classList.add("night-mode");
-  }
+  // Chỉ những người còn sống mới hành động ban đêm
+  nightActionQueue = assignedPlayers.filter(p => p.alive);
+  
+  showNightTransferScreen();
 }
 
-function nextPhase() {
-  phaseIndex++;
-
-  if (phaseIndex >= phases.length) {
-    renderVote();
-    showScreen("voteScreen");
+function showNightTransferScreen() {
+  if (currentNightPlayerIndex >= nightActionQueue.length) {
+    endNight();
     return;
   }
 
-  renderPhase();
+  const nextPlayer = nightActionQueue[currentNightPlayerIndex];
+  
+  document.getElementById("transferPlayerName").textContent = nextPlayer.name;
+  const transferText = document.getElementById("transferText");
+  typeWriter(transferText, `Tất cả vẫn nhắm mắt.\nHãy bí mật đưa điện thoại cho:\n[ ${nextPlayer.name} ]`);
+  
+  showScreen("nightTransferScreen");
+}
+
+function startPlayerAction() {
+  const player = nightActionQueue[currentNightPlayerIndex];
+  selectedActionTarget = null;
+  
+  const titleEl = document.getElementById("actionRoleTitle");
+  const descEl = document.getElementById("actionDesc");
+  const listEl = document.getElementById("actionTargetList");
+  const seerResEl = document.getElementById("seerResult");
+  const confirmBtn = document.getElementById("confirmActionBtn");
+
+  listEl.innerHTML = "";
+  listEl.classList.remove("hidden");
+  seerResEl.classList.add("hidden");
+  confirmBtn.classList.add("hidden");
+  confirmBtn.classList.remove("btn-primary");
+  confirmBtn.classList.add("btn-danger");
+  confirmBtn.textContent = "Xác Nhận";
+
+  titleEl.textContent = player.role;
+  
+  const alivePlayers = assignedPlayers.filter(p => p.alive);
+
+  if (player.role === "🐺 Ma Sói") {
+    descEl.textContent = "Chọn một người để sát hại đêm nay:";
+    const targets = alivePlayers.filter(p => p.role !== "🐺 Ma Sói");
+    renderActionList(targets, listEl, confirmBtn);
+  } 
+  else if (player.role === "🛡️ Bảo Vệ") {
+    descEl.textContent = "Chọn một người để bảo vệ đêm nay (kể cả bản thân):";
+    renderActionList(alivePlayers, listEl, confirmBtn);
+  } 
+  else if (player.role === "🔮 Tiên Tri") {
+    descEl.textContent = "Chọn một người để soi thân phận:";
+    const targets = alivePlayers.filter(p => p.name !== player.name);
+    renderActionList(targets, listEl, confirmBtn);
+  } 
+  else {
+    // Dân làng hoặc các vai không có chức năng đêm
+    descEl.textContent = "Đêm nay bạn không có hành động đặc biệt nào. Hãy cố gắng không tạo ra tiếng động.";
+    listEl.classList.add("hidden");
+    confirmBtn.textContent = "Tiếp Tục (Giả Vờ Xác Nhận)";
+    confirmBtn.classList.remove("btn-danger");
+    confirmBtn.classList.add("btn-primary");
+    
+    // Yêu cầu chờ 3s để giả vờ thao tác
+    setTimeout(() => {
+      confirmBtn.classList.remove("hidden");
+    }, 3000);
+  }
+
+  showScreen("nightActionScreen");
+}
+
+function renderActionList(targets, container, confirmBtn) {
+  targets.forEach(target => {
+    const div = document.createElement("div");
+    div.className = "vote-item";
+    div.textContent = target.name;
+
+    div.onclick = () => {
+      document.querySelectorAll("#actionTargetList .vote-item").forEach(item => {
+        item.classList.remove("selected");
+        item.classList.remove("pulse-red-active");
+      });
+      div.classList.add("selected");
+      
+      const player = nightActionQueue[currentNightPlayerIndex];
+      if (player.role === "🐺 Ma Sói") div.classList.add("pulse-red-active");
+
+      selectedActionTarget = target.name;
+      confirmBtn.classList.remove("hidden");
+    };
+    container.appendChild(div);
+  });
+}
+
+function confirmNightAction() {
+  const player = nightActionQueue[currentNightPlayerIndex];
+
+  if (player.role === "🐺 Ma Sói" && selectedActionTarget) {
+    killedByWolf = selectedActionTarget;
+  } 
+  else if (player.role === "🛡️ Bảo Vệ" && selectedActionTarget) {
+    savedByDoc = selectedActionTarget;
+  } 
+  else if (player.role === "🔮 Tiên Tri" && selectedActionTarget) {
+    const seerResEl = document.getElementById("seerResult");
+    if (seerResEl.classList.contains("hidden")) {
+      // First click: show result instead of going to next player
+      const targetObj = assignedPlayers.find(p => p.name === selectedActionTarget);
+      document.getElementById("actionTargetList").classList.add("hidden");
+      
+      const isWolf = targetObj.role === "🐺 Ma Sói" ? "LÀ MA SÓI" : "LÀ DÂN LÀNG";
+      typeWriter(document.getElementById("seerResultText"), `Thân phận thật sự của ${selectedActionTarget}\n${isWolf}`);
+      seerResEl.classList.remove("hidden");
+      
+      const confirmBtn = document.getElementById("confirmActionBtn");
+      confirmBtn.textContent = "Hoàn Tất";
+      confirmBtn.classList.remove("btn-danger");
+      confirmBtn.classList.add("btn-primary");
+      return; // Stop here, require second click to finish
+    }
+  }
+
+  // Next player
+  currentNightPlayerIndex++;
+  showNightTransferScreen();
+}
+
+function endNight() {
+  let deadPlayer = null;
+  if (killedByWolf && killedByWolf !== savedByDoc) {
+    deadPlayer = assignedPlayers.find(p => p.name === killedByWolf);
+    if (deadPlayer) deadPlayer.alive = false;
+  }
+
+  document.body.classList.remove("night-mode");
+  document.body.classList.add("day-mode");
+
+  const dayResultText = document.getElementById("dayResultText");
+  if (deadPlayer) {
+    typeWriter(dayResultText, `Đêm qua không hề bình yên.\n${deadPlayer.name} đã bị sát hại một cách dã man.`);
+  } else {
+    typeWriter(dayResultText, `Đêm qua là một đêm bình yên.\nKhông có ai mất mạng.`);
+  }
+
+  showScreen("dayResultScreen");
+}
+
+function startVotePhase() {
+  // Check win condition before voting
+  if (checkWinCondition()) return;
+
+  renderVote();
+  showScreen("voteScreen");
 }
 
 function renderVote() {
@@ -255,7 +377,7 @@ function renderVote() {
       div.textContent = player.name;
 
       div.onclick = () => {
-        document.querySelectorAll(".vote-item").forEach(item => {
+        document.querySelectorAll("#voteList .vote-item").forEach(item => {
           item.classList.remove("selected");
           item.classList.remove("pulse-red-active");
         });
@@ -289,11 +411,37 @@ function finishVote() {
   showScreen("resultScreen");
 }
 
+function checkWinCondition() {
+  const alivePlayers = assignedPlayers.filter(p => p.alive);
+  const wolves = alivePlayers.filter(p => p.role === "🐺 Ma Sói");
+  const villagers = alivePlayers.filter(p => p.role !== "🐺 Ma Sói");
+
+  const resultText = document.getElementById("resultText");
+
+  if (wolves.length === 0) {
+    typeWriter(resultText, `Làng đã tiêu diệt hết Ma Sói!\nDÂN LÀNG CHIẾN THẮNG!`);
+    showScreen("resultScreen");
+    return true;
+  } else if (wolves.length >= villagers.length) {
+    typeWriter(resultText, `Sói đã áp đảo dân làng!\nMA SÓI CHIẾN THẮNG!`);
+    showScreen("resultScreen");
+    return true;
+  }
+  return false;
+}
+
+// After viewing result (from vote), check win condition again
+const originalRestartGame = restartGame;
+function proceedFromVoteResult() {
+  if (checkWinCondition()) return;
+  // If game is not over, go to next night
+  startNightPhases();
+}
+
 function restartGame() {
   players = [...players];
   assignedPlayers = [];
   currentRoleIndex = 0;
-  phaseIndex = 0;
   selectedVote = null;
   document.body.classList.remove("day-mode");
   document.body.classList.add("night-mode");

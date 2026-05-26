@@ -70,13 +70,52 @@
     </section>
 
     <section id="gameScreen" class="screen">
-      <h2 id="phaseTitle" class="section-title phase-title">🌙 Đêm</h2>
+      <h2 id="phaseTitle" class="section-title phase-title">🌙 Đêm Buông Xuống</h2>
       <div class="gm-panel">
         <p id="phaseText" class="gm-text typewriter-text"></p>
       </div>
 
       <div class="action-buttons">
-        <button class="btn-primary" onclick="nextPhase()">Tiếp Tục</button>
+        <button class="btn-primary" onclick="startNightPhases()">Bắt Đầu Đêm</button>
+      </div>
+    </section>
+
+    <!-- Màn hình chuyển máy -->
+    <section id="nightTransferScreen" class="screen">
+      <h2 class="section-title">Chuyển Máy</h2>
+      <div class="gm-panel">
+        <p id="transferText" class="gm-text typewriter-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="startPlayerAction()">Tôi là <span id="transferPlayerName"></span></button>
+      </div>
+    </section>
+
+    <!-- Màn hình hành động ban đêm -->
+    <section id="nightActionScreen" class="screen">
+      <h2 id="actionRoleTitle" class="section-title"></h2>
+      <p id="actionDesc" class="subtitle"></p>
+
+      <div id="actionTargetList" class="vote-grid hidden"></div>
+      
+      <div id="seerResult" class="gm-panel hidden">
+        <p id="seerResultText" class="gm-text typewriter-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button id="confirmActionBtn" class="btn-danger" onclick="confirmNightAction()">Xác Nhận</button>
+      </div>
+    </section>
+
+    <section id="dayResultScreen" class="screen">
+      <h2 class="section-title">☀️ Bình Minh</h2>
+      <div class="gm-panel">
+        <p id="dayResultText" class="gm-text typewriter-text"></p>
+      </div>
+
+      <div class="action-buttons">
+        <button id="toVoteBtn" class="btn-primary" onclick="startVotePhase()">Tiến Hành Thảo Luận & Phán Xét</button>
       </div>
     </section>
 

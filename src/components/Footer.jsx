@@ -4,6 +4,7 @@ import { Home, Info, Shield, Mail, Heart, X } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa6';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Footer() {
   const { lang } = useAppContext();
