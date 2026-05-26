@@ -3,207 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ma Sói - Dark Fantasy</title>
+  <title>Werewolf - PlayNest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cinzel:wght@600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="night-mode">
-  <div class="bg-layer"></div>
-  <div class="moon-layer"></div>
+<body class="night">
+  <div class="world" aria-hidden="true">
+    <div class="moon"></div>
+    <div class="forest"></div>
+    <div class="fog fog-one"></div>
+    <div class="fog fog-two"></div>
+    <div class="particles"></div>
+  </div>
 
-  <main class="app glass-panel">
-    
-    <!-- 1. HOME SCREEN -->
+  <div id="phaseTransition" class="phase-transition" aria-hidden="true"></div>
+
+  <main class="shell">
     <section id="homeScreen" class="screen active">
-      <div class="title-container">
-        <h1 class="title">WEREWOLF</h1>
-        <p class="subtitle">Dark Fantasy Village</p>
-      </div>
+      <header class="hero">
+        <div class="mark">☾</div>
+        <h1>WEREWOLF</h1>
+      </header>
 
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="showScreen('setupScreen')">Play</button>
-        <button class="btn-secondary" onclick="showScreen('createRoomScreen')">Create Room</button>
-        <button class="btn-ghost" onclick="alert('Tính năng đang phát triển!')">Join Room</button>
+      <div class="mode-grid">
+        <article class="mode-card" data-sound="wolf">
+          <div class="mode-icon">🎭</div>
+          <div class="mode-copy">
+            <h2>Direct Play</h2>
+            <p class="mode-subtitle">Play with a human game master</p>
+            <p class="mode-description">Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.</p>
+          </div>
+          <button class="play-button" type="button" onclick="chooseMode('direct')">Play Direct</button>
+        </article>
+
+        <article class="mode-card" data-sound="magic">
+          <div class="mode-icon">📡</div>
+          <div class="mode-copy">
+            <h2>Local WiFi</h2>
+            <p class="mode-subtitle">Device acts as AI game master</p>
+            <p class="mode-description">Players connect through the same Wi-Fi network. The system manages roles, day/night cycle, voting and game flow.</p>
+          </div>
+          <button class="play-button" type="button" onclick="chooseMode('wifi')">Play Local</button>
+        </article>
       </div>
-      
-      <div class="settings-btn" onclick="alert('Cài đặt')">⚙️ Settings</div>
     </section>
 
-    <!-- SETUP SCREEN (Direct Mode Old) -->
     <section id="setupScreen" class="screen">
-      <h2 class="section-title">Direct Play</h2>
-      <div class="input-row">
-        <input id="playerName" type="text" placeholder="Nhập tên..." onkeydown="if(event.key === 'Enter') addPlayer()" />
-        <button class="btn-primary btn-small" onclick="addPlayer()">Thêm</button>
-      </div>
-      <ul id="playerList" class="player-list"></ul>
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="startGame()">Bắt Đầu Đêm</button>
-        <button class="btn-ghost" onclick="goHome()">Quay Lại</button>
-      </div>
-    </section>
+      <nav class="topbar">
+        <button class="icon-button" type="button" onclick="showScreen('homeScreen')" aria-label="Back">←</button>
+        <span id="modeBadge" class="mode-badge">Direct Play</span>
+      </nav>
 
-    <!-- 2. CREATE ROOM SCREEN -->
-    <section id="createRoomScreen" class="screen">
-      <h2 class="section-title">Create Room</h2>
-      
-      <div class="form-group">
-        <label>Room Name</label>
-        <input id="roomNameInput" type="text" value="Làng Bóng Tối" />
-      </div>
+      <div class="glass-panel">
+        <h2 id="setupTitle">🎭 Direct Play</h2>
+        <p id="setupSubtitle">Play with a human game master</p>
 
-      <div class="form-group">
-        <label>Players</label>
-        <select id="playerCountSelect">
-          <option value="4">4 Players</option>
-          <option value="6" selected>6 Players</option>
-          <option value="8">8 Players</option>
-          <option value="12">12 Players</option>
-        </select>
-      </div>
-
-      <div class="form-group mode-select">
-        <label>Mode</label>
-        <div class="radio-group">
-          <label><input type="radio" name="gameMode" value="direct" /> Direct</label>
-          <label><input type="radio" name="gameMode" value="ai" checked /> AI Host</label>
+        <div class="input-row">
+          <input id="playerName" type="text" placeholder="Nhập tên người chơi" autocomplete="off">
+          <button type="button" class="small-button" onclick="addPlayer()">Add</button>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>Roles</label>
-        <div class="roles-grid">
-          <label class="role-cb"><input type="checkbox" value="Villager" checked disabled/> Villager</label>
-          <label class="role-cb"><input type="checkbox" value="Seer" checked/> Seer</label>
-          <label class="role-cb"><input type="checkbox" value="Doctor" checked/> Doctor</label>
-          <label class="role-cb"><input type="checkbox" value="Hunter" checked/> Hunter</label>
-          <label class="role-cb"><input type="checkbox" value="Werewolf" checked disabled/> Werewolf</label>
-          <label class="role-cb"><input type="checkbox" value="Alpha Wolf" /> Alpha Wolf</label>
-          <label class="role-cb"><input type="checkbox" value="Jester" /> Jester</label>
-          <label class="role-cb"><input type="checkbox" value="Fox" /> Fox</label>
+        <div id="playerList" class="player-list"></div>
+
+        <div class="tool-row">
+          <button type="button" onclick="drawRole()">Role Card</button>
+          <button type="button" onclick="toggleTimer()">Timer</button>
+          <button type="button" onclick="showScreen('voteScreen')">Vote</button>
         </div>
-      </div>
 
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="createRoom()">Create</button>
-        <button class="btn-ghost" onclick="goHome()">Back</button>
+        <button type="button" class="primary-action" onclick="startGame()">Start Game</button>
       </div>
     </section>
 
-    <!-- 3. WAITING ROOM SCREEN -->
-    <section id="waitingRoomScreen" class="screen">
-      <div class="room-header">
-        <h2 class="section-title mb-0">ROOM: <span id="roomCodeDisplay">KAT001</span></h2>
-        <span class="player-count" id="roomPlayerCount">1/6</span>
-      </div>
+    <section id="gameScreen" class="screen">
+      <nav class="topbar">
+        <button class="icon-button" type="button" onclick="showScreen('setupScreen')" aria-label="Back">←</button>
+        <span id="phaseLabel" class="mode-badge">🌙 Night</span>
+      </nav>
 
-      <div id="lobbyGrid" class="avatar-grid">
-        <!-- Avatars injected here -->
-      </div>
-
-      <div class="chat-mini" id="lobbyChat">
-        <p><span class="chat-sys">System:</span> Phòng đã được tạo.</p>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn-ghost">Invite</button>
-        <button id="startRoomBtn" class="btn-primary" onclick="startLobbyGame()" disabled>Start Game</button>
-        <button class="btn-ghost text-red" onclick="goHome()">Leave</button>
-      </div>
-    </section>
-
-    <!-- 4. ROLE REVEAL SCREEN -->
-    <section id="roleScreen" class="screen">
-      <h2 class="section-title">🌙 Night Falls</h2>
-      <p id="currentPlayer" class="gm-text typewriter-text"></p>
-
-      <div class="card-container">
-        <div id="roleCardInner" class="card-inner">
-          <div class="card-front" onclick="showRole()">
-            <div class="card-pattern">
-              <span class="tap-text">Tap to Reveal</span>
-            </div>
+      <div class="game-layout">
+        <div class="phase-card">
+          <div>
+            <h2 id="phaseTitle">🌙 NIGHT</h2>
+            <p id="phaseText">Werewolves are hunting...</p>
           </div>
-          <div class="card-back">
-            <img id="roleImage" class="role-image" src="" alt="Role" />
-          </div>
+          <div id="timer" class="timer">30</div>
+        </div>
+
+        <div id="gamePlayers" class="avatar-grid"></div>
+
+        <div class="host-card">
+          <span>AI Host</span>
+          <p id="hostText">The village is sleeping. Special roles may act now.</p>
+        </div>
+
+        <div class="game-actions">
+          <button type="button" class="danger" onclick="playSpecialRole()">Special Role</button>
+          <button type="button" onclick="nextPhase()">Next Phase</button>
         </div>
       </div>
-
-      <div id="roleInfo" class="role-info hidden">
-        <h3 id="roleName" class="role-title"></h3>
-      </div>
-
-      <div class="action-buttons mt-4">
-        <button id="nextPlayerBtn" class="btn-primary hidden" onclick="finishRoleReveal()">Continue</button>
-      </div>
     </section>
 
-    <!-- 5. GAMEPLAY SCREEN (AI HOST) -->
-    <section id="gameplayScreen" class="screen">
-      <div class="game-header">
-        <h2 id="gpPhaseTitle" class="phase-title">🌙 Night</h2>
-        <div class="timer" id="gpTimer">25s</div>
-      </div>
-
-      <div id="gpAvatarGrid" class="avatar-grid large">
-        <!-- Avatars injected here -->
-      </div>
-
-      <div class="action-buttons flex-row">
-        <button class="btn-danger" id="gpSkillBtn" onclick="useSkill()">Skill</button>
-        <button class="btn-secondary" id="gpVoteBtn" onclick="openVoteScreen()">Vote</button>
-      </div>
-
-      <div class="ai-host-panel">
-        <p id="aiHostChat" class="gm-text typewriter-text">🎙 AI Host: The village is sleeping...</p>
-      </div>
-    </section>
-
-    <!-- 6. VOTING SCREEN -->
     <section id="voteScreen" class="screen">
-      <h2 class="section-title text-red">Who is suspicious?</h2>
-      
-      <div id="voteAvatarGrid" class="avatar-grid large">
-        <!-- Avatars injected here -->
-      </div>
+      <nav class="topbar">
+        <button class="icon-button" type="button" onclick="showScreen('gameScreen')" aria-label="Back">←</button>
+        <span class="mode-badge">Vote</span>
+      </nav>
 
-      <div class="action-buttons">
-        <button id="confirmVoteBtn" class="btn-danger shake-hover" onclick="finishVote()">Confirm Vote</button>
+      <div class="glass-panel">
+        <h2>Village Vote</h2>
+        <p>Choose the player the village suspects most.</p>
+        <div id="voteGrid" class="avatar-grid vote-grid"></div>
+        <button type="button" class="primary-action danger" onclick="confirmVote()">Confirm Vote</button>
       </div>
     </section>
-
-    <section id="voteResultScreen" class="screen">
-      <h2 class="section-title">Result</h2>
-      <div class="gm-panel">
-        <p id="voteResultText" class="gm-text typewriter-text"></p>
-      </div>
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="proceedFromVoteResult()">Continue</button>
-      </div>
-    </section>
-
-    <!-- 7. RESULT SCREEN -->
-    <section id="resultScreen" class="screen">
-      <h2 id="finalWinTitle" class="section-title text-red">🐺 Werewolves Win</h2>
-      
-      <div class="mvp-panel">
-        <p class="subtitle mb-0">MVP</p>
-        <div class="avatar-circle mvp-avatar">
-          <img src="assest/villager.png" id="mvpImg"/>
-        </div>
-        <h3 id="mvpName" class="role-title mt-2">Trevor</h3>
-        <p id="mvpRole" class="text-sm">Thợ Săn</p>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="goHome()">Play Again</button>
-        <button class="btn-ghost" onclick="goHome()">Exit</button>
-      </div>
-    </section>
-
   </main>
 
   <script src="script.js"></script>
