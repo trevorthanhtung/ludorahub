@@ -16,8 +16,8 @@ export default function GameCard({ game }) {
     <motion.div
       whileHover={{ 
         scale: 1.03, 
-        y: -10, 
-        boxShadow: '0 20px 40px rgba(0,0,0,0.3), 0 0 20px var(--glass-glow)' 
+        y: -8, 
+        boxShadow: '0 0 30px rgba(91,140,255,0.25)' 
       }}
       whileTap={{ scale: 0.98 }}
       style={{

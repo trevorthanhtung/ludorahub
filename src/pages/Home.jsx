@@ -27,17 +27,37 @@ export default function Home() {
         transition={{ duration: 0.8, type: 'spring' }}
         style={{ 
           textAlign: 'center', 
-          padding: '80px 0',
+          padding: '100px 0 80px 0',
           position: 'relative'
         }}
       >
         <div style={{ position: 'relative', zIndex: 2 }}>
-          <h2 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '10px' }}>
+          <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
             Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
           </h2>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px' }}>
-            {lang === 'vi' ? 'Nơi mọi cuộc vui bắt đầu' : 'Where all the fun begins'}
+          <p style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
+            {lang === 'vi' ? 'Một nơi — nhiều trò chơi' : 'One place — many games'}
           </p>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-subtext)', letterSpacing: '1px', marginBottom: '40px' }}>
+            {lang === 'vi' ? 'Chơi cùng bạn bè và gia đình' : 'Play with friends and family'}
+          </p>
+          <motion.button 
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(91,140,255,0.4)' }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              background: 'var(--btn-gradient)',
+              color: '#fff',
+              border: 'none',
+              padding: '18px 40px',
+              borderRadius: '30px',
+              fontSize: '1.1rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+            }}
+          >
+            {lang === 'vi' ? 'Khám phá ngay' : 'Explore Now'}
+          </motion.button>
         </div>
       </motion.section>
 

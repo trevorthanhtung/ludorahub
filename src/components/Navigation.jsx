@@ -25,14 +25,19 @@ export default function Navigation() {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '20px 40px',
-      background: 'rgba(11, 16, 32, 0.6)', /* Giữ nền tối cho menu trên cùng */
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      borderBottom: '1px solid var(--glass-border)',
+      padding: '16px 32px',
+      margin: '20px auto',
+      width: 'calc(100% - 80px)',
+      maxWidth: '1300px',
+      background: 'var(--glass-bg)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: '1px solid var(--glass-border)',
+      borderRadius: '24px',
       position: 'sticky',
-      top: 0,
-      zIndex: 50
+      top: '20px',
+      zIndex: 50,
+      boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
     }}>
       {/* Logo */}
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
