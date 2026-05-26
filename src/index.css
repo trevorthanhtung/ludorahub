@@ -54,6 +54,10 @@ html.light {
   box-sizing: border-box;
 }
 
+html {
+  background-color: var(--bg-primary);
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
