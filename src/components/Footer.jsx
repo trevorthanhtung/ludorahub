@@ -62,7 +62,7 @@ export default function Footer() {
       </p>
       
       <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-body)' }}>
-        {lang === 'vi' ? 'Được phát triển với ❤️ bởi ' : 'Made with ❤️ by '}
+        {lang === 'vi' ? 'Được phát triển bởi ' : 'Developed by '}
         <a href="https://github.com/trevorthanhtung" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>thanhtungg.</a>
       </p>
     </footer>
