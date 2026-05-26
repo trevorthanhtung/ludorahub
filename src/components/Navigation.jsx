@@ -126,17 +126,11 @@ export default function Navigation() {
                 <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-body)' }}>
                   {lang === 'vi' ? 'Giao diện' : 'Theme'}
                 </span>
-                {theme === 'dark' ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-purple)' }}>
-                    <Moon size={18} />
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>DARK</span>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-yellow)' }}>
-                    <Sun size={18} />
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>LIGHT</span>
-                  </div>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', color: theme === 'dark' ? 'var(--accent-purple)' : 'var(--accent-yellow)' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>
+                    {theme === 'dark' ? (lang === 'vi' ? 'TỐI' : 'DARK') : (lang === 'vi' ? 'SÁNG' : 'LIGHT')}
+                  </span>
+                </div>
               </div>
 
               {/* Lang Toggle */}
@@ -147,8 +141,7 @@ export default function Navigation() {
                 <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-body)' }}>
                   {lang === 'vi' ? 'Ngôn ngữ' : 'Language'}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)' }}>
-                  <Globe size={18} />
+                <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>{lang.toUpperCase()}</span>
                 </div>
               </div>
