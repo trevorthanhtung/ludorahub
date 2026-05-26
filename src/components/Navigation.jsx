@@ -67,9 +67,7 @@ export default function Navigation() {
         background: 'var(--glass-bg)',
         padding: '10px 20px',
         borderRadius: '30px',
-        width: '350px',
-        border: '1px solid var(--glass-border)',
-        boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.2)'
+        width: '350px'
       }}>
         <Search size={18} color="var(--text-subtext)" />
         <input 
