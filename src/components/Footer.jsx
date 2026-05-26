@@ -1,5 +1,5 @@
 import { useAppContext } from '../context/AppContext';
-import { Home, Info, Shield, Mail, Globe, Tv, MessageCircle } from 'lucide-react';
+import { Home, Info, Shield, Mail, Globe, Camera, Tv, Music } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
@@ -42,14 +42,17 @@ export default function Footer() {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '30px' }}>
-        <motion.a whileHover={{ scale: 1.15, color: '#1877F2' }} title="Facebook" href="#" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
+        <motion.a whileHover={{ scale: 1.15, color: '#1877F2' }} title="Facebook" href="https://www.facebook.com/tthanhtung2306/?locale=vi_VN" target="_blank" rel="noreferrer" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
           <Globe size={24} />
         </motion.a>
-        <motion.a whileHover={{ scale: 1.15, color: '#FF0000' }} title="YouTube" href="#" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
+        <motion.a whileHover={{ scale: 1.15, color: '#E1306C' }} title="Instagram" href="https://www.instagram.com/_.thanhtungg._/" target="_blank" rel="noreferrer" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
+          <Camera size={24} />
+        </motion.a>
+        <motion.a whileHover={{ scale: 1.15, color: '#FF0000' }} title="YouTube" href="https://www.youtube.com/@kat.thanhtungg" target="_blank" rel="noreferrer" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
           <Tv size={24} />
         </motion.a>
-        <motion.a whileHover={{ scale: 1.15, color: '#5865F2' }} title="Discord" href="#" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
-          <MessageCircle size={24} />
+        <motion.a whileHover={{ scale: 1.15, color: '#000000' }} title="TikTok" href="https://www.tiktok.com/@kat.thanhtungg" target="_blank" rel="noreferrer" style={{ color: 'var(--text-subtext)', transition: 'color 0.2s' }}>
+          <Music size={24} />
         </motion.a>
       </div>
 
@@ -59,7 +62,7 @@ export default function Footer() {
       
       <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-body)' }}>
         {lang === 'vi' ? 'Được phát triển với ❤️ bởi ' : 'Made with ❤️ by '}
-        <span style={{ color: 'var(--accent-blue)' }}>PlayNest Team</span>
+        <a href="https://github.com/trevorthanhtung" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>thanhtungg.</a>
       </p>
     </footer>
   );
