@@ -84,7 +84,7 @@ export default function GameCard({ game }) {
             )}
             {game.categories && game.categories.includes('party') && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-pink)' }}>
-                <Zap size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '5+ người' : '5+ players'}</span>
+                <Users size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '5+ người' : '5+ players'}</span>
               </div>
             )}
           </div>
