@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bạn Có Dám Chơi</title>
+    <link rel="icon" type="image/webp" href="./img/logo.webp">
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Third-party libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+</head>
+<body>
+
+    <!-- Floating Controls -->
+    <div class="floating-controls">
+        <button id="btnToggleSound" class="control-btn" title="Bật/Tắt âm thanh">🔊</button>
+        <button id="btnSettings" class="control-btn" title="Cài đặt">⚙️</button>
+    </div>
+
+    <!-- Smoke Effect Background -->
+    <div class="smoke-layer"></div>
+
+    <!-- PAGE 1: HOME -->
+    <div id="pageHome" class="page active">
+        <div class="subtitle">DÁM CHƠI KHÔNG</div>
+        <div class="title">BẠN<br>CÓ DÁM<br>CHƠI</div>
+        <button id="btnStartGame" class="btn-large">BẮT ĐẦU</button>
+    </div>
+
+    <!-- PAGE 2: PLAYER SETUP -->
+    <div id="pageSetup" class="page">
+        <div class="subtitle">AI CHƠI</div>
+        <div class="input-container">
+            <h2 class="setup-title">NHẬP NGƯỜI CHƠI</h2>
+            <div class="player-input-row">
+                <input type="text" id="inputPlayer" placeholder="Nhập tên người chơi..." autocomplete="off">
+                <button id="btnAddPlayer" class="btn-add-player" type="button">THÊM</button>
+            </div>
+            <div id="tagsContainer">
+                <!-- Tags will be injected here -->
+            </div>
+            <button id="btnGoSlot" class="btn-large btn-go-slot">TIẾP TỤC</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: SLOT MACHINE -->
+    <div id="pageSlot" class="page">
+        <div class="subtitle">QUAY CHỌN NGƯỜI</div>
+        <h2 class="slot-title">AI LÊN NÀO?</h2>
+        
+        <div class="slot-machine-container" id="slotContainer">
+            <div class="slot-reel" id="slotReel">
+                <!-- Slot items injected via JS -->
+            </div>
+        </div>
+
+        <button id="btnSpin" class="btn-large btn-spin">QUAY</button>
+    </div>
+
+    <!-- THE STRIKE ELEMENT (Popups out of slot machine) -->
+    <div id="winnerStrike" class="winner-strike"></div>
+
+    <!-- PAGE 4: CHOICE (TRUE OR DARE) -->
+    <div id="pageChoice" class="page">
+        <div class="subtitle" id="choiceBgText">CHỌN THỬ THÁCH</div>
+        <h2 id="choicePlayerName" class="choice-player-name">TÊN</h2>
+        <div class="choice-container">
+            <button class="btn-choice true" id="btnChooseTrue">
+                SỰ THẬT
+            </button>
+            <button class="btn-choice dare" id="btnChooseDare">
+                THỬ THÁCH
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: QUESTION CARD -->
+    <div id="modalQuestion" class="modal-overlay">
+        <div class="question-card">
+            <div id="qType" class="question-type type-dare">THỬ THÁCH</div>
+            <div id="qText" class="question-text">Hãy gọi điện cho người thứ 5 trong danh bạ</div>
+            <div class="btn-group">
+                <button class="btn-action primary" id="btnComplete">Đã thực hiện</button>
+                <button class="btn-action" id="btnFail">Chịu phạt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PENALTY CARD -->
+    <div id="modalPenalty" class="modal-overlay penalty">
+        <div class="question-card" style="border-color: rgba(255, 152, 0, 0.5); box-shadow: 0 0 50px rgba(255,152,0,0.1);">
+            <div class="question-type type-penalty">HÌNH PHẠT</div>
+            <div id="pText" class="question-text">Hát quốc ca bằng giọng vịt</div>
+            <div class="btn-group">
+                <button class="btn-action primary" id="btnPenaltyDone">Đã chịu phạt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="modalSettings" class="modal-overlay">
+        <div class="question-card settings-card">
+            <h2 class="settings-title">CÀI ĐẶT</h2>
+            
+            <button id="btnCloseSettings" class="btn-large settings-close">ĐÓNG</button>
+        </div>
+    </div>
+
+    <script src="./questions.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PlayNest - Tổ hợp Mini Games giải trí đỉnh cao. Nơi hội tụ các trò chơi vui nhộn và hấp dẫn nhất.">
+    
+    <!-- Tối ưu SEO ĐẶC BIỆT để chống hiện chữ "Vercel" trên Google -->
+    <title>PlayNest</title>
+    <meta property="og:site_name" content="PlayNest">
+    <meta property="og:title" content="PlayNest">
+    <meta property="og:description" content="Tổ hợp Mini Games giải trí đỉnh cao">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playnest.vercel.app/"> <!-- Có thể đổi lại khi có link thật -->
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- JSON-LD Structured Data để định danh trang web (Cái này báo cho Google biết đây là tổ chức/web PlayNest) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PlayNest",
+      "url": "https://playnest.vercel.app/"
+    }
+    </script>
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Favicon -->
+    <!-- <link rel="icon" type="image/x-icon" href="./assets/favicon.ico"> -->
+</head>
+<body>
+    <!-- Background Effects (Giao diện Premium) -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1 class="logo">Play<span>Nest</span></h1>
+            <p class="subtitle">Khám phá tổ hợp mini-game thú vị của chúng tôi!</p>
+        </header>
+
+        <!-- Game Grid Container -->
+        <main>
+            <div id="game-grid" class="game-grid">
+                <!-- Games will be injected here by main.js -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 PlayNest Group. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- JS -->
+    <script src="main.js"></script>
+</body>
+</html>

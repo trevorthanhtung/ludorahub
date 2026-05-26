@@ -1,0 +1,164 @@
+HƯỚNG DẪN CÁCH CHƠI "BẠN CÓ DÁM CHƠI"
+=====================================
+
+1. MỤC TIÊU GAME
+----------------
+"Bạn Có Dám Chơi" là game Sự Thật / Thử Thách cho nhóm bạn bè.
+Game sẽ quay ngẫu nhiên 1 người chơi, sau đó người đó chọn:
+
+- SỰ THẬT
+- THỬ THÁCH
+
+Nếu không muốn trả lời / thực hiện, người chơi có thể chọn CHỊU PHẠT.
+
+
+2. BẮT ĐẦU GAME
+---------------
+1. Mở file BẠN CÓ DÁM CHƠI.html bằng Chrome hoặc Edge.
+2. Bấm BẮT ĐẦU.
+3. Nhập tên từng người chơi.
+4. Bấm THÊM để thêm người vào danh sách.
+5. Cần ít nhất 2 người chơi để bắt đầu.
+6. Bấm TIẾP TỤC.
+
+
+3. QUAY CHỌN NGƯỜI
+------------------
+1. Bấm QUAY.
+2. Game sẽ quay ngẫu nhiên 1 người trong danh sách.
+3. Khi tên người chơi hiện lên, người đó sẽ vào lượt.
+
+
+4. CHỌN SỰ THẬT HOẶC THỬ THÁCH
+------------------------------
+Sau khi được chọn, người chơi bấm:
+
+- SỰ THẬT
+  Để nhận 1 câu hỏi và phải trả lời thật.
+
+- THỬ THÁCH
+  Để nhận 1 nhiệm vụ và phải thực hiện.
+
+
+5. KHI NHẬN CÂU HỎI / THỬ THÁCH
+-------------------------------
+Người chơi có 2 lựa chọn:
+
+- ĐÃ THỰC HIỆN
+  Bấm nút này nếu đã trả lời / đã làm xong.
+
+- CHỊU PHẠT
+  Bấm nút này nếu không muốn trả lời / không muốn làm thử thách.
+  Game sẽ hiện ra 1 hình phạt.
+
+
+6. HÌNH PHẠT
+------------
+Khi bị phạt:
+
+1. Đọc nội dung hình phạt trên màn hình.
+2. Thực hiện hình phạt.
+3. Bấm ĐÃ CHỊU PHẠT để kết thúc lượt.
+
+Sau đó game quay lại màn hình QUAY cho lượt tiếp theo.
+
+
+7. CÀI ĐẶT GAME
+---------------
+Bấm nút cài đặt ở góc trên bên phải để mở CÀI ĐẶT.
+
+Trong CÀI ĐẶT có:
+
+- Nguồn dữ liệu sử dụng
+- Tự nhập câu hỏi / thử thách / phạt
+- Chế độ chơi
+- Độ khó câu hỏi
+
+
+8. NGUỒN DỮ LIỆU
+----------------
+Có 2 lựa chọn:
+
+- Dữ liệu có sẵn
+  Dùng bộ câu hỏi mặc định của game.
+
+- Dữ liệu tự nhập
+  Dùng các câu do người chơi tự nhập trong phần cài đặt.
+
+Có thể bật cả 2 lựa chọn để trộn câu có sẵn và câu tự nhập.
+
+
+9. TỰ NHẬP CÂU HỎI
+------------------
+Trong CÀI ĐẶT có 3 ô:
+
+- Nhập Sự Thật...
+- Nhập Thử Thách...
+- Nhập Hình Phạt...
+
+Cách nhập:
+
+- Mỗi dòng là 1 câu riêng.
+- Nhập 5 dòng thì game có thêm 5 câu.
+
+Ví dụ:
+
+Ai trong nhóm hay cười nhất?
+Ai trong nhóm hợp làm đội trưởng nhất?
+Bạn từng nói dối ai trong nhóm chưa?
+
+Game sẽ tính đây là 3 câu riêng.
+
+
+10. ĐỘ KHÓ CÂU HỎI
+------------------
+Có 4 mức:
+
+- Dễ
+- Vừa
+- Khó
+- Căng
+
+Nếu chỉ chọn "Dễ", game sẽ ưu tiên câu dễ.
+Nếu chọn "Dễ" và "Vừa", game sẽ lấy câu trong 2 mức đó.
+Nếu không có câu phù hợp, game sẽ tự fallback sang câu có sẵn của loại đó.
+
+
+11. CHẾ ĐỘ CHƠI
+---------------
+- Chơi thường
+  Chơi liên tục, không loại ai.
+
+- Chơi loại
+  Người hoàn thành nhiệm vụ sẽ bị loại.
+  Khi chỉ còn 1 người, người đó chiến thắng.
+
+- Tiệc vui
+  Phù hợp nhóm đông.
+  Game ưu tiên câu dễ / vừa và sau mỗi 10 lượt sẽ hiện thống kê người nổi bật.
+
+- Hỗn loạn
+  Mỗi vài lượt có thể xuất hiện sự kiện bất ngờ.
+  Ví dụ: thử thách đôi, đổi lượt, thử thách nhóm, vé bỏ qua, phạt tăng cấp.
+
+
+12. COMBO
+---------
+Nếu một người liên tiếp bấm ĐÃ THỰC HIỆN, combo sẽ tăng.
+
+Mốc combo:
+
+- Combo x3
+- King Combo x5
+- Legend Combo x10
+
+Nếu người chơi bấm CHỊU PHẠT, combo sẽ về 0.
+
+
+13. LƯU Ý KHI CHƠI
+------------------
+- Nên chơi với nhóm từ 3 người trở lên.
+- Nhóm 10-20 người nên dùng chế độ Tiệc vui hoặc Hỗn loạn.
+- Nếu câu nào không phù hợp, có thể bỏ qua hoặc sửa trong bộ câu hỏi.
+- Nên thống nhất mức độ "Căng" trước khi chơi để tránh làm người khác khó xử.
+- Game vui nhất khi mọi người tôn trọng ranh giới của nhau.
