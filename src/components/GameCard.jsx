@@ -133,19 +133,19 @@ export default function GameCard({ game }) {
             >
               <div style={{ fontSize: '4.5rem', marginBottom: '20px', textShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>🚧</div>
               <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                {lang === 'vi' ? 'Sắp Ra Mắt!' : 'Coming Soon!'}
+                {lang === 'vi' ? 'Sắp ra mắt' : 'Coming Soon'}
               </h2>
               <p style={{ color: 'var(--text-subtext)', marginBottom: '32px', lineHeight: 1.6, fontSize: '1.1rem' }}>
                 {lang === 'vi' 
-                  ? `Trò chơi ${game.title} đang được đội ngũ cấp tốc phát triển. Hãy quay lại sau nhé!` 
-                  : `The game ${game.title} is currently under development. Please check back later!`}
+                  ? `${game.title} đang được phát triển và sẽ sớm xuất hiện trên PlayNest. Hãy quay lại trong thời gian tới.` 
+                  : `${game.title} is currently under development and will be available on PlayNest soon. Please check back later.`}
               </p>
               <button 
                 onClick={() => setShowModal(false)}
                 className="btn-primary"
                 style={{ width: '100%', padding: '16px', fontSize: '1.1rem', borderRadius: '16px' }}
               >
-                {lang === 'vi' ? 'Đã hiểu' : 'Got it'}
+                {lang === 'vi' ? 'Khám phá trò khác' : 'Explore other games'}
               </button>
             </motion.div>
           </div>
