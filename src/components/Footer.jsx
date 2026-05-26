@@ -128,16 +128,16 @@ export default function Footer() {
                 {/* QR Code Container */}
                 <div style={{ 
                   background: '#fff', 
-                  padding: '16px', 
+                  padding: '24px 20px', 
                   borderRadius: '20px', 
                   display: 'inline-block',
                   marginBottom: '20px',
                   boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
                 }}>
                   <img 
-                    src="https://img.vietqr.io/image/MB-0816158215-compact.png?accountName=TRAN%20THANH%20TUNG" 
+                    src="https://img.vietqr.io/image/MB-0816158215-qr_only.png" 
                     alt="Donate QR Code" 
-                    style={{ width: '100%', maxWidth: '250px', height: 'auto', borderRadius: '12px' }} 
+                    style={{ width: '100%', maxWidth: '220px', height: 'auto', borderRadius: '12px', marginBottom: '16px' }} 
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextSibling.style.display = 'flex';
@@ -145,16 +145,24 @@ export default function Footer() {
                   />
                   <div style={{ 
                     display: 'none', 
-                    width: '250px', 
-                    height: '250px', 
+                    width: '220px', 
+                    height: '220px', 
                     background: '#f3f4f6', 
                     borderRadius: '12px',
                     alignItems: 'center', 
                     justifyContent: 'center',
                     color: '#6b7280',
-                    fontWeight: 600
+                    fontWeight: 600,
+                    marginBottom: '16px'
                   }}>
                     Đang cập nhật mã QR...
+                  </div>
+                  
+                  {/* Thông tin chuyển khoản */}
+                  <div style={{ color: '#1f2937', textAlign: 'center', lineHeight: 1.4 }}>
+                    <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#1e3a8a', marginBottom: '4px' }}>MB BANK</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.3rem', letterSpacing: '1px', marginBottom: '4px' }}>0816158215</div>
+                    <div style={{ fontWeight: 600, fontSize: '1rem', color: '#4b5563', textTransform: 'uppercase' }}>TRAN THANH TUNG</div>
                   </div>
                 </div>
                 

@@ -32,7 +32,6 @@ const roles = ["Hunter", "Villager", "Seer", "Doctor", "Werewolf", "Alpha Wolf"]
 
 const dictionary = {
   en: {
-    heroSubtitle: "PlayNest mystery party",
     directTitle: "Direct Play",
     directSubtitle: "Play with a human game master",
     directDescription: "Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.",
@@ -80,7 +79,6 @@ const dictionary = {
     specialRoleTriggered: "A special role effect has been triggered."
   },
   vi: {
-    heroSubtitle: "Đêm hội bí ẩn của PlayNest",
     directTitle: "Chơi Trực Tiếp",
     directSubtitle: "Chơi cùng quản trò thật",
     directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Hệ thống hỗ trợ thẻ vai, hẹn giờ, danh sách người chơi và công cụ chơi.",
