@@ -29,7 +29,9 @@ html.light {
   --bg-surface: #F7F8FA;
 
   --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-border: rgba(0, 0, 0, 0.08); /* Đổi sang viền tối mờ để nổi bật trên nền trắng */
+  --glass-border: rgba(255, 255, 255, 0.4); 
+  --nav-bg: rgba(255, 255, 255, 0.55);
+  --nav-border: rgba(255, 255, 255, 0.4);
   --glass-glow: rgba(91, 140, 255, 0.15); /* Dựa trên màu Blue */
 
   --text-title: #121826;

@@ -17,7 +17,7 @@ export default function GameCard({ game }) {
       whileHover={{ 
         scale: 1.03, 
         y: -8, 
-        boxShadow: '0 0 30px rgba(91,140,255,0.25)' 
+        boxShadow: '0 15px 40px rgba(91,140,255,0.25)' 
       }}
       whileTap={{ scale: 0.98 }}
       style={{

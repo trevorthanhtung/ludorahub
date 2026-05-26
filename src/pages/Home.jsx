@@ -31,10 +31,42 @@ export default function Home() {
           position: 'relative'
         }}
       >
-        <div style={{ position: 'relative', zIndex: 2 }}>
-          <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
-            Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
-          </h2>
+        <div style={{ position: 'relative', zIndex: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
+          {/* Glow Trái */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '20%',
+            transform: 'translate(-50%, -50%)',
+            width: '30vw',
+            height: '30vw',
+            background: '#5B8CFF',
+            opacity: 0.2,
+            filter: 'blur(100px)',
+            zIndex: -1,
+            pointerEvents: 'none',
+            borderRadius: '50%'
+          }}></div>
+          {/* Glow Phải */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            right: '20%',
+            transform: 'translate(50%, -50%)',
+            width: '30vw',
+            height: '30vw',
+            background: '#FF7BCB',
+            opacity: 0.15,
+            filter: 'blur(100px)',
+            zIndex: -1,
+            pointerEvents: 'none',
+            borderRadius: '50%'
+          }}></div>
+
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <h2 style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
+              Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
+            </h2>
           <p style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
             {lang === 'vi' ? 'Một nơi — nhiều trò chơi' : 'One place — many games'}
           </p>
@@ -58,6 +90,7 @@ export default function Home() {
           >
             {lang === 'vi' ? 'Khám phá ngay' : 'Explore Now'}
           </motion.button>
+        </div>
         </div>
       </motion.section>
 

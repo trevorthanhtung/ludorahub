@@ -29,15 +29,15 @@ export default function Navigation() {
       margin: '20px auto',
       width: 'calc(100% - 80px)',
       maxWidth: '1300px',
-      background: 'var(--glass-bg)',
+      background: 'var(--nav-bg, var(--glass-bg))',
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
-      border: '1px solid var(--glass-border)',
+      border: '1px solid var(--nav-border, var(--glass-border))',
       borderRadius: '24px',
       position: 'sticky',
       top: '20px',
       zIndex: 50,
-      boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
+      boxShadow: '0 4px 30px rgba(0,0,0,0.05)'
     }}>
       {/* Logo */}
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
