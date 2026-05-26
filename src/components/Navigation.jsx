@@ -75,7 +75,7 @@ export default function Navigation() {
           type="text" 
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder={lang === 'vi' ? "Tìm kiếm mini game..." : "Search for games..."}
+          placeholder={lang === 'vi' ? "Tìm kiếm trò chơi..." : "Search games..."}
           style={{
             background: 'transparent',
             border: 'none',
