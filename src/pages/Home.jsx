@@ -75,22 +75,44 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* All Games Grid Placeholder */}
+      {/* All Games */}
       <section>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '30px' }}>
           {lang === 'vi' ? 'Tất Cả Trò Chơi' : 'All Games'}
         </h2>
-        <div style={{
-          background: 'var(--glass-bg)',
-          border: '1px dashed var(--glass-border)',
-          borderRadius: '20px',
-          padding: '60px',
-          textAlign: 'center',
-          color: 'var(--text-subtext)',
-          fontSize: '1.1rem'
-        }}>
-          {lang === 'vi' ? 'Sắp có thêm nhiều trò chơi mới...' : 'More games coming soon...'}
-        </div>
+        
+        <motion.div 
+          variants={container}
+          initial="hidden"
+          animate="show"
+          style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+            gap: '30px' 
+          }}
+        >
+          {MOCK_GAMES.map(game => (
+            <GameCard key={`all-${game.id}`} game={game} />
+          ))}
+          
+          {/* Coming soon placeholder card */}
+          <div style={{
+            background: 'var(--glass-bg)',
+            border: '2px dashed var(--glass-border)',
+            borderRadius: '28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-subtext)',
+            fontSize: '1.1rem',
+            fontWeight: 500,
+            minHeight: '350px',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)'
+          }}>
+            {lang === 'vi' ? '+ Đang phát triển...' : '+ Coming soon...'}
+          </div>
+        </motion.div>
       </section>
     </div>
   );
