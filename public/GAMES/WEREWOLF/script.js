@@ -12,6 +12,12 @@ const hostText = document.getElementById("hostText");
 const setupTitle = document.getElementById("setupTitle");
 const setupSubtitle = document.getElementById("setupSubtitle");
 const modeBadge = document.getElementById("modeBadge");
+const langEnBtn = document.getElementById("langEnBtn");
+const langViBtn = document.getElementById("langViBtn");
+const soundToggle = document.getElementById("soundToggle");
+const soundToggleText = document.getElementById("soundToggleText");
+const volumeSlider = document.getElementById("volumeSlider");
+const volumeValue = document.getElementById("volumeValue");
 
 const roleImages = [
   "assest/hunter.png",
@@ -24,6 +30,105 @@ const roleImages = [
 
 const roles = ["Hunter", "Villager", "Seer", "Doctor", "Werewolf", "Alpha Wolf"];
 
+const dictionary = {
+  en: {
+    heroSubtitle: "PlayNest mystery party",
+    directTitle: "Direct Play",
+    directSubtitle: "Play with a human game master",
+    directDescription: "Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.",
+    playDirect: "Play Direct",
+    wifiTitle: "Local WiFi",
+    wifiSubtitle: "Device acts as AI game master",
+    wifiDescription: "Players connect through the same Wi-Fi network. The system manages roles, day/night cycle, voting and game flow.",
+    playLocal: "Play Local",
+    add: "Add",
+    roleCard: "Role Card",
+    timer: "Timer",
+    vote: "Vote",
+    startGame: "Start Game",
+    specialRole: "Special Role",
+    nextPhase: "Next Phase",
+    villageVote: "Village Vote",
+    voteDescription: "Choose the player the village suspects most.",
+    confirmVote: "Confirm Vote",
+    settings: "Settings",
+    settingsTitle: "Game Settings",
+    settingsSubtitle: "Tune language and sound for the table before the night begins.",
+    language: "Language",
+    languageHint: "Switch interface text between English and Vietnamese.",
+    sound: "Sound",
+    soundHint: "Forest ambience, soft clicks, whoosh transitions and role effects.",
+    volume: "Volume",
+    saveSettings: "Save Settings",
+    on: "On",
+    off: "Off",
+    playerPlaceholder: "Enter player name",
+    needMinPlayers: "Need at least 4 players to start.",
+    roleCardAlert: "Role Card",
+    noVote: "Choose a player to vote.",
+    eliminated: "has been eliminated.",
+    votes: "votes",
+    nightLabel: "🌙 Night",
+    dayLabel: "☀ Day",
+    nightTitle: "🌙 NIGHT",
+    dayTitle: "☀ DAY",
+    nightText: "Werewolves are hunting...",
+    dayText: "Discuss and vote",
+    hostWifiNight: "AI Host is guiding the night cycle. Special roles may act now.",
+    hostDirectNight: "The moderator may call roles in order. Keep your eyes closed.",
+    hostDay: "The sun rises. Read the room, discuss clues, and choose carefully.",
+    specialRoleTriggered: "A special role effect has been triggered."
+  },
+  vi: {
+    heroSubtitle: "Đêm hội bí ẩn của PlayNest",
+    directTitle: "Chơi Trực Tiếp",
+    directSubtitle: "Chơi cùng quản trò thật",
+    directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Hệ thống hỗ trợ thẻ vai, hẹn giờ, danh sách người chơi và công cụ chơi.",
+    playDirect: "Chơi Trực Tiếp",
+    wifiTitle: "WiFi Nội Bộ",
+    wifiSubtitle: "Thiết bị làm quản trò AI",
+    wifiDescription: "Người chơi kết nối cùng mạng Wi-Fi. Hệ thống tự quản lý vai trò, ngày/đêm, bỏ phiếu và luồng ván chơi.",
+    playLocal: "Chơi WiFi",
+    add: "Thêm",
+    roleCard: "Thẻ Vai",
+    timer: "Hẹn Giờ",
+    vote: "Bỏ Phiếu",
+    startGame: "Bắt Đầu",
+    specialRole: "Vai Đặc Biệt",
+    nextPhase: "Chuyển Pha",
+    villageVote: "Bỏ Phiếu Làng",
+    voteDescription: "Chọn người mà cả làng nghi ngờ nhất.",
+    confirmVote: "Xác Nhận",
+    settings: "Cài Đặt",
+    settingsTitle: "Cài Đặt Game",
+    settingsSubtitle: "Chỉnh ngôn ngữ và âm thanh trước khi màn đêm bắt đầu.",
+    language: "Ngôn Ngữ",
+    languageHint: "Đổi giao diện giữa tiếng Việt và tiếng Anh.",
+    sound: "Âm Thanh",
+    soundHint: "Ambience rừng, click nhẹ, whoosh chuyển cảnh và hiệu ứng vai.",
+    volume: "Âm Lượng",
+    saveSettings: "Lưu Cài Đặt",
+    on: "Bật",
+    off: "Tắt",
+    playerPlaceholder: "Nhập tên người chơi",
+    needMinPlayers: "Cần ít nhất 4 người chơi để bắt đầu.",
+    roleCardAlert: "Thẻ vai",
+    noVote: "Hãy chọn một người để vote.",
+    eliminated: "đã bị loại.",
+    votes: "phiếu",
+    nightLabel: "🌙 Đêm",
+    dayLabel: "☀ Ngày",
+    nightTitle: "🌙 ĐÊM",
+    dayTitle: "☀ NGÀY",
+    nightText: "Ma sói đang săn mồi...",
+    dayText: "Thảo luận và bỏ phiếu",
+    hostWifiNight: "AI Host đang dẫn pha đêm. Các vai đặc biệt có thể hành động.",
+    hostDirectNight: "Quản trò gọi từng vai theo lượt. Mọi người nhắm mắt.",
+    hostDay: "Mặt trời lên. Hãy đọc tình hình, thảo luận manh mối và chọn cẩn thận.",
+    specialRoleTriggered: "Hiệu ứng vai đặc biệt đã được kích hoạt."
+  }
+};
+
 let players = ["Trevor", "Minh", "Huy", "Lan"];
 let votes = {};
 let eliminated = new Set();
@@ -33,6 +138,9 @@ let timeLeft = 30;
 let timerId = null;
 let audioCtx = null;
 let ambienceNodes = [];
+let ambienceMaster = null;
+let settingsReturnScreen = "homeScreen";
+let settings = loadSettings();
 
 function showScreen(id) {
   screens.forEach(screen => screen.classList.remove("active"));
@@ -47,19 +155,108 @@ function showScreen(id) {
   }
 }
 
-function chooseMode(mode) {
-  currentMode = mode;
+function t(key) {
+  return dictionary[settings.language][key] || dictionary.en[key] || key;
+}
 
-  if (mode === "direct") {
-    setupTitle.textContent = "🎭 Direct Play";
-    setupSubtitle.textContent = "Play with a human game master";
-    modeBadge.textContent = "Direct Play";
-  } else {
-    setupTitle.textContent = "📡 Local WiFi";
-    setupSubtitle.textContent = "Device acts as AI game master";
-    modeBadge.textContent = "Local WiFi";
+function loadSettings() {
+  const fallback = { language: "vi", sound: true, volume: 0.8 };
+  try {
+    return { ...fallback, ...JSON.parse(localStorage.getItem("werewolfSettings")) };
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function saveSettings() {
+  localStorage.setItem("werewolfSettings", JSON.stringify(settings));
+}
+
+function openSettings(fromScreen = "homeScreen") {
+  settingsReturnScreen = fromScreen;
+  showScreen("settingsScreen");
+}
+
+function closeSettings() {
+  saveSettings();
+  showScreen(settingsReturnScreen);
+}
+
+function setLanguage(language) {
+  settings.language = language;
+  saveSettings();
+  applySettings();
+  softSound("click");
+}
+
+function toggleSound() {
+  settings.sound = !settings.sound;
+  saveSettings();
+  if (settings.sound) initAudio();
+  applySettings();
+  softSound("click");
+}
+
+function setVolume(value) {
+  settings.volume = Number(value) / 100;
+  saveSettings();
+  applySettings();
+}
+
+function applySettings() {
+  document.documentElement.lang = settings.language === "vi" ? "vi" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  playerNameInput.placeholder = t("playerPlaceholder");
+  langEnBtn.classList.toggle("active", settings.language === "en");
+  langViBtn.classList.toggle("active", settings.language === "vi");
+
+  soundToggle.classList.toggle("is-on", settings.sound);
+  soundToggle.setAttribute("aria-pressed", String(settings.sound));
+  soundToggleText.textContent = settings.sound ? t("on") : t("off");
+  volumeSlider.value = Math.round(settings.volume * 100);
+  volumeValue.textContent = `${volumeSlider.value}%`;
+
+  if (ambienceMaster) {
+    ambienceMaster.gain.value = settings.sound ? 0.028 * settings.volume : 0;
   }
 
+  updateModeText();
+  updatePhaseCopy();
+  if (document.getElementById("voteScreen").classList.contains("active")) renderVotePlayers();
+}
+
+function updateModeText() {
+  if (currentMode === "direct") {
+    setupTitle.textContent = `🎭 ${t("directTitle")}`;
+    setupSubtitle.textContent = t("directSubtitle");
+    modeBadge.textContent = t("directTitle");
+  } else {
+    setupTitle.textContent = `📡 ${t("wifiTitle")}`;
+    setupSubtitle.textContent = t("wifiSubtitle");
+    modeBadge.textContent = t("wifiTitle");
+  }
+}
+
+function updatePhaseCopy() {
+  if (phase === "day") {
+    phaseTitle.textContent = t("dayTitle");
+    phaseLabel.textContent = t("dayLabel");
+    phaseText.textContent = t("dayText");
+    hostText.textContent = t("hostDay");
+  } else {
+    phaseTitle.textContent = t("nightTitle");
+    phaseLabel.textContent = t("nightLabel");
+    phaseText.textContent = t("nightText");
+    hostText.textContent = currentMode === "wifi" ? t("hostWifiNight") : t("hostDirectNight");
+  }
+}
+
+function chooseMode(mode) {
+  currentMode = mode;
+  updateModeText();
   softSound(mode === "direct" ? "wolf" : "magic");
   showScreen("setupScreen");
 }
@@ -91,7 +288,7 @@ function renderPlayers() {
 
 function startGame() {
   if (players.length < 4) {
-    alert("Cần ít nhất 4 người chơi để bắt đầu.");
+    alert(t("needMinPlayers"));
     return;
   }
 
@@ -106,7 +303,7 @@ function startGame() {
 function drawRole() {
   const role = roles[Math.floor(Math.random() * roles.length)];
   softSound(role.includes("Werewolf") || role.includes("Wolf") ? "wolf" : "magic");
-  alert(`Role Card: ${role}`);
+  alert(`${t("roleCardAlert")}: ${role}`);
 }
 
 function toggleTimer() {
@@ -148,18 +345,16 @@ function announcePhase(next) {
   }, 1300);
 
   if (next === "day") {
-    phaseTitle.textContent = "☀ DAY";
-    phaseLabel.textContent = "☀ Day";
-    phaseText.textContent = "Discuss and vote";
-    hostText.textContent = "The sun rises. Read the room, discuss clues, and choose carefully.";
+    phaseTitle.textContent = t("dayTitle");
+    phaseLabel.textContent = t("dayLabel");
+    phaseText.textContent = t("dayText");
+    hostText.textContent = t("hostDay");
     softSound("whoosh");
   } else {
-    phaseTitle.textContent = "🌙 NIGHT";
-    phaseLabel.textContent = "🌙 Night";
-    phaseText.textContent = "Werewolves are hunting...";
-    hostText.textContent = currentMode === "wifi"
-      ? "AI Host is guiding the night cycle. Special roles may act now."
-      : "The moderator may call roles in order. Keep your eyes closed.";
+    phaseTitle.textContent = t("nightTitle");
+    phaseLabel.textContent = t("nightLabel");
+    phaseText.textContent = t("nightText");
+    hostText.textContent = currentMode === "wifi" ? t("hostWifiNight") : t("hostDirectNight");
     softSound("wolf");
   }
 }
@@ -175,7 +370,7 @@ function renderVotePlayers() {
 function avatarCard(name, index, votable = false) {
   const image = roleImages[index % roleImages.length];
   const deadClass = eliminated.has(name) ? " eliminated" : "";
-  const voteText = votable ? `<em>${votes[name] || 0} votes</em>` : "";
+  const voteText = votable ? `<em>${votes[name] || 0} ${t("votes")}</em>` : "";
   const click = votable ? `onclick="voteFor('${escapeAttr(name)}')"` : "";
 
   return `
@@ -203,23 +398,24 @@ function voteFor(name) {
 function confirmVote() {
   const entries = Object.entries(votes);
   if (!entries.length) {
-    alert("Hãy chọn một người để vote.");
+    alert(t("noVote"));
     return;
   }
 
   const [victim] = entries.sort((a, b) => b[1] - a[1])[0];
   eliminated.add(victim);
   softSound("thump");
-  alert(`${victim} has been eliminated.`);
+  alert(`${victim} ${t("eliminated")}`);
   showScreen("gameScreen");
 }
 
 function playSpecialRole() {
   softSound("magic");
-  hostText.textContent = "A special role effect has been triggered.";
+  hostText.textContent = t("specialRoleTriggered");
 }
 
 function initAudio() {
+  if (!settings.sound) return;
   if (audioCtx) return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
@@ -232,8 +428,9 @@ function startAmbience() {
   if (!audioCtx || ambienceNodes.length) return;
 
   const master = audioCtx.createGain();
-  master.gain.value = 0.028;
+  master.gain.value = settings.sound ? 0.028 * settings.volume : 0;
   master.connect(audioCtx.destination);
+  ambienceMaster = master;
 
   const wind = audioCtx.createOscillator();
   const windGain = audioCtx.createGain();
@@ -255,6 +452,7 @@ function startAmbience() {
 }
 
 function softSound(type) {
+  if (!settings.sound) return;
   if (!audioCtx) return;
 
   const now = audioCtx.currentTime;
@@ -277,7 +475,7 @@ function softSound(type) {
   filter.type = "lowpass";
   filter.frequency.value = type === "magic" ? 1600 : 760;
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(preset[2], now + 0.012);
+  gain.gain.exponentialRampToValueAtTime(preset[2] * settings.volume, now + 0.012);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + preset[1]);
 
   osc.connect(filter).connect(gain).connect(audioCtx.destination);
@@ -306,4 +504,5 @@ playerNameInput.addEventListener("keydown", event => {
   if (event.key === "Enter") addPlayer();
 });
 
+applySettings();
 renderPlayers();

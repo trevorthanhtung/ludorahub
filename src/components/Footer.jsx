@@ -116,10 +116,7 @@ export default function Footer() {
                   <X size={20} />
                 </button>
 
-                <div style={{ color: 'var(--accent-pink)', marginBottom: '16px' }}>
-                  <Heart size={48} fill="currentColor" style={{ margin: '0 auto' }} />
-                </div>
-                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginTop: '20px' }}>
                   {lang === 'vi' ? 'Ủng hộ dự án' : 'Support PlayNest'}
                 </h2>
                 <p style={{ color: 'var(--text-subtext)', marginBottom: '24px', lineHeight: 1.6, fontSize: '1.05rem' }}>
@@ -138,7 +135,7 @@ export default function Footer() {
                   boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
                 }}>
                   <img 
-                    src="https://img.vietqr.io/image/MB-0816158215-compact2.png?accountName=TRAN%20THANH%20TUNG" 
+                    src="https://img.vietqr.io/image/MB-0816158215-compact.png?accountName=TRAN%20THANH%20TUNG" 
                     alt="Donate QR Code" 
                     style={{ width: '100%', maxWidth: '250px', height: 'auto', borderRadius: '12px' }} 
                     onError={(e) => {
