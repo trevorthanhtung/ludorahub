@@ -40,14 +40,14 @@ export default function Navigation() {
       boxShadow: '0 4px 30px rgba(0,0,0,0.05)'
     }}>
       {/* Logo */}
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: 'inherit' }}>
         <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
           <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
         </motion.div>
         <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
           Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
         </h1>
-      </Link>
+      </a>
 
       {/* Search */}
       <div style={{
