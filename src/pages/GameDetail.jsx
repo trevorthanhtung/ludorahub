@@ -47,7 +47,7 @@ export default function GameDetail() {
         backdropFilter: 'blur(20px)',
       }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '10px' }}>
-          {game ? game.title : 'Đang phát triển'}
+          {game ? game.title : (lang === 'vi' ? 'Đang phát triển' : 'Coming Soon')}
         </h1>
         
         {/* Game Canvas / Iframe */}

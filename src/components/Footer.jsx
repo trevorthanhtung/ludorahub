@@ -31,21 +31,21 @@ export default function Footer() {
       <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', marginBottom: '30px', flexWrap: 'wrap' }}>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
-            <Home size={18} /> Hub
+            <Home size={18} /> {lang === 'vi' ? 'Trang chủ' : 'Hub'}
           </motion.div>
         </Link>
         <Link to="/about" style={{ textDecoration: 'none' }}>
           <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
-            <Info size={18} /> About
+            <Info size={18} /> {lang === 'vi' ? 'Giới thiệu' : 'About'}
           </motion.div>
         </Link>
         <Link to="/privacy" style={{ textDecoration: 'none' }}>
           <motion.div whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} style={iconStyle}>
-            <Shield size={18} /> Privacy
+            <Shield size={18} /> {lang === 'vi' ? 'Bảo mật' : 'Privacy'}
           </motion.div>
         </Link>
         <motion.a whileHover={{ scale: 1.05, color: 'var(--accent-blue)' }} href="mailto:trevorthanhtung@gmail.com" style={iconStyle}>
-          <Mail size={18} /> Contact
+          <Mail size={18} /> {lang === 'vi' ? 'Liên hệ' : 'Contact'}
         </motion.a>
       </div>
 
@@ -65,7 +65,7 @@ export default function Footer() {
       </div>
 
       <p style={{ fontSize: '0.9rem', opacity: 0.8, marginBottom: '12px' }}>
-        &copy; 2026 PlayNest &bull; All rights reserved
+        {lang === 'vi' ? '© 2026 PlayNest • Bảo lưu mọi quyền' : '© 2026 PlayNest • All rights reserved'}
       </p>
       
       <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-body)' }}>
