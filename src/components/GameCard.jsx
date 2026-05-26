@@ -75,18 +75,18 @@ export default function GameCard({ game }) {
           {/* Nhãn phân loại */}
           <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '4px' }}>
             {game.categories && game.categories.includes('local-wifi') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-cyan)' }}>
-                <Wifi size={16} /> <span style={{ fontWeight: 600 }}>Local WiFi</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-cyan)', fontWeight: 600 }}>
+                <Wifi size={16} /> <span>Local WiFi</span>
               </div>
             )}
-            {game.categories && game.categories.includes('small-group') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-purple)' }}>
-                <Users size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '2–4 người' : '2-4 players'}</span>
+            {game.categories && game.categories.includes('small-group') && !game.categories.includes('party') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-blue)', fontWeight: 600 }}>
+                <Users size={16} /> <span>{lang === 'vi' ? '2-4 người' : '2-4p'}</span>
               </div>
             )}
             {game.categories && game.categories.includes('party') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-pink)' }}>
-                <Users size={16} /> <span style={{ fontWeight: 600 }}>{lang === 'vi' ? '5+ người' : '5+ players'}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-pink)', fontWeight: 600 }}>
+                <Users size={16} /> <span>{lang === 'vi' ? '5+ người' : '5+p'}</span>
               </div>
             )}
           </div>

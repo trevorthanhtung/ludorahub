@@ -27,7 +27,6 @@
       <header class="hero">
         <div class="mark">☾</div>
         <h1>WEREWOLF</h1>
-        <p data-i18n="heroSubtitle">PlayNest mystery party</p>
       </header>
 
       <div class="mode-grid">
@@ -71,10 +70,63 @@
 
         <div id="playerList" class="player-list"></div>
 
-        <div class="tool-row">
-          <button type="button" onclick="drawRole()" data-i18n="roleCard">Role Card</button>
-          <button type="button" onclick="toggleTimer()" data-i18n="timer">Timer</button>
-          <button type="button" onclick="showScreen('voteScreen')" data-i18n="vote">Vote</button>
+        <div class="setup-config">
+          <article class="config-card">
+            <div class="config-head">
+              <div>
+                <h3 data-i18n="firstGameConfig">Cấu Hình Ván Đầu</h3>
+                <p data-i18n="firstGameHint">Chỉnh vai trò và thời gian nói trước khi bắt đầu.</p>
+              </div>
+              <span id="roleSummary" class="config-pill">0/0</span>
+            </div>
+
+            <div class="role-config-grid">
+              <label class="number-field">
+                <span data-i18n="werewolfCount">Ma Sói</span>
+                <input id="werewolfCount" type="number" min="1" max="4" value="1" inputmode="numeric" oninput="updateFirstGameConfig('werewolves', this.value)">
+              </label>
+
+              <button id="seerToggle" class="toggle-card is-on" type="button" onclick="toggleRole('seer')">
+                <span data-i18n="seer">Tiên Tri</span>
+              </button>
+
+              <button id="doctorToggle" class="toggle-card is-on" type="button" onclick="toggleRole('doctor')">
+                <span data-i18n="doctor">Bảo Vệ</span>
+              </button>
+
+              <button id="hunterToggle" class="toggle-card" type="button" onclick="toggleRole('hunter')">
+                <span data-i18n="hunter">Thợ Săn</span>
+              </button>
+            </div>
+
+            <p class="config-note" data-i18n="villagerAuto">Dân làng tự lấp phần còn lại.</p>
+          </article>
+
+          <article class="config-card">
+            <div class="config-head">
+              <div>
+                <h3 data-i18n="timingConfig">Thời Gian Nói</h3>
+                <p data-i18n="timingHint">Dùng cho tranh luận, phản biện và bỏ phiếu.</p>
+              </div>
+            </div>
+
+            <div class="time-config-grid">
+              <label class="number-field">
+                <span data-i18n="discussionTime">Tranh Luận</span>
+                <input id="discussionTime" type="number" min="30" max="900" step="15" value="180" inputmode="numeric" oninput="updateFirstGameConfig('discussion', this.value)">
+              </label>
+
+              <label class="number-field">
+                <span data-i18n="rebuttalTime">Phản Biện</span>
+                <input id="rebuttalTime" type="number" min="15" max="300" step="15" value="45" inputmode="numeric" oninput="updateFirstGameConfig('rebuttal', this.value)">
+              </label>
+
+              <label class="number-field">
+                <span data-i18n="voteTime">Bỏ Phiếu</span>
+                <input id="voteTime" type="number" min="15" max="300" step="15" value="60" inputmode="numeric" oninput="updateFirstGameConfig('vote', this.value)">
+              </label>
+            </div>
+          </article>
         </div>
 
         <button type="button" class="primary-action" onclick="startGame()" data-i18n="startGame">Start Game</button>
@@ -106,6 +158,7 @@
 
         <div class="game-actions">
           <button type="button" class="danger" onclick="playSpecialRole()" data-i18n="specialRole">Special Role</button>
+          <button type="button" onclick="showScreen('voteScreen')" data-i18n="vote">Vote</button>
           <button type="button" onclick="nextPhase()" data-i18n="nextPhase">Next Phase</button>
         </div>
       </div>

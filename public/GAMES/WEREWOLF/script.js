@@ -18,6 +18,16 @@ const soundToggle = document.getElementById("soundToggle");
 const soundToggleText = document.getElementById("soundToggleText");
 const volumeSlider = document.getElementById("volumeSlider");
 const volumeValue = document.getElementById("volumeValue");
+const roleSummary = document.getElementById("roleSummary");
+const werewolfCountInput = document.getElementById("werewolfCount");
+const discussionTimeInput = document.getElementById("discussionTime");
+const rebuttalTimeInput = document.getElementById("rebuttalTime");
+const voteTimeInput = document.getElementById("voteTime");
+const roleToggleButtons = {
+  seer: document.getElementById("seerToggle"),
+  doctor: document.getElementById("doctorToggle"),
+  hunter: document.getElementById("hunterToggle")
+};
 
 const roleImages = [
   "assest/hunter.png",
@@ -34,13 +44,26 @@ const dictionary = {
   en: {
     directTitle: "Direct Play",
     directSubtitle: "Play with a human game master",
-    directDescription: "Players gather together and one person acts as the moderator. The system supports role cards, timer, player list and game tools.",
+    directDescription: "Players gather together and one person acts as the moderator. Set the first-game roles, timers and player list before starting.",
     playDirect: "Play Direct",
     wifiTitle: "Local WiFi",
     wifiSubtitle: "Device acts as AI game master",
     wifiDescription: "Players connect through the same Wi-Fi network. The system manages roles, day/night cycle, voting and game flow.",
     playLocal: "Play Local",
     add: "Add",
+    emptyPlayers: "Add players manually to start the game.",
+    firstGameConfig: "First Game Setup",
+    firstGameHint: "Set roles and speaking timers before starting.",
+    werewolfCount: "Werewolves",
+    seer: "Seer",
+    doctor: "Doctor",
+    hunter: "Hunter",
+    villagerAuto: "Villagers auto-fill the remaining seats.",
+    timingConfig: "Speaking Time",
+    timingHint: "Used for discussion, rebuttal and voting.",
+    discussionTime: "Discussion",
+    rebuttalTime: "Rebuttal",
+    voteTime: "Voting",
     roleCard: "Role Card",
     timer: "Timer",
     vote: "Vote",
@@ -63,31 +86,57 @@ const dictionary = {
     off: "Off",
     playerPlaceholder: "Enter player name",
     needMinPlayers: "Need at least 4 players to start.",
+    rolesTooMany: "Selected roles exceed the player count.",
     roleCardAlert: "Role Card",
     noVote: "Choose a player to vote.",
     eliminated: "has been eliminated.",
     votes: "votes",
     nightLabel: "🌙 Night",
     dayLabel: "☀ Day",
+    discussionLabel: "☀ Discussion",
+    rebuttalLabel: "☀ Rebuttal",
+    voteLabel: "☀ Vote",
     nightTitle: "🌙 NIGHT",
     dayTitle: "☀ DAY",
+    discussionTitle: "☀ DISCUSSION",
+    rebuttalTitle: "☀ REBUTTAL",
+    votePhaseTitle: "☀ VOTE",
     nightText: "Werewolves are hunting...",
     dayText: "Discuss and vote",
+    discussionText: "Discuss and read the table.",
+    rebuttalText: "Final defense before voting.",
+    votePhaseText: "Choose who the village suspects most.",
     hostWifiNight: "AI Host is guiding the night cycle. Special roles may act now.",
     hostDirectNight: "The moderator may call roles in order. Keep your eyes closed.",
     hostDay: "The sun rises. Read the room, discuss clues, and choose carefully.",
+    hostDiscussion: "Discussion timer is running. Let the table speak.",
+    hostRebuttal: "Each suspect gets a short defense before the vote.",
+    hostVote: "Voting is open. Confirm the village decision when ready.",
     specialRoleTriggered: "A special role effect has been triggered."
   },
   vi: {
     directTitle: "Chơi Trực Tiếp",
     directSubtitle: "Chơi cùng quản trò thật",
-    directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Hệ thống hỗ trợ thẻ vai, hẹn giờ, danh sách người chơi và công cụ chơi.",
+    directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Thiết lập vai ván đầu, thời gian và danh sách người chơi trước khi bắt đầu.",
     playDirect: "Chơi Trực Tiếp",
     wifiTitle: "WiFi Nội Bộ",
-    wifiSubtitle: "Thiết bị làm quản trò AI",
-    wifiDescription: "Người chơi kết nối cùng mạng Wi-Fi. Hệ thống tự quản lý vai trò, ngày/đêm, bỏ phiếu và luồng ván chơi.",
+    wifiSubtitle: "AI quản trò",
+    wifiDescription: "Người chơi kết nối cùng mạng Wi-Fi. Hệ thống tự động quản lý vai trò, chu kỳ ngày/đêm, bỏ phiếu và toàn bộ tiến trình trò chơi.",
     playLocal: "Chơi WiFi",
     add: "Thêm",
+    emptyPlayers: "Nhập tên người chơi để bắt đầu.",
+    firstGameConfig: "Cấu Hình Ván Đầu",
+    firstGameHint: "Chỉnh vai trò và thời gian nói trước khi bắt đầu.",
+    werewolfCount: "Ma Sói",
+    seer: "Tiên Tri",
+    doctor: "Bảo Vệ",
+    hunter: "Thợ Săn",
+    villagerAuto: "Dân làng tự lấp phần còn lại.",
+    timingConfig: "Thời Gian Nói",
+    timingHint: "Dùng cho tranh luận, phản biện và bỏ phiếu.",
+    discussionTime: "Tranh Luận",
+    rebuttalTime: "Phản Biện",
+    voteTime: "Bỏ Phiếu",
     roleCard: "Thẻ Vai",
     timer: "Hẹn Giờ",
     vote: "Bỏ Phiếu",
@@ -105,34 +154,56 @@ const dictionary = {
     sound: "Âm Thanh",
     soundHint: "Ambience rừng, click nhẹ, whoosh chuyển cảnh và hiệu ứng vai.",
     volume: "Âm Lượng",
-    saveSettings: "Lưu Cài Đặt",
+    saveSettings: "Lưu Thay Đổi",
     on: "Bật",
     off: "Tắt",
     playerPlaceholder: "Nhập tên người chơi",
     needMinPlayers: "Cần ít nhất 4 người chơi để bắt đầu.",
+    rolesTooMany: "Số vai đã chọn vượt quá số người chơi.",
     roleCardAlert: "Thẻ vai",
     noVote: "Hãy chọn một người để vote.",
     eliminated: "đã bị loại.",
     votes: "phiếu",
     nightLabel: "🌙 Đêm",
     dayLabel: "☀ Ngày",
+    discussionLabel: "☀ Tranh Luận",
+    rebuttalLabel: "☀ Phản Biện",
+    voteLabel: "☀ Bỏ Phiếu",
     nightTitle: "🌙 ĐÊM",
     dayTitle: "☀ NGÀY",
+    discussionTitle: "☀ TRANH LUẬN",
+    rebuttalTitle: "☀ PHẢN BIỆN",
+    votePhaseTitle: "☀ BỎ PHIẾU",
     nightText: "Ma sói đang săn mồi...",
     dayText: "Thảo luận và bỏ phiếu",
+    discussionText: "Cả làng tranh luận và đọc tình hình.",
+    rebuttalText: "Người bị nghi ngờ có lượt phản biện cuối.",
+    votePhaseText: "Chọn người mà cả làng nghi ngờ nhất.",
     hostWifiNight: "AI Host đang dẫn pha đêm. Các vai đặc biệt có thể hành động.",
     hostDirectNight: "Quản trò gọi từng vai theo lượt. Mọi người nhắm mắt.",
     hostDay: "Mặt trời lên. Hãy đọc tình hình, thảo luận manh mối và chọn cẩn thận.",
+    hostDiscussion: "Đồng hồ tranh luận đang chạy. Cả bàn cùng nói và lắng nghe.",
+    hostRebuttal: "Cho người bị nghi ngờ phản biện ngắn trước khi bỏ phiếu.",
+    hostVote: "Đã tới lượt bỏ phiếu. Xác nhận quyết định của làng khi sẵn sàng.",
     specialRoleTriggered: "Hiệu ứng vai đặc biệt đã được kích hoạt."
   }
 };
 
-let players = ["Trevor", "Minh", "Huy", "Lan"];
+let players = [];
 let votes = {};
 let eliminated = new Set();
 let currentMode = "direct";
 let phase = "night";
 let timeLeft = 30;
+let firstGameConfig = {
+  werewolves: 1,
+  seer: true,
+  doctor: true,
+  hunter: false,
+  discussion: 180,
+  rebuttal: 45,
+  vote: 60
+};
 let timerId = null;
 let audioCtx = null;
 let ambienceNodes = [];
@@ -223,6 +294,8 @@ function applySettings() {
 
   updateModeText();
   updatePhaseCopy();
+  updateFirstGameUI();
+  renderPlayers();
   if (document.getElementById("voteScreen").classList.contains("active")) renderVotePlayers();
 }
 
@@ -239,17 +312,34 @@ function updateModeText() {
 }
 
 function updatePhaseCopy() {
-  if (phase === "day") {
-    phaseTitle.textContent = t("dayTitle");
-    phaseLabel.textContent = t("dayLabel");
-    phaseText.textContent = t("dayText");
-    hostText.textContent = t("hostDay");
-  } else {
+  if (phase === "night") {
     phaseTitle.textContent = t("nightTitle");
     phaseLabel.textContent = t("nightLabel");
     phaseText.textContent = t("nightText");
     hostText.textContent = currentMode === "wifi" ? t("hostWifiNight") : t("hostDirectNight");
+    return;
   }
+
+  if (phase === "rebuttal") {
+    phaseTitle.textContent = t("rebuttalTitle");
+    phaseLabel.textContent = t("rebuttalLabel");
+    phaseText.textContent = t("rebuttalText");
+    hostText.textContent = t("hostRebuttal");
+    return;
+  }
+
+  if (phase === "vote") {
+    phaseTitle.textContent = t("votePhaseTitle");
+    phaseLabel.textContent = t("voteLabel");
+    phaseText.textContent = t("votePhaseText");
+    hostText.textContent = t("hostVote");
+    return;
+  }
+
+  phaseTitle.textContent = t("discussionTitle");
+  phaseLabel.textContent = t("discussionLabel");
+  phaseText.textContent = t("discussionText");
+  hostText.textContent = t("hostDiscussion");
 }
 
 function chooseMode(mode) {
@@ -257,6 +347,53 @@ function chooseMode(mode) {
   updateModeText();
   softSound(mode === "direct" ? "wolf" : "magic");
   showScreen("setupScreen");
+}
+
+function clampNumber(value, min, max) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return min;
+  return Math.min(max, Math.max(min, Math.round(number)));
+}
+
+function selectedRoleCount() {
+  return firstGameConfig.werewolves
+    + (firstGameConfig.seer ? 1 : 0)
+    + (firstGameConfig.doctor ? 1 : 0)
+    + (firstGameConfig.hunter ? 1 : 0);
+}
+
+function updateFirstGameUI() {
+  werewolfCountInput.value = firstGameConfig.werewolves;
+  discussionTimeInput.value = firstGameConfig.discussion;
+  rebuttalTimeInput.value = firstGameConfig.rebuttal;
+  voteTimeInput.value = firstGameConfig.vote;
+
+  Object.entries(roleToggleButtons).forEach(([role, button]) => {
+    button.classList.toggle("is-on", firstGameConfig[role]);
+    button.setAttribute("aria-pressed", String(firstGameConfig[role]));
+  });
+
+  roleSummary.textContent = `${selectedRoleCount()}/${players.length}`;
+  roleSummary.classList.toggle("is-warning", selectedRoleCount() > players.length);
+}
+
+function updateFirstGameConfig(key, value) {
+  const limits = {
+    werewolves: [1, 4],
+    discussion: [30, 900],
+    rebuttal: [15, 300],
+    vote: [15, 300]
+  }[key];
+
+  if (!limits) return;
+  firstGameConfig[key] = clampNumber(value, limits[0], limits[1]);
+  updateFirstGameUI();
+}
+
+function toggleRole(role) {
+  firstGameConfig[role] = !firstGameConfig[role];
+  updateFirstGameUI();
+  softSound("click");
 }
 
 function addPlayer() {
@@ -276,6 +413,12 @@ function removePlayer(index) {
 }
 
 function renderPlayers() {
+  updateFirstGameUI();
+  if (!players.length) {
+    playerList.innerHTML = `<div class="empty-list">${t("emptyPlayers")}</div>`;
+    return;
+  }
+
   playerList.innerHTML = players.map((name, index) => `
     <button class="player-chip" type="button" onclick="removePlayer(${index})">
       <span>👤</span>
@@ -287,6 +430,11 @@ function renderPlayers() {
 function startGame() {
   if (players.length < 4) {
     alert(t("needMinPlayers"));
+    return;
+  }
+
+  if (selectedRoleCount() > players.length) {
+    alert(t("rolesTooMany"));
     return;
   }
 
@@ -325,36 +473,33 @@ function startTimer() {
 }
 
 function nextPhase() {
-  phase = phase === "night" ? "day" : "night";
-  timeLeft = phase === "night" ? 30 : 60;
+  const flow = {
+    night: ["discussion", firstGameConfig.discussion],
+    discussion: ["rebuttal", firstGameConfig.rebuttal],
+    rebuttal: ["vote", firstGameConfig.vote],
+    vote: ["night", 30]
+  };
+  const [next, seconds] = flow[phase] || flow.night;
+  phase = next;
+  timeLeft = seconds;
   announcePhase(phase);
   renderGamePlayers();
   startTimer();
 }
 
 function announcePhase(next) {
-  document.body.classList.toggle("day", next === "day");
-  document.body.classList.toggle("night", next !== "day");
+  const isNight = next === "night";
+  document.body.classList.toggle("day", !isNight);
+  document.body.classList.toggle("night", isNight);
 
-  phaseTransition.textContent = next === "day" ? "DAY" : "NIGHT";
-  phaseTransition.className = `phase-transition show-${next}`;
+  phaseTransition.textContent = isNight ? "NIGHT" : "DAY";
+  phaseTransition.className = `phase-transition show-${isNight ? "night" : "day"}`;
   setTimeout(() => {
     phaseTransition.className = "phase-transition";
   }, 1300);
 
-  if (next === "day") {
-    phaseTitle.textContent = t("dayTitle");
-    phaseLabel.textContent = t("dayLabel");
-    phaseText.textContent = t("dayText");
-    hostText.textContent = t("hostDay");
-    softSound("whoosh");
-  } else {
-    phaseTitle.textContent = t("nightTitle");
-    phaseLabel.textContent = t("nightLabel");
-    phaseText.textContent = t("nightText");
-    hostText.textContent = currentMode === "wifi" ? t("hostWifiNight") : t("hostDirectNight");
-    softSound("wolf");
-  }
+  updatePhaseCopy();
+  softSound(isNight ? "wolf" : "whoosh");
 }
 
 function renderGamePlayers() {
