@@ -10,7 +10,7 @@ const MOCK_GAMES = [
 
 const CATEGORY_TABS = [
   { id: 'all', label_vi: 'Tất cả', label_en: 'All Games' },
-  { id: 'local-wifi', label_vi: 'Local WiFi', label_en: 'Local WiFi' },
+  { id: 'local-wifi', label_vi: 'Mạng Nội Bộ', label_en: 'Local WiFi' },
   { id: 'small-group', label_vi: '2–4 người', label_en: '2-4 players' },
   { id: 'party', label_vi: '+5 người', label_en: '+5 players' }
 ];

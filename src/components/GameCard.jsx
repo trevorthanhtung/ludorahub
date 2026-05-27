@@ -76,7 +76,7 @@ export default function GameCard({ game }) {
           <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '4px' }}>
             {game.categories && game.categories.includes('local-wifi') && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-cyan)', fontWeight: 600 }}>
-                <Wifi size={16} /> <span>Local WiFi</span>
+                <Wifi size={16} /> <span>{lang === 'vi' ? 'Mạng Nội Bộ' : 'Local WiFi'}</span>
               </div>
             )}
             {game.categories && game.categories.includes('small-group') && !game.categories.includes('party') && (
