@@ -55,7 +55,7 @@ export default function Navigation() {
             <img src="/logo.webp" alt="Ludora Hub Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
           </motion.div>
           <h1 className="nav-logo-text" style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
-            Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
+            Ludora <span style={{ color: 'var(--accent-blue)' }}>Hub</span>
           </h1>
         </a>
       </div>

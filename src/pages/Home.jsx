@@ -90,7 +90,7 @@ export default function Home() {
 
               <div style={{ position: 'relative', zIndex: 2 }}>
                 <h2 className="hero-title" style={{ fontSize: '4.5rem', fontWeight: 800, marginBottom: '20px', letterSpacing: '-1px' }}>
-                  Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
+                  Ludora <span style={{ color: 'var(--accent-blue)' }}>Hub</span>
                 </h2>
               <p className="hero-subtitle" style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-title)', marginBottom: '15px' }}>
                 {lang === 'vi' ? 'Một nơi, vô vàn cuộc vui' : 'One place, endless fun'}
