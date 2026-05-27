@@ -225,7 +225,7 @@ body.day .moon {
 }
 
 .mode-card {
-  min-height: 440px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
   padding: 30px;
@@ -255,21 +255,9 @@ body.day .moon {
   opacity: 1;
 }
 
-.mode-icon {
-  width: 76px;
-  height: 76px;
-  display: grid;
-  place-items: center;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 0 26px rgba(139, 92, 246, 0.16);
-  font-size: 34px;
-  position: relative;
-  z-index: 1;
-}
+
 
 .mode-copy {
-  margin-top: 28px;
   position: relative;
   z-index: 1;
 }
@@ -824,25 +812,10 @@ input:focus {
 }
 
 .setting-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 18px;
   padding: 20px;
   border-radius: 26px;
 }
 
-.setting-icon {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: rgba(139, 92, 246, 0.12);
-  box-shadow: inset 0 0 24px rgba(79, 70, 229, 0.16);
-  font-size: 25px;
-  font-weight: 800;
-}
 
 .setting-content h3 {
   color: var(--text);
@@ -1102,12 +1075,110 @@ body.day .world {
     flex-direction: column;
   }
 
-  .setting-card {
-    grid-template-columns: 1fr;
-  }
+
 
   .floating-settings {
     top: 18px;
     right: 18px;
   }
+}
+
+.counter-btn {
+  transition: background 200ms ease, color 200ms ease;
+  cursor: pointer;
+}
+.counter-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.counter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.role-guide-item {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.role-guide-item h3 {
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 18px;
+}
+.role-guide-item p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.guide-btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.guide-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.reveal-card {
+  width: 240px;
+  height: 320px;
+  perspective: 1000px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.reveal-card .card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 16px;
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.reveal-card.is-revealed .card-inner {
+  transform: rotateY(180deg);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.reveal-card .card-front, .reveal-card .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 16px;
+}
+.reveal-card .card-front {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+}
+.reveal-card .card-back {
+  transform: rotateY(180deg);
 }

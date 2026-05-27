@@ -28,7 +28,7 @@ export default function Privacy() {
           <>
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>1. Thu thập dữ liệu</h3>
             <p style={{ marginBottom: '15px' }}>
-              PlayNest tôn trọng và cam kết bảo vệ quyền riêng tư của người dùng. Hiện tại, nền tảng không yêu cầu người dùng cung cấp các thông tin cá nhân nhạy cảm như họ tên, địa chỉ, số điện thoại hoặc mật khẩu để sử dụng các tính năng cơ bản.
+              Ludora Hub tôn trọng và cam kết bảo vệ quyền riêng tư của người dùng. Hiện tại, nền tảng không yêu cầu người dùng cung cấp các thông tin cá nhân nhạy cảm như họ tên, địa chỉ, số điện thoại hoặc mật khẩu để sử dụng các tính năng cơ bản.
             </p>
             <p style={{ marginBottom: '25px' }}>
               Trong quá trình sử dụng, một số dữ liệu kỹ thuật cơ bản có thể được trình duyệt xử lý nhằm đảm bảo website hoạt động ổn định và mang lại trải nghiệm tốt hơn.
@@ -36,7 +36,7 @@ export default function Privacy() {
             
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>2. Lưu trữ cục bộ (Local Storage)</h3>
             <p style={{ marginBottom: '10px' }}>
-              PlayNest sử dụng Local Storage trên trình duyệt để lưu một số tùy chọn cá nhân của người dùng, bao gồm:
+              Ludora Hub sử dụng Local Storage trên trình duyệt để lưu một số tùy chọn cá nhân của người dùng, bao gồm:
             </p>
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px', marginBottom: '15px' }}>
               <li>Ngôn ngữ hiển thị (Tiếng Việt / English)</li>
@@ -49,7 +49,7 @@ export default function Privacy() {
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>3. Trải nghiệm an toàn</h3>
             <p style={{ marginBottom: '15px' }}>
-              Các trò chơi trên PlayNest được phát triển với mục đích mang lại trải nghiệm giải trí lành mạnh dành cho bạn bè, gia đình và các buổi gặp gỡ.
+              Các trò chơi trên Ludora Hub được phát triển với mục đích mang lại trải nghiệm giải trí lành mạnh dành cho bạn bè, gia đình và các buổi gặp gỡ.
             </p>
             <p style={{ marginBottom: '25px' }}>
               Người dùng tự chịu trách nhiệm đối với các hoạt động hoặc hình thức thử thách ngoài đời thực được áp dụng trong quá trình chơi.
@@ -57,14 +57,14 @@ export default function Privacy() {
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>4. Thay đổi chính sách</h3>
             <p>
-              PlayNest có thể cập nhật hoặc điều chỉnh nội dung của chính sách này trong tương lai nhằm phù hợp với các tính năng mới và trải nghiệm người dùng.
+              Ludora Hub có thể cập nhật hoặc điều chỉnh nội dung của chính sách này trong tương lai nhằm phù hợp với các tính năng mới và trải nghiệm người dùng.
             </p>
           </>
         ) : (
           <>
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>1. Data Collection</h3>
             <p style={{ marginBottom: '15px' }}>
-              PlayNest respects and is committed to protecting user privacy. Currently, the platform does not require users to provide sensitive personal information such as full name, address, phone number, or password to use basic features.
+              Ludora Hub respects and is committed to protecting user privacy. Currently, the platform does not require users to provide sensitive personal information such as full name, address, phone number, or password to use basic features.
             </p>
             <p style={{ marginBottom: '25px' }}>
               During use, some basic technical data may be processed by the browser to ensure the website operates stably and provides a better experience.
@@ -72,7 +72,7 @@ export default function Privacy() {
             
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>2. Local Storage</h3>
             <p style={{ marginBottom: '10px' }}>
-              PlayNest uses Local Storage on your browser to save some personal preferences, including:
+              Ludora Hub uses Local Storage on your browser to save some personal preferences, including:
             </p>
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px', marginBottom: '15px' }}>
               <li>Display language (Vietnamese / English)</li>
@@ -85,7 +85,7 @@ export default function Privacy() {
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>3. Safe Experience</h3>
             <p style={{ marginBottom: '15px' }}>
-              Games on PlayNest are developed with the purpose of providing a wholesome entertainment experience for friends, family, and gatherings.
+              Games on Ludora Hub are developed with the purpose of providing a wholesome entertainment experience for friends, family, and gatherings.
             </p>
             <p style={{ marginBottom: '25px' }}>
               Users are personally responsible for real-life activities or challenges applied during gameplay.
@@ -93,7 +93,7 @@ export default function Privacy() {
 
             <h3 style={{ color: 'var(--text-title)', marginBottom: '15px' }}>4. Policy Changes</h3>
             <p>
-              PlayNest may update or adjust the content of this policy in the future to adapt to new features and user experiences.
+              Ludora Hub may update or adjust the content of this policy in the future to adapt to new features and user experiences.
             </p>
           </>
         )}

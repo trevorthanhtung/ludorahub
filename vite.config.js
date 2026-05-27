@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['logo.webp'],
       manifest: {
-        name: 'PlayNest - Game Hub',
-        short_name: 'PlayNest',
+        name: 'Ludora Hub - Game Hub',
+        short_name: 'Ludora Hub',
         description: 'Tổ hợp Mini Games giải trí đỉnh cao',
         theme_color: '#0B1020',
         background_color: '#0B1020',

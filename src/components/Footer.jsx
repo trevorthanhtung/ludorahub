@@ -71,7 +71,7 @@ export default function Footer() {
       </div>
 
       <p style={{ fontSize: '0.9rem', opacity: 0.8, marginBottom: '12px' }}>
-        {lang === 'vi' ? '© 2026 PlayNest • Bảo lưu mọi quyền' : '© 2026 PlayNest • All rights reserved'}
+        {lang === 'vi' ? '© 2026 Ludora Hub • Bảo lưu mọi quyền' : '© 2026 Ludora Hub • All rights reserved'}
       </p>
       
       <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-body)' }}>
@@ -117,12 +117,12 @@ export default function Footer() {
                 </button>
 
                 <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px', background: 'var(--btn-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginTop: '20px' }}>
-                  {lang === 'vi' ? 'Ủng hộ PlayNest' : 'Support PlayNest'}
+                  {lang === 'vi' ? 'Ủng hộ Ludora Hub' : 'Support Ludora Hub'}
                 </h2>
                 <p style={{ color: 'var(--text-subtext)', marginBottom: '24px', lineHeight: 1.6, fontSize: '1.05rem' }}>
                   {lang === 'vi' 
-                    ? 'Mỗi đóng góp của bạn là một phần quan trọng trong hành trình xây dựng và phát triển PlayNest.' 
-                    : 'Your support is an important part of the journey to build and develop PlayNest.'}
+                    ? 'Mỗi đóng góp của bạn là một phần quan trọng trong hành trình xây dựng và phát triển Ludora Hub.' 
+                    : 'Your support is an important part of the journey to build and develop Ludora Hub.'}
                 </p>
                 
                 {/* QR Code Container */}

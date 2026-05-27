@@ -4,8 +4,8 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // Get initial state from localStorage or default
-  const [theme, setTheme] = useState(() => localStorage.getItem('playnest_theme') || 'dark');
-  const [lang, setLang] = useState(() => localStorage.getItem('playnest_lang') || 'vi');
+  const [theme, setTheme] = useState(() => localStorage.getItem('ludorahub_theme') || 'dark');
+  const [lang, setLang] = useState(() => localStorage.getItem('ludorahub_lang') || 'vi');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Sync Theme to HTML class
@@ -18,12 +18,12 @@ export const AppProvider = ({ children }) => {
       htmlRoot.classList.add('dark');
       htmlRoot.classList.remove('light');
     }
-    localStorage.setItem('playnest_theme', theme);
+    localStorage.setItem('ludorahub_theme', theme);
   }, [theme]);
 
   // Sync Lang
   useEffect(() => {
-    localStorage.setItem('playnest_lang', lang);
+    localStorage.setItem('ludorahub_lang', lang);
   }, [lang]);
 
   const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));

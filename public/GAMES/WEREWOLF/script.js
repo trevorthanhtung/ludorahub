@@ -144,7 +144,15 @@ const dictionary = {
     hostRebuttal: "Each suspect gets a short defense before the vote.",
     hostVote: "Voting is open. Confirm the village decision when ready.",
     specialRoleTriggered: "A special role effect has been triggered.",
-    playersCount: "👥 {n} Players"
+    playersCount: "{n} Players",
+    roleGuideBtn: "Guide",
+    roleGuideTitle: "Role Guide",
+    closeBtn: "Close",
+    revealTitle: "Receive Role",
+    revealInstructions: "Pass the device to the player above.",
+    holdToReveal: "Hold to reveal",
+    understoodNext: "Got it, next player",
+    startNightPhase: "Start Night Phase"
   },
   vi: {
     directTitle: "Chơi Trực Tiếp",
@@ -152,17 +160,17 @@ const dictionary = {
     directDescription: "Người chơi ngồi cùng nhau và một người làm quản trò. Thiết lập vai ván đầu, thời gian và danh sách người chơi trước khi bắt đầu.",
     playDirect: "Chơi Trực Tiếp",
     wifiTitle: "WiFi Nội Bộ",
-    wifiSubtitle: "AI quản trò",
+    wifiSubtitle: "Quản trò máy",
     wifiDescription: "Người chơi kết nối cùng mạng Wi-Fi. Hệ thống tự động quản lý vai trò, chu kỳ ngày/đêm, bỏ phiếu và toàn bộ tiến trình trò chơi.",
     playLocal: "Chơi WiFi",
     add: "Thêm",
     emptyPlayers: "Danh sách người chơi sẽ hiển thị tại đây.",
     firstGameConfig: "Thiết Lập Ván Chơi",
-    firstGameHint: "Tùy chỉnh vai trò và thiết lập trước khi bắt đầu.",
+    firstGameHint: "Tùy chỉnh vai trò và các thiết lập trước khi bắt đầu trò chơi.",
     werewolfCount: "Ma Sói",
     wolfTeam: "Phe Sói",
-    wolfWaiting: "Cần 4-15 người",
-    wolfRuleHint: "Tự khóa theo số người chơi.",
+    wolfWaiting: "Yêu cầu từ 4-15 người chơi",
+    wolfRuleHint: "Tự động mở khóa theo số lượng người chơi ·",
     wolfRole: "Ma Sói",
     alphaWolf: "Sói Alpha",
     seer: "Tiên Tri",
@@ -170,7 +178,7 @@ const dictionary = {
     hunter: "Thợ Săn",
     fox: "Cáo",
     jester: "Hề",
-    villagerAuto: "Các vị trí còn lại sẽ tự động là Dân Làng.",
+    villagerAuto: "Các vai trò còn lại sẽ là Dân Làng.",
     timingConfig: "Thiết Lập Thời Gian",
     timingHint: "Cài đặt thời lượng cho từng giai đoạn thảo luận.",
     discussionTime: "Thảo Luận Chung",
@@ -227,17 +235,29 @@ const dictionary = {
     hostRebuttal: "Cho người bị nghi ngờ phản biện ngắn trước khi bỏ phiếu.",
     hostVote: "Đã tới lượt bỏ phiếu. Xác nhận quyết định của làng khi sẵn sàng.",
     specialRoleTriggered: "Hiệu ứng vai đặc biệt đã được kích hoạt.",
-    playersCount: "👥 {n} Người Chơi"
+    playersCount: "{n}/15 Người Chơi",
+    roleGuideBtn: "Hướng dẫn",
+    roleGuideTitle: "Hướng Dẫn Vai Trò",
+    closeBtn: "Đóng",
+    revealTitle: "Nhận Vai Trò",
+    revealInstructions: "Hãy đưa máy cho người có tên ở trên.",
+    holdToReveal: "Nhấn giữ để xem",
+    understoodNext: "Đã hiểu, chuyển máy",
+    startNightPhase: "Bắt đầu Đêm Đầu Tiên"
   }
 };
 
 let players = [];
 let votes = {};
 let eliminated = new Set();
+let playerRoles = {};
+let currentPlayerRevealIndex = 0;
 let currentMode = "direct";
 let phase = "night";
 let timeLeft = 30;
 let firstGameConfig = {
+  werewolf: 0,
+  alphaWolf: 0,
   seer: true,
   doctor: true,
   hunter: false,
@@ -344,11 +364,11 @@ function applySettings() {
 
 function updateModeText() {
   if (currentMode === "direct") {
-    setupTitle.textContent = `🎭 ${t("directTitle")}`;
+    setupTitle.textContent = t("directTitle");
     setupSubtitle.textContent = t("directSubtitle");
     modeBadge.textContent = t("directTitle");
   } else {
-    setupTitle.textContent = `📡 ${t("wifiTitle")}`;
+    setupTitle.textContent = t("wifiTitle");
     setupSubtitle.textContent = t("wifiSubtitle");
     modeBadge.textContent = t("wifiTitle");
   }
@@ -402,26 +422,47 @@ function getWolfRule(playerCount = players.length) {
   return wolfRules[playerCount] || { werewolf: 0, alphaWolf: 0 };
 }
 
-function wolfRoleCount(playerCount = players.length) {
+function getRequiredWolfCount(playerCount = players.length) {
   const rule = getWolfRule(playerCount);
   return rule.werewolf + rule.alphaWolf;
 }
 
-function selectedSpecialRoles() {
-  return specialRoleOrder.filter(role => firstGameConfig[role]);
+function wolfRoleCount() {
+  return firstGameConfig.werewolf + firstGameConfig.alphaWolf;
 }
 
-function selectedRoleCount() {
-  if (!wolfRules[players.length]) return 0;
-  return wolfRoleCount() + selectedSpecialRoles().length;
+function autoAllocateWolves() {
+  const required = getRequiredWolfCount();
+  const current = wolfRoleCount();
+  if (required === 0) {
+    firstGameConfig.werewolf = 0;
+    firstGameConfig.alphaWolf = 0;
+    return;
+  }
+  
+  if (current !== required) {
+    const rule = getWolfRule();
+    firstGameConfig.werewolf = rule.werewolf;
+    firstGameConfig.alphaWolf = rule.alphaWolf;
+  }
 }
 
-function getWolfPlanText() {
-  const rule = getWolfRule();
-  const parts = [];
-  if (rule.werewolf) parts.push(`${rule.werewolf} ${t("wolfRole")}`);
-  if (rule.alphaWolf) parts.push(`${rule.alphaWolf} ${t("alphaWolf")}`);
-  return parts.length ? parts.join(" + ") : t("wolfWaiting");
+function changeWolf(role, delta) {
+  const otherRole = role === 'werewolf' ? 'alphaWolf' : 'werewolf';
+  const required = getRequiredWolfCount();
+  if (required === 0) return;
+  
+  const newVal = firstGameConfig[role] + delta;
+  const newOtherVal = firstGameConfig[otherRole] - delta;
+  
+  if (newVal >= 0 && newOtherVal >= 0 && (newVal + newOtherVal === required)) {
+    firstGameConfig[role] = newVal;
+    firstGameConfig[otherRole] = newOtherVal;
+    updateFirstGameUI();
+    softSound("click");
+  } else {
+    softSound("thump");
+  }
 }
 
 function enforceRoleLimits(changedRole = "") {
@@ -446,14 +487,38 @@ function enforceRoleLimits(changedRole = "") {
   if (adjusted && players.length > 0) softSound("thump");
 }
 
+function selectedSpecialRoles() {
+  return specialRoleOrder.filter(role => firstGameConfig[role]);
+}
+
+function selectedRoleCount() {
+  if (!wolfRules[players.length]) return 0;
+  return wolfRoleCount() + selectedSpecialRoles().length;
+}
+
 function updateFirstGameUI() {
+  autoAllocateWolves();
   enforceRoleLimits();
 
   const hasWolfRule = Boolean(wolfRules[players.length]);
   const wolfCount = wolfRoleCount();
   const specialSlotsLeft = Math.max(0, players.length - wolfCount - 1 - selectedSpecialRoles().length);
-  wolfPlanText.textContent = getWolfPlanText();
-  wolfRuleText.textContent = `${t("wolfRuleHint")} ${players.length}/${maxPlayers}`;
+  
+  const manualConfig = document.getElementById("wolfManualConfig");
+  if (hasWolfRule) {
+    wolfPlanText.style.display = "none";
+    wolfRuleText.style.display = "none";
+    manualConfig.style.display = "block";
+    document.getElementById("wwCount").textContent = firstGameConfig.werewolf;
+    document.getElementById("awCount").textContent = firstGameConfig.alphaWolf;
+  } else {
+    wolfPlanText.style.display = "inline";
+    wolfRuleText.style.display = "inline";
+    manualConfig.style.display = "none";
+    wolfPlanText.textContent = t("wolfWaiting");
+    wolfRuleText.textContent = `${t("wolfRuleHint")} ${players.length}/${maxPlayers}`;
+  }
+
   discussionTimeInput.value = firstGameConfig.discussion;
   rebuttalTimeInput.value = firstGameConfig.rebuttal;
   voteTimeInput.value = firstGameConfig.vote;
@@ -537,6 +602,89 @@ function startGame() {
     return;
   }
 
+  // Generate Deck
+  let deck = [];
+  for (let i = 0; i < firstGameConfig.werewolf; i++) deck.push("wolfRole");
+  for (let i = 0; i < firstGameConfig.alphaWolf; i++) deck.push("alphaWolf");
+  selectedSpecialRoles().forEach(role => deck.push(role));
+  
+  while (deck.length < players.length) deck.push("villager");
+  
+  // Shuffle Deck
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+
+  playerRoles = {};
+  players.forEach((name, i) => {
+    playerRoles[name] = deck[i];
+  });
+
+  currentPlayerRevealIndex = 0;
+  showRoleReveal();
+}
+
+function showRoleReveal() {
+  showScreen("roleRevealScreen");
+  renderRoleReveal();
+}
+
+function renderRoleReveal() {
+  if (currentPlayerRevealIndex >= players.length) {
+    startNightPhase();
+    return;
+  }
+  
+  const playerName = players[currentPlayerRevealIndex];
+  document.getElementById("revealPlayerName").textContent = playerName;
+  
+  const roleId = playerRoles[playerName];
+  const roleObj = roleGuides.find(r => r.id === roleId);
+  const roleTitle = roleObj && roleObj.title ? roleObj.title[settings.language] : t(roleId);
+  
+  const imageMap = {
+    villager: "assest/villager.png",
+    seer: "assest/seer.png",
+    doctor: "assest/doctor.png",
+    hunter: "assest/hunter.png",
+    fox: "assest/fox.png",
+    wolfRole: "assest/werewolf.png",
+    alphaWolf: "assest/alphawolf.png",
+    jester: "assest/jester.png"
+  };
+  
+  document.getElementById("revealRoleImg").src = imageMap[roleId] || "assest/villager.png";
+  document.getElementById("revealRoleName").textContent = roleTitle;
+  
+  document.getElementById("roleRevealCard").classList.remove("is-revealed");
+  
+  const nextBtn = document.getElementById("nextRevealBtn");
+  if (currentPlayerRevealIndex === players.length - 1) {
+    nextBtn.innerHTML = `<span data-i18n="startNightPhase">${t("startNightPhase")}</span>`;
+  } else {
+    nextBtn.innerHTML = `<span data-i18n="understoodNext">${t("understoodNext")}</span>`;
+  }
+}
+
+function startReveal(event) {
+  event.preventDefault();
+  document.getElementById("roleRevealCard").classList.add("is-revealed");
+  softSound("magic");
+}
+
+function stopReveal(event) {
+  event.preventDefault();
+  document.getElementById("roleRevealCard").classList.remove("is-revealed");
+}
+
+function nextRoleReveal() {
+  currentPlayerRevealIndex++;
+  softSound("click");
+  renderRoleReveal();
+}
+
+function startNightPhase() {
   eliminated = new Set();
   phase = "night";
   timeLeft = 30;
@@ -748,3 +896,51 @@ playerNameInput.addEventListener("keydown", event => {
 
 applySettings();
 renderPlayers();
+
+const roleGuides = [
+  { id: "villager", desc: { vi: "Phe Dân làng. Không có kỹ năng. Chỉ suy luận, thảo luận và vote treo cổ.", en: "Village faction. No special abilities. Only deduces, discusses, and votes." }, title: { vi: "Dân Làng", en: "Villager" } },
+  { id: "seer", desc: { vi: "Phe Dân làng. Mỗi đêm chọn 1 người để soi. Biết người đó thuộc phe Sói hay không phải Sói.", en: "Village faction. Checks 1 player each night to see if they are a Wolf or not." } },
+  { id: "doctor", desc: { vi: "Phe Dân làng. Mỗi đêm chọn 1 người để bảo vệ. Nếu người đó bị Sói cắn thì không chết.", en: "Village faction. Protects 1 player each night. That player won't die if bitten by Wolves." } },
+  { id: "hunter", desc: { vi: "Phe Dân làng. Khi bị giết hoặc bị treo cổ, được chọn 1 người bắn theo.", en: "Village faction. If eliminated or voted out, can choose 1 player to shoot and kill." } },
+  { id: "fox", desc: { vi: "Phe Dân làng. Mỗi đêm soi 1 người và 2 người bên cạnh. Nếu trong 3 người có Sói, báo \"Có Sói\". Nếu không có Sói, mất kỹ năng.", en: "Village faction. Checks 3 adjacent players. If there is a Wolf, reports \"Has Wolf\". If not, loses ability." } },
+  { id: "wolfRole", desc: { vi: "Phe Sói. Cả đàn Sói cùng chọn 1 người để giết. Ban ngày giả làm dân để đánh lừa.", en: "Wolf faction. Wolves together choose 1 player to eliminate. Pretends to be a villager." } },
+  { id: "alphaWolf", desc: { vi: "Phe Sói. Sói mạnh hơn. Miễn bị Tiên Tri soi ra Sói 1 lần. Lần đầu bị soi sẽ hiện \"Không phải Sói\".", en: "Wolf faction. Immune to Seer once. First time checked, appears as \"Not a Wolf\"." } },
+  { id: "jester", desc: { vi: "Phe riêng. Thắng riêng nếu bị dân làng treo cổ. Nếu bị Sói giết ban đêm thì không thắng.", en: "Independent faction. Wins if voted out by the village. Loses if killed by Wolves at night." } }
+];
+
+function openRoleGuide() {
+  const list = document.getElementById("roleGuideList");
+  list.innerHTML = "";
+  const imageMap = {
+    villager: "assest/villager.png",
+    seer: "assest/seer.png",
+    doctor: "assest/doctor.png",
+    hunter: "assest/hunter.png",
+    fox: "assest/fox.png",
+    wolfRole: "assest/werewolf.png",
+    alphaWolf: "assest/alphawolf.png",
+    jester: "assest/jester.png"
+  };
+
+  roleGuides.forEach(role => {
+    const title = role.title ? role.title[settings.language] : t(role.id);
+    const desc = role.desc[settings.language];
+    const imgSrc = imageMap[role.id];
+    list.innerHTML += `
+      <div class="role-guide-item" style="display: flex; align-items: center; gap: 16px; padding: 12px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+        <img src="${imgSrc}" alt="${title}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: rgba(0,0,0,0.2);">
+        <div>
+          <h3 style="margin: 0 0 4px 0; color: var(--text); font-size: 16px; font-weight: 600;">${title}</h3>
+          <p style="margin: 0; font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, 0.75);">${desc}</p>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById("roleGuideModal").style.display = "flex";
+  softSound("click");
+}
+
+function closeRoleGuide() {
+  document.getElementById("roleGuideModal").style.display = "none";
+  softSound("click");
+}

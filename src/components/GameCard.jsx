@@ -137,8 +137,8 @@ export default function GameCard({ game }) {
               </h2>
               <p style={{ color: 'var(--text-subtext)', marginBottom: '32px', lineHeight: 1.6, fontSize: '1.1rem' }}>
                 {lang === 'vi' 
-                  ? `${game.title} đang được phát triển và sẽ sớm xuất hiện trên PlayNest. Hãy quay lại trong thời gian tới.` 
-                  : `${game.title} is currently under development and will be available on PlayNest soon. Please check back later.`}
+                  ? `${game.title} đang được phát triển và sẽ sớm xuất hiện trên Ludora Hub. Hãy quay lại trong thời gian tới.` 
+                  : `${game.title} is currently under development and will be available on Ludora Hub soon. Please check back later.`}
               </p>
               <button 
                 onClick={() => setShowModal(false)}

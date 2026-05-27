@@ -52,7 +52,7 @@ export default function Navigation() {
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: 'inherit' }}>
           <motion.div whileHover={{ rotate: 5, scale: 1.1 }}>
-            <img src="/logo.webp" alt="PlayNest Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
+            <img src="/logo.webp" alt="Ludora Hub Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '10px' }} />
           </motion.div>
           <h1 className="nav-logo-text" style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.6rem', fontWeight: 600, letterSpacing: '0.5px' }}>
             Play<span style={{ color: 'var(--accent-blue)' }}>Nest</span>
