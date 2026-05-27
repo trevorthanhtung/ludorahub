@@ -5,14 +5,14 @@ import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
   { id: 'true-or-dare', title: 'True or Dare', players: '2-20', time: '∞', tag: 'HOT', categories: ['party', 'small-group', 'pass-and-play'], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
-  { id: 'mafia', title: 'Ma Sói', players: '4-15', time: '30+', tag: 'SOON', comingSoon: true, categories: ['party', 'small-group', 'local-wifi'], image: '/ww-banner.webp' },
+  { id: 'mafia', title: 'Ma Sói', players: '4-15', time: '30+', tag: 'SOON', comingSoon: true, categories: ['local-wifi'], image: '/ww-banner.webp' },
 ];
 
 const CATEGORY_TABS = [
   { id: 'all', label_vi: 'Tất cả', label_en: 'All Games' },
   { id: 'local-wifi', label_vi: 'Local WiFi', label_en: 'Local WiFi' },
   { id: 'small-group', label_vi: '2–4 người', label_en: '2-4 players' },
-  { id: 'party', label_vi: '5+ người', label_en: '5+ players' }
+  { id: 'party', label_vi: '+5 người', label_en: '+5 players' }
 ];
 
 export default function Home() {
