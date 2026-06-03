@@ -8,6 +8,10 @@ const GAME_INFO = {
   'true-or-dare': {
     title: 'True or Dare',
     url: '/GAMES/TRUE OR DARE/index.html'
+  },
+  'memory-flip-card': {
+    title: 'Memory Flip Card',
+    url: '/GAMES/memory-flip-card/index.html'
   }
 };
 
