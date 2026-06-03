@@ -1,0 +1,11 @@
+{
+  "id": "memory-flip-card",
+  "title": "Memory Flip Card",
+  "description": "Lật thẻ và tìm các cặp giống nhau trong thời gian ngắn nhất.",
+  "category": "Puzzle",
+  "players": "1",
+  "offline": true,
+  "difficulty": "Easy",
+  "entry": "/GAMES/memory-flip-card/index.html",
+  "thumbnail": "thumbnail.png"
+}

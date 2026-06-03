@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Memory Match</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body data-active-theme="animals" data-difficulty="normal">
+  <div class="background-effects">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header glass-panel">
+      <button class="icon-button" id="backToHubBtn" aria-label="Quay lại Hub" data-i18n-aria="backToHub">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="header-titles">
+        <h1 class="game-title" data-i18n="gameTitle">Memory Match</h1>
+        <span class="game-subtitle" data-i18n="subtitle">Tìm cặp giống nhau</span>
+      </div>
+      <button class="icon-button" id="settingsBtn" aria-label="Cài đặt" data-i18n-aria="settings">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </header>
+
+    <!-- Menu Screen -->
+    <div id="menuScreen" class="screen active">
+      <div class="panel glass-panel setup-panel">
+        <div class="badges-row">
+          <span class="badge" data-i18n="player1">1 Người chơi</span>
+          <span class="badge" data-i18n="offline">Offline</span>
+          <span class="badge" data-i18n="puzzle">Puzzle</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="group-label">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span data-i18n="difficulty">Độ khó</span>
+          </label>
+          <div class="segmented-control" id="difficultyOptions" role="group" aria-label="Chọn độ khó">
+            <button class="segment-btn" data-difficulty="easy" aria-pressed="false" data-i18n="easy">Dễ</button>
+            <button class="segment-btn active" data-difficulty="normal" aria-pressed="true" data-i18n="normal">Vừa</button>
+            <button class="segment-btn" data-difficulty="hard" aria-pressed="false" data-i18n="hard">Khó</button>
+            <button class="segment-btn nightmare-btn" data-difficulty="nightmare" aria-pressed="false" data-i18n="nightmare">Nightmare</button>
+          </div>
+          <div id="nightmareInfo" class="nightmare-info" style="display: none;">
+            <p class="warning-text"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: 4px; position:relative; top:2px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><span data-i18n="nightmareWarning">🔥 90s • Max 8 sai • Chaos Shuffle</span></p>
+            <p class="best-score-text">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: 2px; position:relative; top:2px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              <span data-i18n="bestScore">Best Score</span>: <strong class="accent-text" id="bestScoreNightmare" style="font-size:1em;">0</strong> <span id="bestRankNightmare" class="rank-badge">-</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="group-label">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>
+            <span data-i18n="theme">Chủ đề</span>
+          </label>
+          <div class="theme-selector" id="themeOptions" role="group" aria-label="Chọn chủ đề">
+            <button class="theme-btn active" data-theme="animals" aria-pressed="true">
+              <span class="theme-emoji">🐶</span>
+              <span class="theme-name" data-i18n="animals">Động vật</span>
+            </button>
+            <button class="theme-btn" data-theme="food" aria-pressed="false">
+              <span class="theme-emoji">🍔</span>
+              <span class="theme-name" data-i18n="food">Đồ ăn</span>
+            </button>
+            <button class="theme-btn" data-theme="cosmic" aria-pressed="false">
+              <span class="theme-emoji">🪐</span>
+              <span class="theme-name" data-i18n="cosmic">Vũ trụ</span>
+            </button>
+          </div>
+        </div>
+
+        <button id="startBtn" class="primary-btn pulse-btn" aria-label="Bắt đầu chơi">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span data-i18n="start">Bắt đầu chơi</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+      <div class="game-layout">
+        <div class="stats-bar">
+          <div class="stat-pill" id="movesPill">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></span>
+            <div class="stat-info">
+              <span class="stat-label" data-i18n="moves">Lượt</span>
+              <strong class="stat-value" id="movesCount">0</strong>
+            </div>
+          </div>
+          <div class="stat-pill" id="timePill">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+            <div class="stat-info">
+              <span class="stat-label" id="timeLabel" data-i18n="time">Thời gian</span>
+              <strong class="stat-value" id="timeCount">00:00</strong>
+            </div>
+          </div>
+          <div class="stat-pill" id="mistakesPill" style="display: none;">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            <div class="stat-info">
+              <span class="stat-label" data-i18n="mistakes">Lỗi sai</span>
+              <strong class="stat-value" id="mistakesCount">0/8</strong>
+            </div>
+          </div>
+          <div class="stat-pill" id="pairsPill">
+            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span>
+            <div class="stat-info">
+              <span class="stat-label" data-i18n="pairs">Đã tìm</span>
+              <strong class="stat-value" id="pairsCount">0/6</strong>
+            </div>
+          </div>
+        </div>
+        
+        <div class="board-container">
+          <div id="gameBoard" class="game-board" role="grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Overlay -->
+    <div id="previewOverlay" class="screen modal-overlay overlay-transparent">
+      <div class="countdown-text" id="countdownText">3</div>
+    </div>
+    
+    <!-- Chaos Notification -->
+    <div id="chaosNotification" class="notification-pop">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-right:8px; position:relative; top:3px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span data-i18n="chaosShuffle">Chaos Shuffle!</span>
+    </div>
+
+    <!-- Win Screen Modal Overlay -->
+    <div id="winScreen" class="screen modal-overlay">
+      <div id="confettiContainer" class="confetti-container"></div>
+      <div class="modal-content glass-panel">
+        <div class="win-badge" id="resultBadge">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        </div>
+        <h2 class="win-title" id="resultTitle" data-i18n="youWin">Chiến thắng!</h2>
+        <p class="win-subtitle" id="resultSubtitle">Perfect Memory</p>
+        
+        <div class="win-stats-grid">
+          <div class="win-stat-box" id="resultTimeBox">
+            <span class="stat-label" id="resultTimeLabel" data-i18n="time">Thời gian</span>
+            <span class="stat-value accent-text" id="winTime">00:00</span>
+          </div>
+          <div class="win-stat-box" id="resultPairsBox" style="display:none;">
+            <span class="stat-label" data-i18n="foundPairs">Cặp đã tìm</span>
+            <span class="stat-value accent-text" id="winPairs">0</span>
+          </div>
+          <div class="win-stat-box" id="resultMovesBox">
+            <span class="stat-label" data-i18n="flipCount">Lượt lật</span>
+            <span class="stat-value accent-text" id="winMoves">0</span>
+          </div>
+          <div class="win-stat-box nightmare-only" id="resultMistakesBox" style="display:none;">
+            <span class="stat-label" data-i18n="mistakes">Lỗi sai</span>
+            <span class="stat-value accent-text" id="winMistakes">0</span>
+          </div>
+          <div class="win-stat-box nightmare-only" id="resultScoreBox" style="display:none;">
+            <span class="stat-label" data-i18n="score">Score</span>
+            <span class="stat-value accent-text" id="winScore">0</span>
+          </div>
+          <div class="win-stat-box nightmare-only" id="resultRankBox" style="display:none;">
+            <span class="stat-label" data-i18n="rank">Rank</span>
+            <span class="stat-value accent-text rank-text" id="winRank">S</span>
+          </div>
+        </div>
+        
+        <div class="win-actions">
+          <button id="replayBtn" class="primary-btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="playAgain">Chơi lại ngay</span>
+          </button>
+          <div class="secondary-actions">
+            <button id="menuBtn" class="secondary-btn">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-right: 6px; position:relative; top:2px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span data-i18n="setup">Cài đặt</span>
+            </button>
+            <button id="winBackToHubBtn" class="secondary-btn">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-right: 6px; position:relative; top:2px;"><path d="m15 18-6-6 6-6"/></svg>
+              <span data-i18n="backToHub">Về Hub</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal Overlay -->
+    <div id="settingsModal" class="screen modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-content glass-panel" style="max-width: 360px; position: relative;">
+        <button class="icon-button close-modal-btn" id="closeSettingsBtn" aria-label="Đóng" data-i18n-aria="close">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <h2 class="win-title" id="settingsTitle" data-i18n="settings" style="margin-bottom: 8px;">Cài đặt</h2>
+        
+        <div class="settings-list">
+          <div class="settings-item">
+            <label class="group-label">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              <span data-i18n="sound">Âm thanh</span>
+            </label>
+            <div class="segmented-control" id="soundToggleOptions">
+              <button class="segment-btn" id="soundOnBtn" data-value="true" data-i18n="soundOn">Bật</button>
+              <button class="segment-btn" id="soundOffBtn" data-value="false" data-i18n="soundOff">Tắt</button>
+            </div>
+          </div>
+          
+          <div class="settings-item">
+            <div class="volume-header">
+              <label class="group-label">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                <span data-i18n="volume">Âm lượng</span>
+              </label>
+              <span id="volumeValueDisplay" class="volume-value">70%</span>
+            </div>
+            <input type="range" id="volumeSlider" class="custom-slider" min="0" max="100" value="70" aria-label="Âm lượng">
+          </div>
+          
+          <div class="settings-item">
+            <label class="group-label">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+              <span data-i18n="language">Ngôn ngữ</span>
+            </label>
+            <div class="segmented-control" id="languageOptions">
+              <button class="segment-btn active" data-lang="vi" data-i18n="vietnamese">Tiếng Việt</button>
+              <button class="segment-btn" data-lang="en" data-i18n="english">English</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

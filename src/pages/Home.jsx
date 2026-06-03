@@ -4,6 +4,7 @@ import GameCard from '../components/GameCard';
 import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
+  { id: 'memory-flip-card', title: 'Memory Flip Card', players: '1', time: '5', tag: 'NEW', categories: ['solo'], externalUrl: '/GAMES/memory-flip-card/index.html' },
   { id: 'true-or-dare', title: 'True or Dare', players: '5+', time: '∞', tag: 'HOT', categories: [], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
   { id: 'mafia', title: 'Ma Sói', players: '5+', time: '30+', tag: 'SOON', comingSoon: true, categories: ['local-wifi'], image: '/ww-banner.webp' },
 ];
@@ -11,6 +12,7 @@ const MOCK_GAMES = [
 const CATEGORY_TABS = [
   { id: 'all', label_vi: 'Tất cả', label_en: 'All Games' },
   { id: 'local-wifi', label_vi: 'Mạng Nội Bộ', label_en: 'Local WiFi' },
+  { id: 'solo', label_vi: '1 người', label_en: '1 player' },
   { id: 'small-group', label_vi: '2–4 người', label_en: '2-4 players' },
   { id: 'party', label_vi: '+5 người', label_en: '+5 players' }
 ];
