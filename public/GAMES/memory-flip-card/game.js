@@ -23,13 +23,13 @@ const I18N = {
     easy: "Dễ",
     normal: "Vừa",
     hard: "Khó",
-    nightmare: "Nightmare",
-    nightmareWarning: "🔥 90s • Max 8 sai • Chaos Shuffle",
+    nightmare: "Ác mộng",
+    nightmareWarning: "90s • Tối đa 8 lỗi • Chaos Shuffle",
     animals: "Động vật",
     food: "Đồ ăn",
     cosmic: "Vũ trụ",
     youWin: "Chiến thắng!",
-    youWinNightmare: "Sống sót Nightmare!",
+    youWinNightmare: "Sống sót Ác mộng!",
     gameOver: "Bạn đã thua!",
     timeout: "Hết giờ!",
     playAgain: "Chơi lại ngay",
@@ -40,6 +40,7 @@ const I18N = {
     offline: "Offline",
     puzzle: "Puzzle",
     setup: "Đổi cài đặt",
+    backToMenu: "Về Menu chính",
     chaosShuffle: "Chaos Shuffle!",
     previewText: "Ghi nhớ trong",
     foundPairs: "Cặp đã tìm",
@@ -70,7 +71,7 @@ const I18N = {
     normal: "Normal",
     hard: "Hard",
     nightmare: "Nightmare",
-    nightmareWarning: "🔥 90s • Max 8 misses • Chaos Shuffle",
+    nightmareWarning: "90s • Max 8 misses • Chaos Shuffle",
     animals: "Animals",
     food: "Food",
     cosmic: "Cosmic",
@@ -86,6 +87,7 @@ const I18N = {
     offline: "Offline",
     puzzle: "Puzzle",
     setup: "Setup",
+    backToMenu: "Back to Menu",
     chaosShuffle: "Chaos Shuffle!",
     previewText: "Memorize in",
     foundPairs: "Pairs Found",
@@ -164,8 +166,7 @@ const resultSubtitle = document.getElementById('resultSubtitle');
 
 const replayBtn = document.getElementById('replayBtn');
 const menuBtn = document.getElementById('menuBtn');
-const backToHubBtn = document.getElementById('backToHubBtn');
-const winBackToHubBtn = document.getElementById('winBackToHubBtn');
+const backToMenuBtn = document.getElementById('backToMenuBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
 
@@ -235,6 +236,12 @@ function initGame() {
     showScreen('menu'); 
   });
   
+  backToMenuBtn.addEventListener('click', () => {
+    playSound('button');
+    resetGameStats();
+    showScreen('menu');
+  });
+  
   settingsBtn.addEventListener('click', () => {
     playSound('button');
     screens.settings.classList.add('active');
@@ -270,14 +277,6 @@ function initGame() {
       applyLanguage();
     });
   });
-
-  // Hub Navigation
-  const goBackToHub = () => {
-    playSound('button');
-    window.location.href = '/'; 
-  };
-  backToHubBtn.addEventListener('click', goBackToHub);
-  winBackToHubBtn.addEventListener('click', goBackToHub);
 }
 
 // Settings & i18n
@@ -463,6 +462,16 @@ function playSound(type) {
 function showScreen(screenName) {
   Object.values(screens).forEach(screen => screen.classList.remove('active'));
   screens[screenName].classList.add('active');
+  
+  const backBtn = document.getElementById('backToMenuBtn');
+  const spacer = document.getElementById('headerLeftSpacer');
+  if (screenName === 'game') {
+    backBtn.style.display = 'inline-flex';
+    spacer.style.display = 'none';
+  } else {
+    backBtn.style.display = 'none';
+    spacer.style.display = 'block';
+  }
 }
 
 // Core Game Logic

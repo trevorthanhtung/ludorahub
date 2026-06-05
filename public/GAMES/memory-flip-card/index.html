@@ -16,9 +16,10 @@
   <div class="app-container">
     <!-- Header -->
     <header class="header glass-panel">
-      <button class="icon-button" id="backToHubBtn" aria-label="Quay lại Hub" data-i18n-aria="backToHub">
+      <button class="icon-button" id="backToMenuBtn" aria-label="Về Menu" data-i18n-aria="backToMenu" style="display: none;">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
       </button>
+      <div id="headerLeftSpacer" style="width: 44px; height: 44px;"></div>
       <div class="header-titles">
         <h1 class="game-title" data-i18n="gameTitle">Memory Match</h1>
         <span class="game-subtitle" data-i18n="subtitle">Tìm cặp giống nhau</span>
@@ -31,15 +32,8 @@
     <!-- Menu Screen -->
     <div id="menuScreen" class="screen active">
       <div class="panel glass-panel setup-panel">
-        <div class="badges-row">
-          <span class="badge" data-i18n="player1">1 Người chơi</span>
-          <span class="badge" data-i18n="offline">Offline</span>
-          <span class="badge" data-i18n="puzzle">Puzzle</span>
-        </div>
-
         <div class="setting-group">
           <label class="group-label">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             <span data-i18n="difficulty">Độ khó</span>
           </label>
           <div class="segmented-control" id="difficultyOptions" role="group" aria-label="Chọn độ khó">
@@ -49,7 +43,10 @@
             <button class="segment-btn nightmare-btn" data-difficulty="nightmare" aria-pressed="false" data-i18n="nightmare">Nightmare</button>
           </div>
           <div id="nightmareInfo" class="nightmare-info" style="display: none;">
-            <p class="warning-text"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: 4px; position:relative; top:2px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><span data-i18n="nightmareWarning">🔥 90s • Max 8 sai • Chaos Shuffle</span></p>
+            <p class="warning-text">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: 4px; position:relative; top:2px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+              <span data-i18n="nightmareWarning">90s • Max 8 sai • Chaos Shuffle</span>
+            </p>
             <p class="best-score-text">
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: 2px; position:relative; top:2px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
               <span data-i18n="bestScore">Best Score</span>: <strong class="accent-text" id="bestScoreNightmare" style="font-size:1em;">0</strong> <span id="bestRankNightmare" class="rank-badge">-</span>
@@ -59,7 +56,6 @@
 
         <div class="setting-group">
           <label class="group-label">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>
             <span data-i18n="theme">Chủ đề</span>
           </label>
           <div class="theme-selector" id="themeOptions" role="group" aria-label="Chọn chủ đề">
@@ -78,8 +74,7 @@
           </div>
         </div>
 
-        <button id="startBtn" class="primary-btn pulse-btn" aria-label="Bắt đầu chơi">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <button class="primary-btn pulse-btn" id="startBtn">
           <span data-i18n="start">Bắt đầu chơi</span>
         </button>
       </div>
@@ -174,18 +169,15 @@
         </div>
         
         <div class="win-actions">
-          <button id="replayBtn" class="primary-btn">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-            <span data-i18n="playAgain">Chơi lại ngay</span>
-          </button>
+          <div class="primary-action">
+            <button id="replayBtn" class="primary-btn">
+              <span data-i18n="playAgain">Chơi lại ngay</span>
+            </button>
+          </div>
           <div class="secondary-actions">
             <button id="menuBtn" class="secondary-btn">
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-right: 6px; position:relative; top:2px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               <span data-i18n="setup">Cài đặt</span>
-            </button>
-            <button id="winBackToHubBtn" class="secondary-btn">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-right: 6px; position:relative; top:2px;"><path d="m15 18-6-6 6-6"/></svg>
-              <span data-i18n="backToHub">Về Hub</span>
             </button>
           </div>
         </div>
