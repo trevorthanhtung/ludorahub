@@ -1,0 +1,10 @@
+{
+  "id": "werewolf-offline",
+  "title": "Ma Sói Offline",
+  "description": "Bản quản trò 1 máy để chia vai và điều phối ván Ma Sói cho nhóm 5-15 người.",
+  "category": "Party",
+  "players": "5-15",
+  "offline": true,
+  "difficulty": "Medium",
+  "entry": "/GAMES/werewolf-offline/index.html"
+}

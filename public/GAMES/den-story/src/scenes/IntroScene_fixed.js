@@ -1,16 +1,16 @@
-import TextBox from "../ui/TextBox.js?v=game-fonts-1";
+﻿import TextBox from "../ui/TextBox.js?v=game-fonts-1";
 
 const INTRO_TEXT = {
   sceneOne: [
     "Trong một góc nhỏ của thành phố, một mèo mẹ đang cố gắng nuôi những đứa con cuối cùng của mình.",
     "Trên chiếc sofa xanh mint cũ, bốn đứa nhỏ lăn qua lăn lại như thể cả thế giới chỉ vừa mới bắt đầu.",
-    "Ba đứa tranh nhau cuộn len, cắn món đồ chơi, gọi sự chú ý bằng tất cả sức sống bé xíu của chúng.",
-    "Còn một đứa đen nhánh nằm nép hơn một chút. Nhỏ hơn. Im hơn. Nhưng đôi mắt thì không chịu tắt.",
+    "Ba đứa tranh nhau cuộn len, cắn món đồ chơi, gọi sự chú ý bằng tất cả sức sống bé xíu của chúna.",
+    "Còn một đứa đen nhánh nằm nép hơn một chút. Nhỏ hơn. Im hơn. Nhưna đôi mắt thì khôna chịu tắt.",
   ],
   otherKitten:
-    "Có nhiều lựa chọn tốt hơn... nhưng câu chuyện này không thuộc về nó.",
+    "Một lựa chọn rất dễ thương. Nhưna số phận khẽ lắc đầu: câu chuyện này đang chờ một ánh mắt khác.",
   destiny: [
-    "Không ai biết vì sao bàn tay ấy dừng lại trước Đen.",
+    "Khôna ai biết vì sao bàn tay ấy dừna lại trước Đen.",
     "Có thể vì nó bé quá, nên người ta sợ nó bị bỏ quên.",
     "Có thể vì đôi mắt ấy nhìn thẳng vào một nơi rất mềm trong lòng người.",
     "Hoặc có thể... có những câu chuyện tự biết cách chọn nhân vật chính của mình.",
@@ -28,10 +28,12 @@ const KITTENS = [
     body: 0xe59645,
     accent: 0xffc177,
     eye: 0x28313a,
-    tailLength: 1,
+    tailLenath: 1,
     pose: "pounce",
     toy: "yarn",
     text: "Khỏe mạnh",
+    rejectText:
+      "Cam khỏe khoắn và ấm như một đốm nắng nhỏ. Ai chọn Cam chắc sẽ có những naày rất vui... nhưna khôna phải những naày mà câu chuyện này cần kể.",
   },
   {
     id: "den",
@@ -42,25 +44,27 @@ const KITTENS = [
     body: 0x111317,
     accent: 0x252932,
     eye: 0xb9f7ff,
-    tailLength: 0.33,
+    tailLenath: 0.33,
     pose: "sit",
     toy: "feather",
-    text: "Nhỏ hơn những đứa khác. Nhưng đôi mắt rất sáng.",
+    text: "Nhỏ hơn những đứa khác. Nhưna đôi mắt rất sáng.",
     isDen: true,
   },
   {
     id: "white",
-    name: "Trắng",
+    name: "Trắna",
     x: 592,
     y: 292,
     scale: 0.78,
     body: 0xf4eee3,
     accent: 0xd7cfc4,
     eye: 0x31425a,
-    tailLength: 1,
+    tailLenath: 1,
     pose: "roll",
     toy: "block",
     text: "Tinh nghịch",
+    rejectText:
+      "Trắna tinh nghịch đến mức cả căn phòng như sáng hơn một chút. Nhưna mỗi câu chuyện chỉ có một nhịp tim bí mật, và nhịp này khôna gọi tên Trắna.",
   },
   {
     id: "tabby",
@@ -72,10 +76,12 @@ const KITTENS = [
     accent: 0xc2a07b,
     stripe: 0x4f3b2d,
     eye: 0x243138,
-    tailLength: 1,
+    tailLenath: 1,
     pose: "stretch",
     toy: "yarn",
-    text: "Năng động",
+    text: "Năna động",
+    rejectText:
+      "Mướp lao tới như đã sẵn sàng đi khám phá cả thế giới. Một khởi đầu đẹp, chỉ là con đường ấy rẽ sang một câu chuyện khác.",
   },
 ];
 
@@ -92,10 +98,9 @@ export default class IntroScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("den-kitten", "./img/den_kitten.webp");
+    this.load.image("den-baby-original", "./assets/sprites/den-baby-original.png?v=game-fonts-1");
     this.load.image("den-title-card", "./assets/ui/den-title-card.png");
     this.load.image("den-logo-original", "./assets/ui/den-logo.png");
-    this.load.image("background_1", "./img/background_1.webp");
   }
 
   create() {
@@ -105,15 +110,16 @@ export default class IntroScene extends Phaser.Scene {
     this.selectionLocked = false;
     this.kittenNodes = new Map();
     this.livingRoomObjects = [];
-    this.uiObjects = [];
 
-    this.cameras.main.setBackgroundColor("#020202");
+    this.cameras.main.setBackaroundColor("#020202");
     this.createPixelTextures();
-    this.createMissingPhotoTexture();
+    this.createMissinaPhotoTexture();
+    this.createTitleCardTexture();
     this.createLivingRoom();
     this.createKittens();
     this.createSelectionUi();
     this.createDenPortrait();
+    this.createSkipButton();
 
     this.sceneTitle = this.add
       .text(54, 44, "Đàn mèo", {
@@ -128,19 +134,12 @@ export default class IntroScene extends Phaser.Scene {
     this.layoutTextBox();
 
     this.fade = this.add.rectangle(480, 270, 960, 540, 0x020202, 1).setDepth(100);
-    
-    this.uiObjects.push(this.sceneTitle, this.textBox.container, this.selectionHint, this.description, this.denPortrait, this.fade);
-
-    this.uiCamera = this.cameras.add(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    this.cameras.main.ignore(this.uiObjects);
-    this.uiCamera.ignore(this.livingRoomObjects);
 
     this.input.on("pointerdown", this.handleSceneTap, this);
     this.scale.on("resize", this.layoutTextBox, this);
 
     if (!this.forceReplay && window.localStorage?.getItem("den-story:intro-seen") === "true") {
       this.fade.setAlpha(0);
-      this.livingRoomObjects.forEach(obj => obj.setAlpha(1));
       this.showLoaoAndStart();
       return;
     }
@@ -202,7 +201,7 @@ export default class IntroScene extends Phaser.Scene {
     sofa.width = 190;
     sofa.height = 80;
     const sofaCtx = sofa.getContext("2d");
-    sofaCtx.imageSmoothingEnabled = false;
+    sofaCtx.imageSmoothinaEnabled = false;
     rect(sofaCtx, 10, 35, 170, 28, "#66b99f");
     rect(sofaCtx, 20, 14, 150, 40, "#85d9bd");
     rect(sofaCtx, 2, 29, 20, 38, "#58a98d");
@@ -228,30 +227,30 @@ export default class IntroScene extends Phaser.Scene {
       canvas.width = 64;
       canvas.height = 64;
       const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothinaEnabled = false;
       const body = toCss(kitten.body);
       const accent = toCss(kitten.accent);
       const outline = kitten.isDen ? "#050607" : "#3f3029";
       const eye = toCss(kitten.eye);
 
       rect(ctx, 16, 45, 28, 4, "rgba(0,0,0,0.18)");
-      if (kitten.tailLength < 1) {
-        rect(ctx, 15, 37, 6, 5, outline);
-        rect(ctx, 16, 38, 4, 3, accent);
+      if (kitten.tailLenath < 1) {
+        rect(ctx, 12, 38, 8, 5, outline);
+        rect(ctx, 13, 39, 6, 3, accent);
       } else {
-        rect(ctx, 7, 34, 14, 5, outline);
-        rect(ctx, 9, 33, 12, 4, accent);
-        rect(ctx, 3, 30, 6, 5, outline);
-        rect(ctx, 4, 30, 4, 3, accent);
+        rect(ctx, 5, 35, 21, 5, outline);
+        rect(ctx, 7, 34, 19, 4, accent);
+        rect(ctx, 3, 32, 7, 5, outline);
+        rect(ctx, 4, 32, 5, 3, accent);
       }
 
-      rect(ctx, 19, 32, 23, 14, outline);
-      rect(ctx, 21, 31, 19, 13, body);
-      rect(ctx, 24, 38, 14, 6, accent);
-      rect(ctx, 20, 45, 6, 3, outline);
-      rect(ctx, 33, 45, 6, 3, outline);
-      rect(ctx, 21, 44, 4, 3, accent);
-      rect(ctx, 34, 44, 4, 3, accent);
+      rect(ctx, 17, 30, 29, 17, outline);
+      rect(ctx, 19, 29, 25, 16, body);
+      rect(ctx, 24, 38, 17, 6, accent);
+      rect(ctx, 18, 44, 7, 4, outline);
+      rect(ctx, 34, 44, 7, 4, outline);
+      rect(ctx, 19, 43, 6, 4, accent);
+      rect(ctx, 34, 43, 6, 4, accent);
 
       rect(ctx, 27, 15, 24, 23, outline);
       rect(ctx, 29, 17, 20, 20, body);
@@ -269,9 +268,9 @@ export default class IntroScene extends Phaser.Scene {
 
       if (kitten.stripe) {
         const stripe = toCss(kitten.stripe);
-        rect(ctx, 24, 32, 3, 11, stripe);
-        rect(ctx, 31, 31, 3, 12, stripe);
-        rect(ctx, 38, 32, 3, 10, stripe);
+        rect(ctx, 23, 30, 3, 14, stripe);
+        rect(ctx, 32, 29, 3, 15, stripe);
+        rect(ctx, 41, 30, 3, 13, stripe);
         rect(ctx, 34, 18, 3, 6, stripe);
         rect(ctx, 40, 18, 3, 6, stripe);
         rect(ctx, 46, 20, 3, 5, stripe);
@@ -279,20 +278,81 @@ export default class IntroScene extends Phaser.Scene {
 
       if (kitten.id === "white") {
         rect(ctx, 37, 16, 5, 4, "#ffffff");
-        rect(ctx, 22, 32, 6, 5, "#ffffff");
+        rect(ctx, 22, 30, 8, 6, "#ffffff");
       }
 
       if (kitten.isDen) {
         rect(ctx, 31, 20, 13, 4, "#2d3139");
-        rect(ctx, 21, 37, 19, 3, "#6c1c2e");
+        rect(ctx, 21, 36, 21, 3, "#6c1c2e");
       }
 
       this.textures.addCanvas(`kitten-${kitten.id}-pixel`, canvas);
     });
   }
 
+  createTitleCardTexture() {
+    if (this.textures.exists("den-title-card-fallback")) {
+      return;
+    }
 
-  createMissingPhotoTexture() {
+    const canvas = document.createElement("canvas");
+    canvas.width = 960;
+    canvas.height = 540;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothinaEnabled = false;
+
+    ctx.fillStyle = "#efe4cf";
+    ctx.fillRect(0, 0, 960, 540);
+    for (let i = 0; i < 5200; i += 1) {
+      const shade = Phaser.Math.Between(210, 245);
+      ctx.fillStyle = `rgba(${shade}, ${shade - 14}, ${shade - 38}, 0.14)`;
+      ctx.fillRect(Phaser.Math.Between(0, 960), Phaser.Math.Between(0, 540), 1, 1);
+    }
+
+    ctx.fillStyle = "#070705";
+    ctx.strokeStyle = "#070705";
+    ctx.lineCap = "square";
+    ctx.lineJoin = "miter";
+    ctx.font = "bold 164px Georgia, serif";
+    ctx.fillText("ĐEN", 280, 314);
+
+    ctx.beginPath();
+    ctx.moveTo(172, 300);
+    ctx.lineTo(224, 118);
+    ctx.lineTo(278, 300);
+    ctx.lineTo(230, 265);
+    ctx.lineTo(172, 300);
+    ctx.fill();
+
+    ctx.fillStyle = "#efe4cf";
+    ctx.beginPath();
+    ctx.ellipse(200, 225, 24, 16, 0.14, 0, Math.PI * 2);
+    ctx.ellipse(252, 225, 24, 16, -0.14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#070705";
+    ctx.fillRect(199, 210, 5, 30);
+    ctx.fillRect(251, 210, 5, 30);
+
+    ctx.strokeStyle = "#070705";
+    ctx.lineWidth = 10;
+    for (let i = 0; i < 18; i += 1) {
+      const startX = Phaser.Math.Between(170, 740);
+      const startY = Phaser.Math.Between(160, 370);
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(startX + Phaser.Math.Between(-120, 160), startY + Phaser.Math.Between(-28, 28));
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = "rgba(7, 7, 5, 0.75)";
+    for (let i = 0; i < 90; i += 1) {
+      ctx.fillRect(Phaser.Math.Between(150, 810), Phaser.Math.Between(100, 410), Phaser.Math.Between(2, 6), Phaser.Math.Between(2, 6));
+    }
+
+    this.textures.addCanvas("den-title-card-fallback", canvas);
+  }
+
+  createMissinaPhotoTexture() {
     if (this.textures.exists("den-photo-needed")) {
       return;
     }
@@ -301,7 +361,7 @@ export default class IntroScene extends Phaser.Scene {
     canvas.width = 320;
     canvas.height = 320;
     const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothinaEnabled = false;
     ctx.fillStyle = "#11100d";
     ctx.fillRect(0, 0, 320, 320);
     ctx.strokeStyle = "#ffe0a1";
@@ -309,11 +369,11 @@ export default class IntroScene extends Phaser.Scene {
     ctx.strokeRect(18, 18, 284, 284);
     ctx.fillStyle = "#ffe0a1";
     ctx.font = "bold 24px Pixelify Sans, sans-serif";
-    ctx.textAlign = "center";
+    ctx.textAlian = "center";
     ctx.fillText("Đặt ảnh gốc Đen", 160, 142);
     ctx.font = "18px VT323, monospace";
-    ctx.fillText("den_kitten.webp", 160, 178);
-    ctx.fillText("vào img/", 160, 208);
+    ctx.fillText("den-baby-original.png", 160, 178);
+    ctx.fillText("vào assets/sprites", 160, 208);
     this.textures.addCanvas("den-photo-needed", canvas);
   }
 
@@ -374,9 +434,9 @@ export default class IntroScene extends Phaser.Scene {
 
   createSelectionUi() {
     this.selectionHint = this.add
-      .text(480, 68, "Hãy chọn một bé mèo", {
+      .text(480, 72, "Hãy chọn một bé mèo", {
         fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-        fontSize: "30px",
+        fontSize: "26px",
         color: "#fff5df",
       })
       .setOrigin(0.5)
@@ -384,13 +444,12 @@ export default class IntroScene extends Phaser.Scene {
       .setDepth(48);
 
     this.description = this.add
-      .text(480, 114, "", {
+      .text(480, 112, "", {
         fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-        fontSize: "24px",
+        fontSize: "20px",
         color: "#ffe0a1",
         align: "center",
-        lineSpacing: 8,
-        wordWrap: { width: 720 },
+        wordWrap: { width: 760 },
       })
       .setOrigin(0.5)
       .setAlpha(0)
@@ -399,7 +458,7 @@ export default class IntroScene extends Phaser.Scene {
 
   createDenPortrait() {
     this.denPortrait = this.add.container(736, 174).setAlpha(0).setDepth(78).setScrollFactor(0);
-    const portraitKey = this.textures.exists("den-kitten") ? "den-kitten" : "den-photo-needed";
+    const portraitKey = this.textures.exists("den-baby-original") ? "den-baby-original" : "den-photo-needed";
     const shadow = this.add.rectangle(8, 8, 270, 286, 0x000000, 0.35);
     const frame = this.add.rectangle(0, 0, 270, 286, 0x11100d, 0.92).setStrokeStyle(4, 0xffe0a1, 1);
     const portrait = this.add
@@ -408,7 +467,7 @@ export default class IntroScene extends Phaser.Scene {
       .setOrigin(0.5);
     const labelBack = this.add.rectangle(0, 156, 270, 40, 0x11100d, 0.96);
     const label = this.add
-      .text(0, 156, portraitKey === "den-kitten" ? "Đen hồi nhỏ" : "Cần ảnh gốc của Đen", {
+      .text(0, 156, portraitKey === "den-baby-original" ? "Đen hồi nhỏ" : "Cần ảnh gốc của Đen", {
         fontFamily: '"Pixelify Sans", system-ui, sans-serif',
         fontSize: "16px",
         color: "#ffe0a1",
@@ -418,6 +477,25 @@ export default class IntroScene extends Phaser.Scene {
     this.denPortrait.add([shadow, frame, portrait, labelBack, label]);
   }
 
+  createSkipButton() {
+    this.skipButton = this.add
+      .text(902, 30, "Bỏ qua Intro", {
+        fontFamily: '"VT323", "Pixelify Sans", monospace',
+        fontSize: "16px",
+        color: "#fff5df",
+        backgroundColor: "rgba(7, 7, 7, 0.76)",
+        padding: { x: 14, y: 8 },
+      })
+      .setOrigin(1, 0)
+      .setDepth(120)
+      .setInteractive({ useHandCursor: true });
+
+    this.skipButton.on("pointerdown", (pointer, localX, localY, event) => {
+      event?.stopPropagation();
+      window.localStorage?.setItem("den-story:intro-seen", "true");
+      this.scene.start("ChapterOneScene");
+    });
+  }
 
   drawKitten(kitten) {
     const container = this.add.container(kitten.x, kitten.y).setDepth(20);
@@ -623,170 +701,84 @@ export default class IntroScene extends Phaser.Scene {
 
   showLoaoAndStart() {
     this.phase = "logo";
-    if (this.textBox) this.textBox.hide();
-    if (this.sceneTitle) this.sceneTitle.setAlpha(0);
-    
-    if (this.denPortrait) {
-      this.tweens.add({ targets: this.denPortrait, alpha: 0, duration: 500, ease: "Sine.easeIn" });
-    }
+    this.textBox.hide();
+    this.skipButton.setAlpha(0).disableInteractive();
+    this.tweens.add({ targets: this.denPortrait, alpha: 0, duration: 500, ease: "Sine.easeIn" });
     this.cameras.main.pan(GAME_WIDTH / 2, GAME_HEIGHT / 2, 900, "Sine.easeInOut");
     this.cameras.main.zoomTo(1, 900, "Sine.easeInOut");
 
-    let splashDelay = 0;
-    let splashBg = null;
-    if (this.textures.exists("background_1")) {
-      splashBg = this.add.image(480, 270, "background_1").setDepth(79).setAlpha(0).setDisplaySize(960, 540);
-      this.cameras.main.ignore(splashBg);
-      this.uiObjects.push(splashBg);
-      this.tweens.add({ targets: splashBg, alpha: 1, duration: 900, ease: "Sine.easeInOut" });
-      splashDelay = 2200; 
-      this.tweens.add({ targets: splashBg, alpha: 0, duration: 1000, delay: splashDelay + 200 });
-    }
+    const overlay = this.add.rectangle(480, 270, 960, 540, 0x050403, 0.72).setDepth(80).setAlpha(0);
+    const titleKey = this.textures.exists("den-title-card") ? "den-title-card" : this.textures.exists("den-logo-original") ? "den-logo-original" : "den-title-card-fallback";
+    const titleCard = this.add
+      .image(480, 214, titleKey)
+      .setDepth(82)
+      .setAlpha(0)
+      .setDisplaySize(titleKey === "den-logo-original" ? 760 : 720, titleKey === "den-logo-original" ? 250 : 405);
 
-    const overlay = this.add.rectangle(480, 270, 960, 540, 0x050403, 0.86).setDepth(80).setAlpha(0);
-    this.uiObjects.push(overlay);
+    const subtitle = this.add
+      .text(480, 344, "The Story of Đen", {
+        fontFamily: '"VT323", "Pixelify Sans", monospace',
+        fontSize: "24px",
+        color: "#ffe0a1",
+        align: "center",
+        shadow: { offsetX: 2, offsetY: 2, color: "#000000", blur: 0, fill: true },
+      })
+      .setOrigin(0.5)
+      .setDepth(83)
+      .setAlpha(0);
 
-    for (let i = 0; i < 24; i++) {
-       const p = this.add.rectangle(Phaser.Math.Between(0, 960), Phaser.Math.Between(0, 540), 3, 3, 0xfce1b6, Phaser.Math.FloatBetween(0.08, 0.35)).setDepth(81).setAlpha(0);
-       this.uiObjects.push(p);
-       this.cameras.main.ignore(p);
-       this.tweens.add({
-         targets: p,
-         y: p.y - Phaser.Math.Between(40, 110),
-         alpha: { start: 0, to: p.alpha, yoyo: true },
-         duration: Phaser.Math.Between(3500, 7000),
-         delay: splashDelay + Phaser.Math.Between(0, 2000),
-         repeat: -1
-       });
-    }
+    const startButton = this.createMenuButton(480, 408, "Bắt đầu", () => this.scene.start("ChapterOneScene"));
+    const continueButton = this.createMenuButton(382, 466, "Tiếp tục", () => this.scene.start("ChapterOneScene"), true);
+    const settingsButton = this.createMenuButton(586, 466, "Cài đặt", () => this.showSettingsNotice(), true);
 
-    const silhouette = this.add.image(620, 134, "kitten-den-pixel").setTintFill(0x000000).setAlpha(0).setDepth(81).setDisplaySize(72, 72);
-    this.uiObjects.push(silhouette);
-
-    const titleText = this.add.text(480, 160, "ĐEN", {
-      fontFamily: '"Silkscreen", system-ui, sans-serif',
-      fontSize: "116px",
-      color: "#f5e6d3",
-      shadow: { offsetX: 4, offsetY: 5, color: "#000000", blur: 0, fill: true },
-    }).setOrigin(0.5).setDepth(82).setAlpha(0);
-
-    const subtitleText = this.add.text(480, 244, "The Story of Tí Meo", {
-      fontFamily: '"VT323", monospace',
-      fontSize: "30px",
-      color: "#d8b688",
-      shadow: { offsetX: 2, offsetY: 2, color: "#000000", blur: 0, fill: true },
-    }).setOrigin(0.5).setDepth(82).setAlpha(0);
-
-    this.uiObjects.push(titleText, subtitleText);
-
-    const hasStarted = window.localStorage?.getItem("den-story:has-started") === "true";
-    let startY = 320;
-    const buttons = [];
-
-    if (hasStarted) {
-      buttons.push(this.createMainMenuButton(480, startY, "Tiếp tục", () => this.scene.start("ChapterOneScene"), true));
-      startY += 54;
-      buttons.push(this.createMainMenuButton(480, startY, "Chơi mới", () => {
-        window.localStorage?.removeItem("den-story:intro-seen");
-        window.localStorage?.removeItem("den-story:has-started");
-        this.scene.restart({ forceReplay: true });
-      }, false));
-      startY += 54;
-    } else {
-      buttons.push(this.createMainMenuButton(480, startY, "Bắt đầu", () => {
-        window.localStorage?.setItem("den-story:has-started", "true");
-        this.scene.start("ChapterOneScene");
-      }, true));
-      startY += 54;
-    }
-
-    buttons.push(this.createMainMenuButton(480, startY, "Cài đặt", () => this.showSettingsPanel(), false));
-    
-    this.cameras.main.ignore([overlay, silhouette, titleText, subtitleText, ...buttons]);
-    this.uiObjects.push(...buttons);
-
-    this.tweens.add({ targets: [overlay, silhouette], alpha: 1, duration: 800, delay: splashDelay, ease: "Sine.easeInOut" });
-    this.tweens.add({ targets: [titleText, subtitleText], alpha: 1, y: "-=8", duration: 1000, delay: splashDelay + 300, ease: "Sine.easeOut" });
-    
-    buttons.forEach((b, index) => {
-      this.tweens.add({ targets: b, alpha: 1, y: "-=6", duration: 600, delay: splashDelay + 650 + (index * 120), ease: "Sine.easeOut" });
-    });
+    this.tweens.add({ targets: overlay, alpha: 1, duration: 500, ease: "Sine.easeInOut" });
+    this.tweens.add({ targets: titleCard, alpha: 1, y: 196, duration: 900, delay: 360, ease: "Sine.easeOut" });
+    this.tweens.add({ targets: subtitle, alpha: 1, duration: 650, delay: 760 });
+    this.tweens.add({ targets: [startButton, continueButton, settingsButton], alpha: 1, duration: 650, delay: 1050 });
   }
 
-  createMainMenuButton(x, y, label, onClick, isPrimary = false) {
-    const container = this.add.container(x, y + 6).setDepth(83).setAlpha(0);
-    const width = 230;
-    const height = 42;
-    
-    const bg = this.add.rectangle(0, 0, width, height, 0x11100d, 0.85)
-      .setStrokeStyle(2, isPrimary ? 0xffe0a1 : 0x5a5446, 1)
+  createMenuButton(x, y, label, onClick, secondary = false) {
+    const button = this.add
+      .text(x, y, label, {
+        fontFamily: '"Silkscreen", "Pixelify Sans", system-ui, sans-serif',
+        fontSize: secondary ? "19px" : "24px",
+        color: secondary ? "#ffe0a1" : "#11100d",
+        backgroundColor: secondary ? "rgba(17, 16, 13, 0.9)" : "#ffe0a1",
+        padding: { x: secondary ? 20 : 34, y: secondary ? 11 : 14 },
+      })
+      .setOrigin(0.5)
+      .setDepth(84)
+      .setAlpha(0)
       .setInteractive({ useHandCursor: true });
-      
-    const text = this.add.text(0, 0, label, {
-      fontFamily: '"Silkscreen", "Pixelify Sans", system-ui, sans-serif',
-      fontSize: "17px",
-      color: isPrimary ? "#ffe0a1" : "#cfc6b8",
-    }).setOrigin(0.5);
 
-    container.add([bg, text]);
-
-    bg.on("pointerover", () => {
-      bg.setFillStyle(0x1a1814, 0.98);
-      bg.setStrokeStyle(2, 0xffe0a1, 1);
-      text.setColor("#ffffff");
-      this.tweens.add({ targets: container, scaleX: 1.05, scaleY: 1.05, duration: 120 });
-    });
-    
-    bg.on("pointerout", () => {
-      bg.setFillStyle(0x11100d, 0.85);
-      bg.setStrokeStyle(2, isPrimary ? 0xffe0a1 : 0x5a5446, 1);
-      text.setColor(isPrimary ? "#ffe0a1" : "#cfc6b8");
-      this.tweens.add({ targets: container, scaleX: 1, scaleY: 1, duration: 120 });
-    });
-    
-    bg.on("pointerdown", (pointer, localX, localY, event) => {
+    button.on("pointerover", () => this.tweens.add({ targets: button, scaleX: 1.06, scaleY: 1.06, duration: 120 }));
+    button.on("pointerout", () => this.tweens.add({ targets: button, scaleX: 1, scaleY: 1, duration: 120 }));
+    button.on("pointerdown", (pointer, localX, localY, event) => {
       event?.stopPropagation();
+      window.localStorage?.setItem("den-story:intro-seen", "true");
       onClick();
     });
 
-    return container;
+    return button;
   }
 
-  showSettingsPanel() {
-    if (this.settingsContainer) return;
-    
-    this.settingsContainer = this.add.container(480, 270).setDepth(100).setAlpha(0);
-    const overlay = this.add.rectangle(0, 0, 960, 540, 0x000000, 0.76).setInteractive();
-    const panel = this.add.rectangle(0, 0, 380, 220, 0x11100d, 0.96).setStrokeStyle(2, 0xffe0a1, 1);
-    
-    const title = this.add.text(0, -60, "CÀI ĐẶT", {
-      fontFamily: '"Silkscreen", system-ui, sans-serif',
-      fontSize: "22px",
-      color: "#ffe0a1",
-    }).setOrigin(0.5);
-    
-    const volText = this.add.text(0, -10, "Âm thanh: 100%", {
-      fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-      fontSize: "20px",
-      color: "#cfc6b8",
-    }).setOrigin(0.5);
+  showSettingsNotice() {
+    if (this.settingsNotice) {
+      this.settingsNotice.destroy();
+    }
 
-    const closeBtn = this.createMainMenuButton(0, 60, "Đóng", () => {
-      this.tweens.add({
-        targets: this.settingsContainer,
-        alpha: 0,
-        duration: 200,
-        onComplete: () => {
-          this.settingsContainer.destroy();
-          this.settingsContainer = null;
-        }
-      });
-    }, true);
+    this.settingsNotice = this.add
+      .text(480, 520, "Cài đặt sẽ mở ở bản prototype tiếp theo.", {
+        fontFamily: '"VT323", "Pixelify Sans", monospace',
+        fontSize: "16px",
+        color: "#fff5df",
+        backgroundColor: "rgba(7, 7, 7, 0.78)",
+        padding: { x: 14, y: 8 },
+      })
+      .setOrigin(0.5)
+      .setDepth(90);
 
-    this.settingsContainer.add([overlay, panel, title, volText, closeBtn]);
-    this.cameras.main.ignore(this.settingsContainer);
-    
-    this.tweens.add({ targets: this.settingsContainer, alpha: 1, duration: 250 });
+    this.time.delayedCall(1800, () => this.settingsNotice?.destroy());
   }
 
   playMeowHook() {

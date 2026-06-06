@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 
 const GAME_INFO = {
+  'den-story': {
+    title: 'ĐEN - The Story of Tí Meo',
+    url: '/GAMES/den-story/index.html'
+  },
   'true-or-dare': {
     title: 'True or Dare',
     url: '/GAMES/TRUE OR DARE/index.html'
@@ -174,4 +178,3 @@ export default function GameDetail() {
     </motion.div>
   );
 }
-

@@ -4,9 +4,10 @@ import GameCard from '../components/GameCard';
 import { useAppContext } from '../context/AppContext';
 
 const MOCK_GAMES = [
+  { id: 'den-story', title: 'ĐEN', players: '1', tag: 'PROTO', categories: ['solo'], image: '/GAMES/den-story/img/background_1.webp', externalUrl: '/GAMES/den-story/index.html' },
   { id: 'memory-flip-card', title: 'Memory Flip Card', players: '1', time: '5', tag: 'NEW', categories: ['solo'], image: '/GAMES/memory-flip-card/img/logo.webp', externalUrl: '/GAMES/memory-flip-card/index.html' },
-  { id: 'true-or-dare', title: 'True or Dare', players: '5+', time: '∞', tag: 'HOT', categories: [], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
-  { id: 'mafia', title: 'Ma Sói', players: '5+', time: '30+', tag: 'SOON', comingSoon: true, categories: ['local-wifi'], image: '/ww-banner.webp' },
+  { id: 'true-or-dare', title: 'True or Dare', players: '5+', time: '∞', tag: 'HOT', categories: ['party'], image: '/tod-banner.webp', externalUrl: '/GAMES/TRUE OR DARE/index.html' },
+  { id: 'mafia', title: 'Ma Sói', players: '5+', time: '30+', tag: 'SOON', comingSoon: true, categories: ['local-wifi', 'party'], image: '/ww-banner.webp' },
 ];
 
 const CATEGORY_TABS = [

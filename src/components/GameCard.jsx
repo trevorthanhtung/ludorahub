@@ -68,9 +68,11 @@ export default function GameCard({ game }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Users size={18} /> <span>{game.players} {lang === 'vi' ? 'người' : 'players'}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Clock size={18} /> <span>{game.time} {lang === 'vi' ? 'phút' : 'min'}</span>
-          </div>
+          {game.time && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Clock size={18} /> <span>{game.time} {lang === 'vi' ? 'phút' : 'min'}</span>
+            </div>
+          )}
           
           {/* Nhãn phân loại */}
           <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '4px' }}>
