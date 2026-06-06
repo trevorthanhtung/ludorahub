@@ -36,7 +36,7 @@ export default function GameCard({ game }) {
     >
       <div style={{ height: '200px', width: '100%', background: '#1f2937', position: 'relative' }}>
         {game.image ? (
-          <img src={game.image} alt={game.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={game.image} alt={game.title} style={{ width: '100%', height: '100%', objectFit: game.imageFit || 'cover' }} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1f2937, #374151)' }}>
             <span style={{ fontSize: '3rem', opacity: 0.4, fontWeight: 800 }}>{game.title.charAt(0)}</span>

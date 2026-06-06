@@ -16,8 +16,14 @@ import {
   updateSetupRoleCount,
   updateRevealStage,
   updateNoteDraft,
+  clearNoteDraft,
   appendCurrentNoteToHistory,
   toggleShowRoles,
+  updateGmFilter,
+  addVote,
+  resetVotes,
+  executeVoteHanging,
+  applyCustomPreset,
   goHome,
   goSetup,
   goHowTo,
@@ -26,6 +32,7 @@ import {
 import { ROLE_ORDER, getRoleDefinition } from "./src/role-config.js";
 import { PHASES, getCurrentPhase } from "./src/phase-manager.js";
 import { render } from "./src/ui-renderer.js";
+import { StorageAdapter } from "./src/storage-adapter.js";
 
 const app = document.getElementById("app");
 const savedGame = loadSavedGame();
@@ -39,7 +46,7 @@ app.addEventListener("click", (event) => {
     return;
   }
 
-  const { action, playerId } = target.dataset;
+  const { action, playerId, filter, presetId } = target.dataset;
 
   switch (action) {
     case "home-new":
@@ -69,6 +76,28 @@ app.addEventListener("click", (event) => {
     case "setup-apply-preset":
       gameState = createSetupDraft(gameState, gameState.setup.playerCount, true);
       return persistAndRender(false);
+    case "setup-save-preset": {
+      if (!gameState.setup.validation.isValid) return;
+      const preset = {
+        id: `preset-${gameState.setup.playerCount}`,
+        playerCount: gameState.setup.playerCount,
+        roleConfig: gameState.setup.roleConfig
+      };
+      StorageAdapter.saveCustomPreset(preset);
+      return persistAndRender(false);
+    }
+    case "setup-load-preset":
+      if (presetId) {
+        gameState = applyCustomPreset(gameState, presetId);
+        return persistAndRender(false);
+      }
+      return;
+    case "setup-delete-preset":
+      if (presetId) {
+        StorageAdapter.deleteCustomPreset(presetId);
+        return persistAndRender(false);
+      }
+      return;
     case "setup-assign":
       if (!gameState.setup.validation.isValid) {
         return;
@@ -92,6 +121,30 @@ app.addEventListener("click", (event) => {
     case "gm-toggle-roles":
       gameState = toggleShowRoles(gameState);
       return persistAndRender(false);
+    case "gm-filter-change":
+      if (filter) {
+        gameState = updateGmFilter(gameState, filter);
+        return persistAndRender(false);
+      }
+      return;
+    case "gm-vote-add":
+      if (playerId) {
+        gameState = addVote(gameState, playerId, 1);
+        return persistAndRender();
+      }
+      return;
+    case "gm-vote-sub":
+      if (playerId) {
+        gameState = addVote(gameState, playerId, -1);
+        return persistAndRender();
+      }
+      return;
+    case "gm-vote-reset":
+      gameState = resetVotes(gameState);
+      return persistAndRender();
+    case "gm-vote-execute":
+      gameState = executeVoteHanging(gameState);
+      return persistAndRender();
     case "gm-next-phase":
       gameState = nextPhase(gameState);
       return persistAndRender();
@@ -101,6 +154,9 @@ app.addEventListener("click", (event) => {
       return persistAndRender();
     case "gm-add-note":
       gameState = appendCurrentNoteToHistory(gameState);
+      return persistAndRender();
+    case "gm-clear-note":
+      gameState = clearNoteDraft(gameState);
       return persistAndRender();
     case "gm-end-game":
       gameState = finishGame(gameState);
@@ -153,8 +209,9 @@ function advanceReveal() {
           stage: "done",
         },
       },
-      "Tất cả người chơi đã nhận vai. Quản trò bắt đầu điều phối.",
+      "Bắt đầu game",
       "system",
+      "Tất cả người chơi đã nhận vai. Quản trò bắt đầu điều phối."
     );
   }
 

@@ -10,11 +10,12 @@ const INTRO_TEXT = {
   otherKitten:
     "Có nhiều lựa chọn tốt hơn... nhưng câu chuyện này không thuộc về nó.",
   destiny: [
+    "Nó không phải đứa mạnh nhất.",
+    "Không phải đứa đẹp nhất.",
+    "Cũng chẳng phải đứa nổi bật nhất.",
+    "Nhưng bằng một cách nào đó...",
+    "bàn tay ấy đã chọn nó.",
     "Không ai biết vì sao bàn tay ấy dừng lại trước Đen.",
-    "Có thể vì nó bé quá, nên người ta sợ nó bị bỏ quên.",
-    "Có thể vì đôi mắt ấy nhìn thẳng vào một nơi rất mềm trong lòng người.",
-    "Hoặc có thể... có những câu chuyện tự biết cách chọn nhân vật chính của mình.",
-    "Đây là nơi câu chuyện của nó bắt đầu.",
   ],
 };
 
@@ -31,7 +32,7 @@ const KITTENS = [
     tailLength: 1,
     pose: "pounce",
     toy: "yarn",
-    text: "Khỏe mạnh",
+    text: "Khỏe mạnh.",
   },
   {
     id: "den",
@@ -45,7 +46,7 @@ const KITTENS = [
     tailLength: 0.33,
     pose: "sit",
     toy: "feather",
-    text: "Nhỏ hơn những đứa khác. Nhưng đôi mắt rất sáng.",
+    text: "Nhỏ hơn những đứa khác.\nNhưng đôi mắt rất sáng.\n\nChiếc đuôi nhỏ ấy cũng chẳng giống ai.",
     isDen: true,
   },
   {
@@ -60,7 +61,7 @@ const KITTENS = [
     tailLength: 1,
     pose: "roll",
     toy: "block",
-    text: "Tinh nghịch",
+    text: "Tinh nghịch.",
   },
   {
     id: "tabby",
@@ -75,7 +76,7 @@ const KITTENS = [
     tailLength: 1,
     pose: "stretch",
     toy: "yarn",
-    text: "Năng động",
+    text: "Năng động.",
   },
 ];
 
@@ -224,70 +225,93 @@ export default class IntroScene extends Phaser.Scene {
     this.textures.addCanvas("sofa-mint-pixel", sofa);
 
     KITTENS.forEach((kitten) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 64;
-      canvas.height = 64;
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingEnabled = false;
-      const body = toCss(kitten.body);
-      const accent = toCss(kitten.accent);
-      const outline = kitten.isDen ? "#050607" : "#3f3029";
-      const eye = toCss(kitten.eye);
+      for (let frame = 0; frame < 2; frame++) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = false;
+        const body = toCss(kitten.body);
+        const accent = toCss(kitten.accent);
+        const outline = kitten.isDen ? "#050607" : "#3f3029";
+        const eyeColorOriginal = toCss(kitten.eye);
 
-      rect(ctx, 16, 45, 28, 4, "rgba(0,0,0,0.18)");
-      if (kitten.tailLength < 1) {
-        rect(ctx, 15, 37, 6, 5, outline);
-        rect(ctx, 16, 38, 4, 3, accent);
-      } else {
-        rect(ctx, 7, 34, 14, 5, outline);
-        rect(ctx, 9, 33, 12, 4, accent);
-        rect(ctx, 3, 30, 6, 5, outline);
-        rect(ctx, 4, 30, 4, 3, accent);
+        rect(ctx, 16, 45, 28, 4, "rgba(0,0,0,0.18)");
+        
+        let tailOffsetY = 0;
+        if (kitten.id === "orange" && frame === 1) tailOffsetY = -2;
+        if (kitten.id === "den" && frame === 1) tailOffsetY = 1;
+        
+        if (kitten.tailLength < 1) {
+          rect(ctx, 15, 37 + tailOffsetY, 6, 5, outline);
+          rect(ctx, 16, 38 + tailOffsetY, 4, 3, accent);
+        } else {
+          rect(ctx, 7, 34 + tailOffsetY, 14, 5, outline);
+          rect(ctx, 9, 33 + tailOffsetY, 12, 4, accent);
+          rect(ctx, 3, 30 + tailOffsetY, 6, 5, outline);
+          rect(ctx, 4, 30 + tailOffsetY, 4, 3, accent);
+        }
+
+        let headOffsetX = 0;
+        let headOffsetY = 0;
+        if (kitten.id === "tabby" && frame === 1) { headOffsetX = 1; headOffsetY = 1; }
+        if (kitten.id === "white" && frame === 1) { headOffsetY = -2; }
+        if (kitten.id === "orange" && frame === 1) { headOffsetY = 1; }
+
+        rect(ctx, 19, 32, 23, 14, outline);
+        rect(ctx, 21, 31, 19, 13, body);
+        rect(ctx, 24, 38, 14, 6, accent);
+        rect(ctx, 20, 45, 6, 3, outline);
+        rect(ctx, 33, 45, 6, 3, outline);
+        rect(ctx, 21, 44, 4, 3, accent);
+        rect(ctx, 34, 44, 4, 3, accent);
+
+        let hx = headOffsetX;
+        let hy = headOffsetY;
+        rect(ctx, 27+hx, 15+hy, 24, 23, outline);
+        rect(ctx, 29+hx, 17+hy, 20, 20, body);
+        tri(ctx, [[25+hx, 16+hy], [30+hx, 5+hy], [36+hx, 17+hy]], outline);
+        tri(ctx, [[43+hx, 16+hy], [51+hx, 6+hy], [51+hx, 24+hy]], outline);
+        tri(ctx, [[28+hx, 16+hy], [31+hx, 9+hy], [34+hx, 17+hy]], accent);
+        tri(ctx, [[45+hx, 16+hy], [50+hx, 10+hy], [49+hx, 21+hy]], accent);
+        
+        let eyeColor = eyeColorOriginal;
+        if (kitten.id === "den" && frame === 1) eyeColor = outline;
+
+        rect(ctx, 32+hx, 23+hy, 5, 6, eyeColor);
+        rect(ctx, 43+hx, 23+hy, 5, 6, eyeColor);
+        
+        if (eyeColor !== outline) {
+          rect(ctx, 34+hx, 24+hy, 2, 2, "#ffffff");
+          rect(ctx, 45+hx, 24+hy, 2, 2, "#ffffff");
+        }
+        
+        rect(ctx, 39+hx, 31+hy, 4, 3, "#d89095");
+        rect(ctx, 35+hx, 34+hy, 5, 2, outline);
+        rect(ctx, 42+hx, 34+hy, 5, 2, outline);
+
+        if (kitten.stripe) {
+          const stripe = toCss(kitten.stripe);
+          rect(ctx, 24, 32, 3, 11, stripe);
+          rect(ctx, 31, 31, 3, 12, stripe);
+          rect(ctx, 38, 32, 3, 10, stripe);
+          rect(ctx, 34+hx, 18+hy, 3, 6, stripe);
+          rect(ctx, 40+hx, 18+hy, 3, 6, stripe);
+          rect(ctx, 46+hx, 20+hy, 3, 5, stripe);
+        }
+
+        if (kitten.id === "white") {
+          rect(ctx, 37+hx, 16+hy, 5, 4, "#ffffff");
+          rect(ctx, 22, 32, 6, 5, "#ffffff");
+        }
+
+        if (kitten.isDen) {
+          rect(ctx, 31+hx, 20+hy, 13, 4, "#2d3139");
+          rect(ctx, 21, 37, 19, 3, "#6c1c2e");
+        }
+
+        this.textures.addCanvas(`kitten-${kitten.id}-${frame}`, canvas);
       }
-
-      rect(ctx, 19, 32, 23, 14, outline);
-      rect(ctx, 21, 31, 19, 13, body);
-      rect(ctx, 24, 38, 14, 6, accent);
-      rect(ctx, 20, 45, 6, 3, outline);
-      rect(ctx, 33, 45, 6, 3, outline);
-      rect(ctx, 21, 44, 4, 3, accent);
-      rect(ctx, 34, 44, 4, 3, accent);
-
-      rect(ctx, 27, 15, 24, 23, outline);
-      rect(ctx, 29, 17, 20, 20, body);
-      tri(ctx, [[25, 16], [30, 5], [36, 17]], outline);
-      tri(ctx, [[43, 16], [51, 6], [51, 24]], outline);
-      tri(ctx, [[28, 16], [31, 9], [34, 17]], accent);
-      tri(ctx, [[45, 16], [50, 10], [49, 21]], accent);
-      rect(ctx, 32, 23, 5, 6, eye);
-      rect(ctx, 43, 23, 5, 6, eye);
-      rect(ctx, 34, 24, 2, 2, "#ffffff");
-      rect(ctx, 45, 24, 2, 2, "#ffffff");
-      rect(ctx, 39, 31, 4, 3, "#d89095");
-      rect(ctx, 35, 34, 5, 2, outline);
-      rect(ctx, 42, 34, 5, 2, outline);
-
-      if (kitten.stripe) {
-        const stripe = toCss(kitten.stripe);
-        rect(ctx, 24, 32, 3, 11, stripe);
-        rect(ctx, 31, 31, 3, 12, stripe);
-        rect(ctx, 38, 32, 3, 10, stripe);
-        rect(ctx, 34, 18, 3, 6, stripe);
-        rect(ctx, 40, 18, 3, 6, stripe);
-        rect(ctx, 46, 20, 3, 5, stripe);
-      }
-
-      if (kitten.id === "white") {
-        rect(ctx, 37, 16, 5, 4, "#ffffff");
-        rect(ctx, 22, 32, 6, 5, "#ffffff");
-      }
-
-      if (kitten.isDen) {
-        rect(ctx, 31, 20, 13, 4, "#2d3139");
-        rect(ctx, 21, 37, 19, 3, "#6c1c2e");
-      }
-
-      this.textures.addCanvas(`kitten-${kitten.id}-pixel`, canvas);
     });
   }
 
@@ -392,7 +416,7 @@ export default class IntroScene extends Phaser.Scene {
         lineSpacing: 8,
         wordWrap: { width: 720 },
       })
-      .setOrigin(0.5)
+      .setOrigin(0.5, 0)
       .setAlpha(0)
       .setDepth(48);
   }
@@ -424,14 +448,14 @@ export default class IntroScene extends Phaser.Scene {
     const displaySize = 132 * kitten.scale;
     const shadow = this.add.ellipse(0, 28 * kitten.scale, displaySize * 0.6, displaySize * 0.16, 0x000000, 0.22);
     const sprite = this.add
-      .image(0, 0, `kitten-${kitten.id}-pixel`)
+      .image(0, 0, `kitten-${kitten.id}-0`)
       .setDisplaySize(displaySize, displaySize)
       .setOrigin(0.5);
 
     container.add([shadow, sprite]);
 
     this.applyKittenPose(container, kitten);
-    this.addPlayfulMotion(container, kitten);
+    this.addPlayfulMotion(container, kitten, sprite);
 
     container.setInteractive(
       new Phaser.Geom.Rectangle(-displaySize * 0.48, -displaySize * 0.5, displaySize * 0.96, displaySize * 0.94),
@@ -462,7 +486,7 @@ export default class IntroScene extends Phaser.Scene {
     }
   }
 
-  addPlayfulMotion(container, kitten) {
+  addPlayfulMotion(container, kitten, sprite) {
     const delay = KITTENS.findIndex((item) => item.id === kitten.id) * 160;
     this.tweens.add({
       targets: container,
@@ -472,6 +496,18 @@ export default class IntroScene extends Phaser.Scene {
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut",
+    });
+
+    this.time.addEvent({
+      delay: kitten.isDen ? 2400 : 800 + Phaser.Math.Between(0, 400),
+      loop: true,
+      callback: () => {
+        if (!sprite.active) return;
+        sprite.setTexture(`kitten-${kitten.id}-1`);
+        this.time.delayedCall(kitten.isDen ? 180 : 250, () => {
+          if (sprite.active) sprite.setTexture(`kitten-${kitten.id}-0`);
+        });
+      }
     });
   }
 
@@ -569,8 +605,32 @@ export default class IntroScene extends Phaser.Scene {
       return;
     }
 
-    this.startDestiny(node);
+    this.selectionLocked = true;
+    
+    // Fade out UI
+    this.tweens.add({
+      targets: [this.selectionHint, this.description, this.textBox.container],
+      alpha: 0,
+      duration: 300,
+    });
+    
+    const blackFade = this.add.rectangle(480, 270, 960, 540, 0x000000, 1)
+      .setDepth(99)
+      .setAlpha(0);
+      
+    // Emotional pause then fade to black
+    this.tweens.add({
+      targets: blackFade,
+      alpha: 1,
+      duration: 1000,
+      delay: 600,
+      onComplete: () => {
+        blackFade.destroy();
+        this.startDestiny(node);
+      }
+    });
   }
+
 
   startDestiny(denNode) {
     this.phase = "destiny";
@@ -578,12 +638,22 @@ export default class IntroScene extends Phaser.Scene {
     this.selectionLocked = true;
     this.description.setText("");
     this.textBox.resize(610, 46);
-    this.tweens.add({ targets: this.selectionHint, alpha: 0, duration: 260 });
+    this.selectionHint.setAlpha(0);
+
+    const introFade = this.add.rectangle(480, 270, 960, 540, 0x000000, 1).setDepth(99);
+    this.tweens.add({ targets: introFade, alpha: 0, duration: 1500, delay: 200 });
+
+    // Lower the background music volume
+    this.tweens.add({
+      targets: this.sound,
+      volume: 0.15,
+      duration: 3000
+    });
 
     this.kittenNodes.forEach((node) => {
       node.disableInteractive();
       if (node !== denNode) {
-        this.tweens.add({ targets: node, alpha: 0.24, duration: 700 });
+        node.setAlpha(0.24);
       }
     });
 
@@ -599,19 +669,26 @@ export default class IntroScene extends Phaser.Scene {
 
     this.cameras.main.pan(denNode.x, denNode.y - 10, 1700, "Sine.easeInOut");
     this.cameras.main.zoomTo(1.45, 2100, "Sine.easeInOut");
-    this.tweens.add({
-      targets: this.denPortrait,
-      alpha: 1,
-      x: 724,
-      duration: 900,
-      delay: 850,
-      ease: "Sine.easeOut",
-    });
-    this.time.delayedCall(650, () => this.textBox.showLine(INTRO_TEXT.destiny[0], 30));
+    
+    // Defer showing the portrait until the last text line
+    this.denPortrait.setAlpha(0);
+    this.denPortrait.setX(724);
+
+    this.time.delayedCall(1650, () => this.textBox.showLine(INTRO_TEXT.destiny[0], 30));
   }
 
   advanceDestiny() {
     this.destinyIndex += 1;
+
+    if (this.destinyIndex === INTRO_TEXT.destiny.length - 1) {
+      // Reveal portrait on the last line
+      this.tweens.add({
+        targets: this.denPortrait,
+        alpha: 1,
+        duration: 1200,
+        ease: "Sine.easeOut",
+      });
+    }
 
     if (this.destinyIndex < INTRO_TEXT.destiny.length) {
       this.textBox.showLine(INTRO_TEXT.destiny[this.destinyIndex], 30);
@@ -660,7 +737,7 @@ export default class IntroScene extends Phaser.Scene {
        });
     }
 
-    const silhouette = this.add.image(620, 134, "kitten-den-pixel").setTintFill(0x000000).setAlpha(0).setDepth(81).setDisplaySize(72, 72);
+    const silhouette = this.add.image(620, 134, "kitten-den-0").setTintFill(0x000000).setAlpha(0).setDepth(81).setDisplaySize(72, 72);
     this.uiObjects.push(silhouette);
 
     const titleText = this.add.text(480, 160, "ĐEN", {
