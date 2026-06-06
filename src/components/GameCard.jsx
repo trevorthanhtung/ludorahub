@@ -81,21 +81,6 @@ export default function GameCard({ game }) {
                 <Wifi size={16} /> <span>{lang === 'vi' ? 'Mạng Nội Bộ' : 'Local WiFi'}</span>
               </div>
             )}
-            {game.categories && game.categories.includes('solo') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-purple)', fontWeight: 600 }}>
-                <Users size={16} /> <span>{lang === 'vi' ? '1 người' : '1p'}</span>
-              </div>
-            )}
-            {game.categories && game.categories.includes('small-group') && !game.categories.includes('party') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-blue)', fontWeight: 600 }}>
-                <Users size={16} /> <span>{lang === 'vi' ? '2-4 người' : '2-4p'}</span>
-              </div>
-            )}
-            {game.categories && game.categories.includes('party') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-pink)', fontWeight: 600 }}>
-                <Users size={16} /> <span>{lang === 'vi' ? '5+ người' : '5+p'}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
