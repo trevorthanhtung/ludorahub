@@ -13,6 +13,9 @@ export function renderReveal(gameState, getRoleDefinition) {
           <div class="eyebrow">👤 Reveal ${gameState.reveal.currentIndex + 1}/${gameState.players.length}</div>
           <h2>Đưa máy cho ${escapeHtml(player.name)}</h2>
           <p>Chỉ người này nhìn màn hình. Xong rồi hãy che lại trước khi chuyển máy tiếp.</p>
+          <div class="highlight" style="margin-top: 14px; font-size: 0.9rem;">
+            ⚠️ <strong>Cảnh báo:</strong> Chỉ người đang cầm máy được xem vai này.
+          </div>
           ${
             !isReady
               ? '<div class="footer-actions"><button class="btn btn-primary" data-action="reveal-ready">Tôi đã sẵn sàng</button></div>'

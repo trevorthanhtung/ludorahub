@@ -178,7 +178,7 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
           gameState.gm.history.length
             ? `
               <div class="history-list">
-                ${gameState.gm.history
+                ${gameState.gm.history.slice(0, 20)
                   .map(
                     (item) => `
                       <article class="history-card">
@@ -195,6 +195,31 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
                     `,
                   )
                   .join("")}
+                
+                ${gameState.gm.history.length > 20 ? `
+                  <details style="margin-top: 10px;">
+                    <summary style="cursor: pointer; color: var(--muted); padding: 8px 0; font-weight: bold;">Xem thêm lịch sử cũ (${gameState.gm.history.length - 20} sự kiện)</summary>
+                    <div style="display: grid; gap: 12px; margin-top: 12px;">
+                      ${gameState.gm.history.slice(20)
+                        .map(
+                          (item) => `
+                            <article class="history-card" style="opacity: 0.8;">
+                              <div class="history-top">
+                                <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
+                                <span class="history-time">${formatTime(item.timestamp)}</span>
+                              </div>
+                              <div class="history-content" style="margin-top: 8px;">
+                                <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
+                                ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
+                                <span class="muted">${escapeHtml(item.message)}</span>
+                              </div>
+                            </article>
+                          `,
+                        )
+                        .join("")}
+                    </div>
+                  </details>
+                ` : ''}
               </div>
             `
             : '<div class="empty-state">Chưa có lịch sử nào. Hãy dùng phase và ghi chú để theo dõi ván.</div>'

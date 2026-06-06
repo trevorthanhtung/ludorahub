@@ -1,38 +1,12 @@
-import {
-  createBaseState,
-  createGame,
-  createSetupDraft,
-  loadSavedGame,
-  saveGame,
-  nextPhase,
-  killPlayer,
-  revivePlayer,
-  checkWinCondition,
-  restartWithSameSetup,
-  finishGame,
-  addHistoryEntry,
-  updateSetupPlayerCount,
-  updateSetupPlayerName,
-  updateSetupRoleCount,
-  updateRevealStage,
-  updateNoteDraft,
-  clearNoteDraft,
-  appendCurrentNoteToHistory,
-  toggleShowRoles,
-  updateGmFilter,
-  addVote,
-  resetVotes,
-  executeVoteHanging,
-  applyCustomPreset,
-  goHome,
-  goSetup,
-  goHowTo,
-  loadSavedGameIntoState,
-} from "./src/game-state.js";
+import { createBaseState, loadSavedGame, saveGame } from "./src/game-state.js";
 import { ROLE_ORDER, getRoleDefinition } from "./src/role-config.js";
 import { PHASES, getCurrentPhase } from "./src/phase-manager.js";
 import { render } from "./src/ui-renderer.js";
 import { StorageAdapter } from "./src/storage-adapter.js";
+import { getAppMode } from "./src/app-modes.js";
+import { dispatchAction } from "./src/action-dispatcher.js";
+import { ACTION_TYPES } from "./src/action-types.js";
+import { UI_ACTION_MAP } from "./src/action-map.js";
 
 const app = document.getElementById("app");
 const savedGame = loadSavedGame();
@@ -47,36 +21,15 @@ app.addEventListener("click", (event) => {
   }
 
   const { action, playerId, filter, presetId } = target.dataset;
+  const source = getAppMode();
 
-  switch (action) {
-    case "home-new":
-      gameState = goSetup(gameState);
-      return persistAndRender(false);
-    case "home-continue":
-      gameState = loadSavedGameIntoState();
-      return persistAndRender(false);
-    case "home-howto":
-      gameState = goHowTo(gameState);
-      return persistAndRender(false);
-    case "hub-back":
+  const mappedActionType = UI_ACTION_MAP[action];
+
+  // Handling UI-only or unmapped actions
+  if (!mappedActionType) {
+    if (action === "hub-back") {
       window.history.back();
-      return;
-    case "nav-home":
-      gameState = goHome(gameState);
-      return persistAndRender(false);
-    case "nav-setup":
-      gameState = goSetup(gameState);
-      return persistAndRender(false);
-    case "setup-decrease":
-      gameState = updateSetupPlayerCount(gameState, gameState.setup.playerCount - 1);
-      return persistAndRender(false);
-    case "setup-increase":
-      gameState = updateSetupPlayerCount(gameState, gameState.setup.playerCount + 1);
-      return persistAndRender(false);
-    case "setup-apply-preset":
-      gameState = createSetupDraft(gameState, gameState.setup.playerCount, true);
-      return persistAndRender(false);
-    case "setup-save-preset": {
+    } else if (action === "setup-save-preset") {
       if (!gameState.setup.validation.isValid) return;
       const preset = {
         id: `preset-${gameState.setup.playerCount}`,
@@ -84,158 +37,106 @@ app.addEventListener("click", (event) => {
         roleConfig: gameState.setup.roleConfig
       };
       StorageAdapter.saveCustomPreset(preset);
-      return persistAndRender(false);
-    }
-    case "setup-load-preset":
-      if (presetId) {
-        gameState = applyCustomPreset(gameState, presetId);
-        return persistAndRender(false);
-      }
-      return;
-    case "setup-delete-preset":
+      persistAndRender(false);
+    } else if (action === "setup-delete-preset") {
       if (presetId) {
         StorageAdapter.deleteCustomPreset(presetId);
-        return persistAndRender(false);
+        persistAndRender(false);
       }
-      return;
-    case "setup-assign":
-      if (!gameState.setup.validation.isValid) {
-        return;
-      }
-      gameState = createGame({
-        baseState: gameState,
-        playerCount: gameState.setup.playerCount,
-        playerNames: gameState.setup.players.map((player) => player.name),
-        roleConfig: gameState.setup.roleConfig,
-      });
-      return persistAndRender();
-    case "reveal-ready":
-      gameState = updateRevealStage(gameState, "ready");
-      return persistAndRender();
-    case "reveal-show":
-      gameState = updateRevealStage(gameState, "revealed");
-      return persistAndRender(false);
-    case "reveal-next":
-      gameState = advanceReveal();
-      return persistAndRender();
-    case "gm-toggle-roles":
-      gameState = toggleShowRoles(gameState);
-      return persistAndRender(false);
-    case "gm-filter-change":
-      if (filter) {
-        gameState = updateGmFilter(gameState, filter);
-        return persistAndRender(false);
-      }
-      return;
-    case "gm-vote-add":
-      if (playerId) {
-        gameState = addVote(gameState, playerId, 1);
-        return persistAndRender();
-      }
-      return;
-    case "gm-vote-sub":
-      if (playerId) {
-        gameState = addVote(gameState, playerId, -1);
-        return persistAndRender();
-      }
-      return;
-    case "gm-vote-reset":
-      gameState = resetVotes(gameState);
-      return persistAndRender();
-    case "gm-vote-execute":
-      gameState = executeVoteHanging(gameState);
-      return persistAndRender();
-    case "gm-next-phase":
-      gameState = nextPhase(gameState);
-      return persistAndRender();
-    case "gm-toggle-life":
-      if (!playerId) return;
-      gameState = togglePlayerLife(playerId);
-      return persistAndRender();
-    case "gm-add-note":
-      gameState = appendCurrentNoteToHistory(gameState);
-      return persistAndRender();
-    case "gm-clear-note":
-      gameState = clearNoteDraft(gameState);
-      return persistAndRender();
-    case "gm-end-game":
-      gameState = finishGame(gameState);
-      return persistAndRender();
-    case "summary-replay":
-      gameState = restartWithSameSetup(gameState);
-      return persistAndRender();
-    default:
-      return;
+    } else {
+      console.warn(`[UI] Unknown or unmapped data-action: "${action}"`);
+    }
+    return;
   }
+
+  // Pre-dispatch validation & side effects
+  if (mappedActionType === ACTION_TYPES.GO_SETUP) {
+    if (gameState.status === "active" || gameState.status === "finished") {
+      if (!window.confirm("Bắt đầu setup ván mới sẽ ghi đè ván hiện tại. Tiếp tục?")) return;
+    }
+  } else if (mappedActionType === ACTION_TYPES.GM_VOTE_EXECUTE) {
+    if (!window.confirm("Bạn có chắc chắn muốn treo cổ người nhiều phiếu nhất? Hành động này không thể hoàn tác.")) return;
+  } else if (mappedActionType === ACTION_TYPES.GM_END_GAME) {
+    if (!window.confirm("Bạn có chắc chắn muốn kết thúc ván ngay lập tức?")) return;
+  } else if (mappedActionType === ACTION_TYPES.SETUP_ASSIGN_ROLES) {
+    if (!gameState.setup.validation.isValid) return;
+  } else if (mappedActionType === ACTION_TYPES.SETUP_LOAD_PRESET && !presetId) {
+    return;
+  } else if ((mappedActionType === ACTION_TYPES.GM_VOTE_ADD || mappedActionType === ACTION_TYPES.GM_VOTE_SUB || mappedActionType === ACTION_TYPES.GM_TOGGLE_LIFE) && !playerId) {
+    return;
+  } else if (mappedActionType === ACTION_TYPES.GM_FILTER_CHANGE && !filter) {
+    return;
+  }
+
+  // Payload extraction
+  const payload = {};
+  if (playerId) payload.playerId = playerId;
+  if (filter) payload.filter = filter;
+  if (presetId) payload.presetId = presetId;
+
+  // Dispatch Action
+  gameState = dispatchAction(gameState, { type: mappedActionType, payload, source });
+
+  // Post-dispatch rendering and persistence logic
+  const noSaveActions = [
+    ACTION_TYPES.GO_SETUP,
+    ACTION_TYPES.LOAD_SAVED_GAME,
+    ACTION_TYPES.GO_HOW_TO,
+    ACTION_TYPES.GO_HOME,
+    ACTION_TYPES.SETUP_DECREASE_PLAYER,
+    ACTION_TYPES.SETUP_INCREASE_PLAYER,
+    ACTION_TYPES.SETUP_APPLY_PRESET,
+    ACTION_TYPES.SETUP_LOAD_PRESET,
+    ACTION_TYPES.REVEAL_SHOW,
+    ACTION_TYPES.GM_TOGGLE_ROLES,
+    ACTION_TYPES.GM_FILTER_CHANGE,
+  ];
+
+  persistAndRender(!noSaveActions.includes(mappedActionType));
 });
 
 app.addEventListener("input", (event) => {
   const target = event.target;
+  const source = getAppMode();
 
   if (target.matches("[data-player-name]")) {
     const playerIndex = Number(target.dataset.playerName);
-    gameState = updateSetupPlayerName(gameState, playerIndex, target.value);
+    gameState = dispatchAction(gameState, { 
+      type: ACTION_TYPES.SETUP_UPDATE_PLAYER_NAME, 
+      payload: { playerIndex, value: target.value },
+      source 
+    });
     return;
   }
 
   if (target.matches("[data-role-count]")) {
     const roleId = target.dataset.roleCount;
-    gameState = updateSetupRoleCount(gameState, roleId, target.value);
+    gameState = dispatchAction(gameState, { 
+      type: ACTION_TYPES.SETUP_UPDATE_ROLE_COUNT, 
+      payload: { roleId, value: target.value },
+      source 
+    });
     return persistAndRender(false);
   }
 
   if (target.matches("[data-player-count]")) {
-    gameState = updateSetupPlayerCount(gameState, target.value);
+    gameState = dispatchAction(gameState, { 
+      type: ACTION_TYPES.SETUP_UPDATE_PLAYER_COUNT, 
+      payload: { value: target.value },
+      source 
+    });
     return persistAndRender(false);
   }
 
   if (target.matches("[data-note-draft]")) {
-    gameState = updateNoteDraft(gameState, target.value);
+    gameState = dispatchAction(gameState, { 
+      type: ACTION_TYPES.GM_UPDATE_NOTE_DRAFT, 
+      payload: { value: target.value },
+      source 
+    });
     return saveOnly();
   }
 });
-
-function advanceReveal() {
-  const nextIndex = gameState.reveal.currentIndex + 1;
-
-  if (nextIndex >= gameState.players.length) {
-    return addHistoryEntry(
-      {
-        ...gameState,
-        screen: "gm",
-        reveal: {
-          ...gameState.reveal,
-          currentIndex: gameState.players.length - 1,
-          stage: "done",
-        },
-      },
-      "Bắt đầu game",
-      "system",
-      "Tất cả người chơi đã nhận vai. Quản trò bắt đầu điều phối."
-    );
-  }
-
-  return {
-    ...gameState,
-    reveal: {
-      currentIndex: nextIndex,
-      stage: "handoff",
-    },
-  };
-}
-
-function togglePlayerLife(playerId) {
-  const player = gameState.players.find((entry) => entry.id === playerId);
-  if (!player) {
-    return gameState;
-  }
-
-  const updatedState = player.alive
-    ? killPlayer(gameState, playerId)
-    : revivePlayer(gameState, playerId);
-
-  return checkWinCondition(updatedState);
-}
 
 function persistAndRender(shouldSave = true) {
   if (shouldSave) {
