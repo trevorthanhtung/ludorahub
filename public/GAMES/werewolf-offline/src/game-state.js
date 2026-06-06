@@ -83,8 +83,10 @@ export function createBaseState() {
     phase: createInitialPhase(),
     gm: {
       showRoles: false,
+      filter: "all",
       noteDraft: "",
       history: [],
+      votes: {},
     },
     summary: {
       winnerTeam: null,
@@ -155,8 +157,10 @@ export function createGame({ baseState, playerCount, playerNames, roleConfig }) 
     phase: createInitialPhase(),
     gm: {
       showRoles: false,
+      filter: "all",
       noteDraft: "",
       history: [],
+      votes: {},
     },
     summary: {
       winnerTeam: null,
@@ -177,10 +181,16 @@ export function createGame({ baseState, playerCount, playerNames, roleConfig }) 
   };
 
   const withRoles = assignRoles(seededState);
-  return addHistoryEntry(withRoles, "Ván mới đã được tạo và chia vai thành công.", "system");
+  return addHistoryEntry(withRoles, "Khởi tạo", "system", "Ván mới đã được tạo và chia vai thành công.");
 }
 
-export function addHistoryEntry(gameState, message, type = "system") {
+export function getCycleLabel(gameState) {
+  const isNight = ["night", "wolf", "seer", "guard", "witch"].includes(gameState.phase.key);
+  const number = isNight ? gameState.stats.nightsPlayed : gameState.stats.daysPlayed;
+  return `${isNight ? "Đêm" : "Ngày"} ${number || 1}`;
+}
+
+export function addHistoryEntry(gameState, action, type = "system", message = "", targetName = "") {
   return {
     ...gameState,
     gm: {
@@ -189,9 +199,12 @@ export function addHistoryEntry(gameState, message, type = "system") {
         {
           id: `history-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
           type,
+          cycleLabel: getCycleLabel(gameState),
+          phaseLabel: getCurrentPhase(gameState.phase).label,
+          action,
+          targetName,
           message,
           timestamp: Date.now(),
-          phaseLabel: getCurrentPhase(gameState.phase).label,
         },
         ...gameState.gm.history,
       ],
@@ -221,7 +234,7 @@ export function nextPhase(gameState) {
     },
   };
 
-  nextState = addHistoryEntry(nextState, `Chuyển phase sang "${nextPhaseLabel}".`, "phase");
+  nextState = addHistoryEntry(nextState, "Chuyển phase", "phase", `Sang phase "${nextPhaseLabel}".`);
   return checkWinCondition(nextState);
 }
 
@@ -242,7 +255,7 @@ export function killPlayer(gameState, playerId) {
     ),
   };
 
-  return addHistoryEntry(nextState, `${player.name} đã bị đánh dấu là chết.`, "player");
+  return addHistoryEntry(nextState, "Đánh dấu chết", "player", "", player.name);
 }
 
 export function revivePlayer(gameState, playerId) {
@@ -262,7 +275,7 @@ export function revivePlayer(gameState, playerId) {
     ),
   };
 
-  return addHistoryEntry(nextState, `${player.name} đã được hồi lại trạng thái sống.`, "player");
+  return addHistoryEntry(nextState, "Hồi sinh", "player", "", player.name);
 }
 
 export function checkWinCondition(gameState) {
@@ -278,7 +291,7 @@ export function checkWinCondition(gameState) {
 
   if (aliveWolves === 0) {
     return {
-      ...addHistoryEntry(gameState, "Phe dân chiến thắng vì không còn Ma Sói sống.", "win"),
+      ...addHistoryEntry(gameState, "Kết thúc", "win", "Phe dân chiến thắng vì không còn Ma Sói sống."),
       screen: "summary",
       status: "finished",
       summary: {
@@ -292,7 +305,7 @@ export function checkWinCondition(gameState) {
 
   if (aliveWolves >= aliveVillage) {
     return {
-      ...addHistoryEntry(gameState, "Phe sói chiến thắng vì quân số đã áp đảo phe dân.", "win"),
+      ...addHistoryEntry(gameState, "Kết thúc", "win", "Phe sói chiến thắng vì quân số đã áp đảo phe dân."),
       screen: "summary",
       status: "finished",
       summary: {
@@ -384,6 +397,23 @@ export function updateSetupRoleCount(gameState, roleId, value) {
   };
 }
 
+export function applyCustomPreset(gameState, presetId) {
+  const customPresets = StorageAdapter.getCustomPresets();
+  const preset = customPresets.find(p => p.id === presetId);
+  if (!preset) return gameState;
+  
+  const roleConfig = normalizeRoleConfig(preset.roleConfig);
+  return {
+    ...gameState,
+    setup: {
+      ...gameState.setup,
+      playerCount: preset.playerCount,
+      roleConfig,
+      validation: createValidation(preset.playerCount, roleConfig),
+    }
+  }
+}
+
 export function updateRevealStage(gameState, stage) {
   return {
     ...gameState,
@@ -404,21 +434,25 @@ export function updateNoteDraft(gameState, noteDraft) {
   };
 }
 
+export function clearNoteDraft(gameState) {
+  return {
+    ...gameState,
+    gm: {
+      ...gameState.gm,
+      noteDraft: "",
+    },
+  };
+}
+
 export function appendCurrentNoteToHistory(gameState) {
   const note = gameState.gm.noteDraft.trim();
   if (!note) {
     return gameState;
   }
 
-  const withNote = addHistoryEntry(gameState, `Ghi chú quản trò: ${note}`, "note");
+  const withNote = addHistoryEntry(gameState, "Ghi chú", "note", note);
 
-  return {
-    ...withNote,
-    gm: {
-      ...withNote.gm,
-      noteDraft: "",
-    },
-  };
+  return clearNoteDraft(withNote);
 }
 
 export function toggleShowRoles(gameState) {
@@ -431,6 +465,75 @@ export function toggleShowRoles(gameState) {
   };
 }
 
+export function updateGmFilter(gameState, filter) {
+  return {
+    ...gameState,
+    gm: {
+      ...gameState.gm,
+      filter,
+    },
+  };
+}
+
+export function addVote(gameState, playerId, amount) {
+  const currentVote = gameState.gm.votes[playerId] || 0;
+  const newVote = Math.max(0, currentVote + amount);
+  return {
+    ...gameState,
+    gm: {
+      ...gameState.gm,
+      votes: {
+        ...gameState.gm.votes,
+        [playerId]: newVote,
+      },
+    },
+  };
+}
+
+export function resetVotes(gameState) {
+  return {
+    ...gameState,
+    gm: {
+      ...gameState.gm,
+      votes: {},
+    },
+  };
+}
+
+export function executeVoteHanging(gameState) {
+  const votes = gameState.gm.votes;
+  const playerIds = Object.keys(votes);
+  if (playerIds.length === 0) return gameState;
+
+  let maxVotes = 0;
+  let targetId = null;
+  let isTie = false;
+
+  playerIds.forEach((id) => {
+    const v = votes[id];
+    if (v > maxVotes) {
+      maxVotes = v;
+      targetId = id;
+      isTie = false;
+    } else if (v === maxVotes && v > 0) {
+      isTie = true;
+    }
+  });
+
+  if (!targetId || maxVotes === 0 || isTie) {
+    // Cannot hang on tie or no votes
+    return addHistoryEntry(gameState, "Treo cổ", "vote", "Không có ai bị treo cổ (hòa phiếu hoặc không có phiếu).");
+  }
+
+  let nextState = killPlayer(gameState, targetId);
+  const player = gameState.players.find(p => p.id === targetId);
+  
+  nextState = addHistoryEntry(nextState, "Treo cổ", "vote", `Bị treo cổ với ${maxVotes} phiếu.`, player ? player.name : "");
+  nextState = resetVotes(nextState);
+  
+  return checkWinCondition(nextState);
+}
+
 export function finishGame(gameState) {
   if (gameState.status === "finished") {
     return gameState;
@@ -438,8 +541,9 @@ export function finishGame(gameState) {
 
   const nextState = addHistoryEntry(
     gameState,
-    "Ván chơi được quản trò kết thúc thủ công.",
+    "Kết thúc thủ công",
     "system",
+    "Quản trò đã chủ động kết thúc ván."
   );
 
   return {
