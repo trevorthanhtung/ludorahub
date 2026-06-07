@@ -11,6 +11,11 @@ import { networkAdapter } from "./src/network-adapter.js";
 import { NETWORK_MESSAGES } from "./src/network-message-types.js";
 import { createPlayerViewState } from "./src/game-state.js";
 
+// --- Ambient Effects & Audio Logic ---
+let isAudioMuted = true;
+let isAudioPlaying = false;
+let parallaxTicking = false;
+
 const app = document.getElementById("app");
 const savedGame = loadSavedGame();
 let gameState = savedGame ?? createBaseState();
@@ -18,12 +23,12 @@ let gameState = savedGame ?? createBaseState();
 persistAndRender(Boolean(savedGame));
 
 app.addEventListener("click", (event) => {
-  const target = event.target.closest("[data-action]");
-  if (!target) {
-    return;
-  }
-
-  const { action, playerId, filter, presetId, p1Id, p2Id, presetMode } = target.dataset;
+  try {
+    const target = event.target.closest("[data-action]");
+    if (!target) {
+      return;
+    }
+    const { action, playerId, filter, presetId, p1Id, p2Id, presetMode } = target.dataset;
   const source = getAppMode();
 
   const mappedActionType = UI_ACTION_MAP[action];
@@ -48,6 +53,10 @@ app.addEventListener("click", (event) => {
       }
     } else if (action === "client-reconnect-submit") {
       doClientJoin(true);
+    } else if (action === "toggle-audio") {
+      isAudioMuted = !isAudioMuted;
+      initAmbientEffects();
+      return;
     } else {
       console.warn(`[UI] Unknown or unmapped data-action: "${action}"`);
     }
@@ -155,6 +164,10 @@ app.addEventListener("click", (event) => {
     } else {
       broadcastGameState();
     }
+  }
+  } catch (error) {
+    console.error(error);
+    alert("Lỗi JS: " + error.message);
   }
 });
 
@@ -284,6 +297,10 @@ function persistAndRender(shouldSave = true) {
     currentPhase: getCurrentPhase(gameState.phase),
     networkAdapter,
   });
+
+  if (gameState.screen === "home" || !gameState.screen) {
+    initAmbientEffects();
+  }
 }
 
 function saveOnly() {
@@ -306,4 +323,47 @@ function broadcastGameState() {
       });
     }
   });
+}
+
+// --- Ambient Effects & Audio Logic ---
+function initAmbientEffects() {
+  const audio = document.getElementById("ambient-audio");
+  const audioToggle = document.getElementById("audio-toggle");
+
+  if (audio && audioToggle) {
+    audio.volume = 0.2;
+    audioToggle.textContent = isAudioMuted ? "🔇" : "🔈";
+    
+    if (!isAudioMuted && !isAudioPlaying) {
+      audio.play().then(() => { isAudioPlaying = true; }).catch(e => console.warn("Auto-play prevented", e));
+    } else if (isAudioMuted && isAudioPlaying) {
+      audio.pause();
+      isAudioPlaying = false;
+    }
+  }
+
+  const bg = document.querySelector(".parallax-bg");
+  if (bg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.removeEventListener("mousemove", handleParallax);
+    document.addEventListener("mousemove", handleParallax);
+  }
+}
+
+function handleParallax(e) {
+  if (parallaxTicking) return;
+  window.requestAnimationFrame(() => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 10;
+    
+    const moon = document.querySelector(".moon");
+    const treesFg = document.querySelector(".trees-fg");
+    const treesBg = document.querySelector(".trees-bg");
+    
+    if (moon) moon.style.transform = `translate(calc(-50% + ${x * 0.2}px), ${y * 0.2}px)`;
+    if (treesBg) treesBg.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+    if (treesFg) treesFg.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+    
+    parallaxTicking = false;
+  });
+  parallaxTicking = true;
 }
