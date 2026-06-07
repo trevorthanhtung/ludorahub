@@ -1,5 +1,5 @@
-﻿import IntroScene from "./scenes/IntroScene.js?v=game-fonts-2";
-import ChapterOneScene from "./scenes/ChapterOneScene.js?v=game-fonts-2";
+import IntroScene from "./scenes/IntroScene.js?v=one-time-intro-1";
+import ChapterOneScene from "./scenes/ChapterOneScene.js?v=one-time-intro-1";
 
 const GAME_WIDTH = 960;
 const GAME_HEIGHT = 540;
@@ -19,6 +19,13 @@ const config = {
     height: GAME_HEIGHT,
   },
   scene: [IntroScene, ChapterOneScene],
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 600 },
+      debug: false,
+    },
+  },
 };
 
 async function bootGame() {

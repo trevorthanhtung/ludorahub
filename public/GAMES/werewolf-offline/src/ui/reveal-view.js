@@ -52,8 +52,8 @@ export function renderReveal(gameState, getRoleDefinition) {
           isRevealed
             ? `
               <div class="footer-actions">
-                <button class="btn btn-primary" data-action="reveal-next">
-                  Ẩn vai và chuyển người tiếp theo
+                <button class="btn btn-primary" style="font-size: 1.1rem; min-height: 60px;" data-action="reveal-next">
+                  Đã xem xong, chuyển máy ➡️
                 </button>
               </div>
             `

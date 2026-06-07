@@ -1,4 +1,4 @@
-﻿export default class TextBox {
+export default class TextBox {
   constructor(scene, options = {}) {
     this.scene = scene;
     this.width = options.width ?? 820;
@@ -20,7 +20,7 @@
       .rectangle(6, 6, this.width, this.height, 0x000000, 0.35)
       .setOrigin(0, 0);
     this.text = scene.add.text(this.padding, this.padding, "", {
-      fontFamily: '"Pixelify Sans", system-ui, sans-serif',
+      fontFamily: '"DearPix", system-ui, sans-serif',
       fontSize: "22px",
       color: "#f8eedc",
       lineSpacing: 6,
@@ -28,7 +28,7 @@
     });
     this.prompt = scene.add
       .text(this.width - this.padding, this.height - 18, "tiếp tục ▸", {
-        fontFamily: '"VT323", "Pixelify Sans", monospace',
+        fontFamily: '"VT323", "DearPix", monospace',
         fontSize: "15px",
         color: "#d9b56f",
       })
@@ -84,9 +84,16 @@
     this.prompt.setAlpha(0);
     this.text.setText("");
 
+    let baseSpeed = speed;
+    if (this.scene.gameSettings) {
+      if (this.scene.gameSettings.textSpeed === 0) baseSpeed = 55;
+      else if (this.scene.gameSettings.textSpeed === 1) baseSpeed = 35;
+      else if (this.scene.gameSettings.textSpeed === 2) baseSpeed = 15;
+    }
+
     let index = 0;
     this.typingEvent = this.scene.time.addEvent({
-      delay: speed,
+      delay: baseSpeed,
       loop: true,
       callback: () => {
         this.visibleText += this.fullText[index] ?? "";
@@ -96,6 +103,14 @@
         if (index >= this.fullText.length) {
           this.stopTyping(false);
           this.prompt.setAlpha(1);
+          
+          if (this.scene.gameSettings?.autoAdvance) {
+            this.scene.time.delayedCall(1800, () => {
+              if (this.fullText === line && this.visibleText === this.fullText) {
+                if (this.scene.handleSceneTap) this.scene.handleSceneTap();
+              }
+            });
+          }
         }
       },
     });

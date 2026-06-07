@@ -30,7 +30,7 @@ function createValidation(playerCount, roleConfig) {
   };
 }
 
-export function createSetupDraft(baseState, playerCount = 8, forcePreset = false) {
+export function createSetupDraft(baseState, playerCount = 8, forcePreset = false, mode = "basic") {
   const safeCount = sanitizePlayerCount(playerCount);
   const previousPlayers = baseState?.setup?.players ?? [];
   const previousRoles = baseState?.setup?.roleConfig ?? {};
@@ -41,9 +41,9 @@ export function createSetupDraft(baseState, playerCount = 8, forcePreset = false
   }));
   const roleConfig =
     forcePreset || !baseState?.setup
-      ? applyPreset(safeCount)
+      ? applyPreset(safeCount, mode)
       : normalizeRoleConfig({
-          ...applyPreset(safeCount),
+          ...applyPreset(safeCount, mode),
           ...previousRoles,
         });
 
@@ -87,6 +87,23 @@ export function createBaseState() {
       noteDraft: "",
       history: [],
       votes: {},
+      effects: {
+        cupidLinks: [],
+        foxLostPower: [],
+      },
+      nightActions: {
+        wolfTarget: null,
+        seerTarget: null,
+        guardTarget: null,
+        witchHeal: false,
+        witchPoisonTarget: null,
+        foxTargets: [],
+      },
+      nightResults: [],
+      roleStates: {
+        witch: { hasHealPotion: true, hasPoisonPotion: true },
+        hunter: { hasShot: false, pendingShot: null },
+      },
     },
     summary: {
       winnerTeam: null,
@@ -135,12 +152,18 @@ export function assignRoles(gameState) {
 export function createGame({ baseState, playerCount, playerNames, roleConfig }) {
   const safeCount = sanitizePlayerCount(playerCount);
   const normalizedConfig = normalizeRoleConfig(roleConfig);
-  const players = Array.from({ length: safeCount }, (_, index) => ({
-    id: `player-${Date.now()}-${index + 1}`,
-    order: index + 1,
-    name: playerNames[index]?.trim() || `Người chơi ${index + 1}`,
-    alive: true,
-  }));
+  const previousPlayers = baseState?.setup?.players || [];
+  
+  const players = Array.from({ length: safeCount }, (_, index) => {
+    const prev = previousPlayers[index] || {};
+    return {
+      id: prev.id || `player-${Date.now()}-${index + 1}`,
+      sessionId: prev.sessionId || null,
+      order: index + 1,
+      name: playerNames[index]?.trim() || `Người chơi ${index + 1}`,
+      alive: true,
+    };
+  });
 
   const seededState = {
     ...baseState,
@@ -161,6 +184,23 @@ export function createGame({ baseState, playerCount, playerNames, roleConfig }) 
       noteDraft: "",
       history: [],
       votes: {},
+      effects: {
+        cupidLinks: [],
+        foxLostPower: [],
+      },
+      nightActions: {
+        wolfTarget: null,
+        seerTarget: null,
+        guardTarget: null,
+        witchHeal: false,
+        witchPoisonTarget: null,
+        foxTargets: [],
+      },
+      nightResults: [],
+      roleStates: {
+        witch: { hasHealPotion: true, hasPoisonPotion: true },
+        hunter: { hasShot: false, pendingShot: null },
+      },
     },
     summary: {
       winnerTeam: null,
@@ -234,11 +274,67 @@ export function nextPhase(gameState) {
     },
   };
 
+  if (nextPhaseKey === "morning") {
+    nextState = resolveNightActions(nextState);
+  }
+
   nextState = addHistoryEntry(nextState, "Chuyển phase", "phase", `Sang phase "${nextPhaseLabel}".`);
   return checkWinCondition(nextState);
 }
 
-export function killPlayer(gameState, playerId) {
+export function resolveNightActions(gameState) {
+  let nextState = { ...gameState };
+  const actions = nextState.gm.nightActions;
+  let results = [];
+
+  const { wolfTarget, witchHeal, guardTarget, witchPoisonTarget } = actions;
+
+  // 1. Resolve Wolf kill
+  if (wolfTarget) {
+    if (witchHeal) {
+      results.push("Một người bị cắn nhưng đã được Phù thủy cứu.");
+    } else if (guardTarget === wolfTarget) {
+      results.push("Một người bị cắn nhưng đã được Bảo vệ cứu.");
+    } else {
+      const p = nextState.players.find(x => x.id === wolfTarget);
+      if (p && p.alive) {
+        nextState = killPlayer(nextState, wolfTarget, "Bị sói cắn chết");
+        results.push(`${p.name} đã chết trong đêm.`);
+      }
+    }
+  } else {
+    results.push("Đêm qua Sói không cắn ai.");
+  }
+
+  // 2. Resolve Witch poison
+  if (witchPoisonTarget) {
+    const p = nextState.players.find(x => x.id === witchPoisonTarget);
+    if (p && p.alive) {
+      nextState = killPlayer(nextState, witchPoisonTarget, "Bị Phù thủy đầu độc");
+      results.push(`${p.name} đã chết trong đêm (bị độc).`);
+    }
+  }
+
+  // Clear night actions
+  nextState.gm = {
+    ...nextState.gm,
+    nightActions: {
+      wolfTarget: null,
+      seerTarget: null,
+      guardTarget: null,
+      witchHeal: false,
+      witchPoisonTarget: null,
+      foxTargets: [],
+    },
+    nightResults: results.length === 1 && results[0].includes("không cắn ai") && !witchPoisonTarget 
+      ? ["Đêm qua là một đêm bình yên, không có ai chết."] 
+      : results
+  };
+
+  return nextState;
+}
+
+export function killPlayer(gameState, playerId, reason = "Đánh dấu chết") {
   if (gameState.status === "finished") {
     return gameState;
   }
@@ -248,14 +344,39 @@ export function killPlayer(gameState, playerId) {
     return gameState;
   }
 
-  const nextState = {
+  let nextState = {
     ...gameState,
     players: gameState.players.map((entry) =>
       entry.id === playerId ? { ...entry, alive: false } : entry,
     ),
   };
 
-  return addHistoryEntry(nextState, "Đánh dấu chết", "player", "", player.name);
+  if (player.roleId === "hunter" && !nextState.gm.roleStates?.hunter?.hasShot) {
+    nextState.gm = {
+      ...nextState.gm,
+      roleStates: {
+        ...nextState.gm.roleStates,
+        hunter: {
+          ...nextState.gm.roleStates?.hunter,
+          pendingShot: player.id
+        }
+      }
+    };
+  }
+
+  nextState = addHistoryEntry(nextState, reason, "player", "", player.name);
+
+  // Cupid chain kill
+  const links = nextState.gm.effects?.cupidLinks || [];
+  if (links.includes(playerId)) {
+    const partnerId = links.find(id => id !== playerId);
+    const partner = nextState.players.find(p => p.id === partnerId);
+    if (partner && partner.alive) {
+      nextState = killPlayer(nextState, partnerId, "Chết theo người yêu");
+    }
+  }
+
+  return nextState;
 }
 
 export function revivePlayer(gameState, playerId) {
@@ -287,7 +408,9 @@ export function checkWinCondition(gameState) {
   const aliveWolves = alivePlayers.filter(
     (player) => getRoleDefinition(player.roleId).team === "wolf",
   ).length;
-  const aliveVillage = alivePlayers.length - aliveWolves;
+  const aliveVillage = alivePlayers.filter(
+    (player) => getRoleDefinition(player.roleId).team === "village",
+  ).length;
 
   if (aliveWolves === 0) {
     return {
@@ -340,9 +463,34 @@ export function loadGame() {
     return null;
   }
 
+  const base = createBaseState();
+  const mergedGm = {
+    ...base.gm,
+    ...(saved.gm || {}),
+    effects: {
+      ...base.gm.effects,
+      ...(saved.gm?.effects || {})
+    },
+    nightActions: {
+      ...base.gm.nightActions,
+      ...(saved.gm?.nightActions || {})
+    },
+    roleStates: {
+      witch: {
+        ...base.gm.roleStates.witch,
+        ...(saved.gm?.roleStates?.witch || {})
+      },
+      hunter: {
+        ...base.gm.roleStates.hunter,
+        ...(saved.gm?.roleStates?.hunter || {})
+      }
+    }
+  };
+
   return {
-    ...createBaseState(),
+    ...base,
     ...saved,
+    gm: mergedGm,
     storage: {
       hasSavedGame: true,
       lastSavedAt: saved.updatedAt ?? Date.now(),
@@ -525,11 +673,26 @@ export function executeVoteHanging(gameState) {
     return addHistoryEntry(gameState, "Treo cổ", "vote", "Không có ai bị treo cổ (hòa phiếu hoặc không có phiếu).");
   }
 
-  let nextState = killPlayer(gameState, targetId);
+  let nextState = killPlayer(gameState, targetId, "Bị treo cổ");
   const player = gameState.players.find(p => p.id === targetId);
   
   nextState = addHistoryEntry(nextState, "Treo cổ", "vote", `Bị treo cổ với ${maxVotes} phiếu.`, player ? player.name : "");
   nextState = resetVotes(nextState);
+  
+  // Check Jester win
+  if (player && player.roleId === "jester") {
+    return {
+      ...addHistoryEntry(nextState, "Kết thúc", "win", "Kẻ ngốc (Jester) chiến thắng vì bị treo cổ."),
+      screen: "summary",
+      status: "finished",
+      summary: {
+        winnerTeam: "jester",
+        winnerLabel: "Kẻ ngốc thắng",
+        reason: "Kẻ ngốc đã lừa được làng treo cổ mình.",
+        finishedAt: Date.now(),
+      },
+    };
+  }
   
   return checkWinCondition(nextState);
 }
@@ -596,5 +759,53 @@ export function goHowTo(gameState) {
   return {
     ...gameState,
     screen: "howto",
+  };
+}
+
+/**
+ * Creates a sanitized version of the game state safe to send over the network to a client.
+ */
+export function createPlayerViewState(gameState, playerId) {
+  if (!gameState || !gameState.players) return null;
+
+  const player = gameState.players.find(p => p.id === playerId);
+  if (!player) return null;
+
+  const currentPhaseDef = getCurrentPhase(gameState.phase);
+  
+  let publicAnnouncement = "";
+  // Check if we have history to show announcement
+  if (gameState.gm?.history?.length > 0) {
+    const lastHistory = gameState.gm.history[gameState.gm.history.length - 1];
+    if (lastHistory.type === "system" || lastHistory.type === "night_summary") {
+      publicAnnouncement = lastHistory.content;
+    }
+  }
+
+  const roleDef = getRoleDefinition(player.roleId);
+
+  return {
+    playerId: player.id,
+    playerName: player.name,
+    alive: player.alive,
+    role: {
+      id: roleDef.id,
+      name: roleDef.name,
+      teamLabel: roleDef.teamLabel,
+      icon: roleDef.icon,
+      summary: roleDef.summary
+    },
+    publicPhase: currentPhaseDef.description,
+    dayNightCounter: `Đêm ${gameState.phase.nightCount} / Ngày ${gameState.phase.dayCount}`,
+    announcement: publicAnnouncement,
+    winState: gameState.winState ? {
+      winner: gameState.winState.winner,
+      reason: gameState.winState.reason,
+      revealedRoles: gameState.players.map(p => ({
+        name: p.name,
+        roleName: getRoleDefinition(p.roleId).name,
+        icon: getRoleDefinition(p.roleId).icon
+      }))
+    } : null
   };
 }

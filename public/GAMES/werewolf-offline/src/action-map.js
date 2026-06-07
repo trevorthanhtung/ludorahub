@@ -7,6 +7,11 @@ export const UI_ACTION_MAP = {
   "home-continue": ACTION_TYPES.LOAD_SAVED_GAME,
   "home-howto": ACTION_TYPES.GO_HOW_TO,
   "nav-home": ACTION_TYPES.GO_HOME,
+  "home-new-host": ACTION_TYPES.HOME_NEW_HOST,
+  "home-join-client": ACTION_TYPES.HOME_JOIN_CLIENT,
+  "client-join-submit": ACTION_TYPES.CLIENT_JOIN_SUBMIT,
+  "host-lobby-start": ACTION_TYPES.HOST_LOBBY_START,
+  "client-disconnect": ACTION_TYPES.CLIENT_DISCONNECT,
   
   "setup-decrease": ACTION_TYPES.SETUP_DECREASE_PLAYER,
   "setup-increase": ACTION_TYPES.SETUP_INCREASE_PLAYER,
@@ -31,6 +36,17 @@ export const UI_ACTION_MAP = {
   "gm-add-note": ACTION_TYPES.GM_ADD_NOTE,
   "gm-clear-note": ACTION_TYPES.GM_CLEAR_NOTE,
   "gm-end-game": ACTION_TYPES.GM_END_GAME,
+  "gm-clear-note-draft": ACTION_TYPES.GM_CLEAR_NOTE_DRAFT,
+  "gm-set-cupid-link": ACTION_TYPES.GM_SET_CUPID_LINK,
+  "gm-toggle-fox-power": ACTION_TYPES.GM_TOGGLE_FOX_POWER,
+  "GM_FORCE_BROADCAST": ACTION_TYPES.GM_FORCE_BROADCAST,
+
+  // Night Actions
+  "gm-set-wolf-target": ACTION_TYPES.GM_SET_WOLF_TARGET,
+  "gm-set-guard-target": ACTION_TYPES.GM_SET_GUARD_TARGET,
+  "gm-witch-heal": ACTION_TYPES.GM_WITCH_HEAL,
+  "gm-witch-poison": ACTION_TYPES.GM_WITCH_POISON,
+  "gm-hunter-shoot": ACTION_TYPES.GM_HUNTER_SHOOT,
 
   // Summary
   "summary-replay": ACTION_TYPES.SUMMARY_REPLAY,

@@ -13,7 +13,7 @@ export function sanitizePlayerCount(playerCount) {
   return Math.min(15, Math.max(5, Math.floor(parsed)));
 }
 
-export function applyPreset(playerCount) {
+export function applyPreset(playerCount, mode = "basic") {
   const safeCount = sanitizePlayerCount(playerCount);
   const config = createEmptyRoleConfig();
 
@@ -49,6 +49,19 @@ export function applyPreset(playerCount) {
     config.hunter = 1;
   }
 
-  config.villager = safeCount - countRoles(config);
+  if (mode === "balanced" || mode === "chaos") {
+    if (safeCount >= 7) config.cupid = 1;
+    if (safeCount >= 9) {
+      config.werewolf -= 1;
+      config.alpha_wolf = 1;
+    }
+  }
+
+  if (mode === "chaos") {
+    if (safeCount >= 6) config.jester = 1;
+    if (safeCount >= 8) config.fox = 1;
+  }
+
+  config.villager = Math.max(0, safeCount - countRoles(config));
   return normalizeRoleConfig(config);
 }

@@ -60,13 +60,128 @@ function renderVotingSection(gameState) {
   `;
 }
 
-export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
+function renderRoleEffectsSection(gameState) {
+  const hasCupid = gameState.players.some(p => p.roleId === "cupid");
+  const hasFox = gameState.players.some(p => p.roleId === "fox");
+
+  if (!hasCupid && !hasFox) return "";
+
+  const cupidLinks = gameState.gm.effects?.cupidLinks || [];
+  const foxLostPower = gameState.gm.effects?.foxLostPower || [];
+
+  return `
+    <article class="panel" style="grid-column: 1 / -1; border-color: rgba(255, 128, 179, 0.4);">
+      <div class="panel-header">
+        <div>
+          <h2 style="color: var(--primary);">Hiệu ứng Role đặc biệt</h2>
+          <p>Quản lý các trạng thái đặc biệt của Cupid, Cáo...</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+        ${hasCupid ? `
+          <div class="effect-row" style="background: var(--surface-hover); padding: 12px; border-radius: 8px;">
+            <strong>👼 Cupid (Ghép đôi)</strong>
+            ${cupidLinks.length === 2 ? `
+              <p style="margin-top: 4px; color: #ff80b3;">Đã ghép đôi 2 người. Một người chết, người kia sẽ tự động chết theo.</p>
+              <div style="margin-top: 8px;">
+                <button class="btn btn-secondary" data-action="gm-set-cupid-link" data-p1-id="" data-p2-id="">Hủy ghép đôi</button>
+              </div>
+            ` : `
+              <p style="margin-top: 4px;" class="muted">Chưa ghép đôi. (Quản trò có thể tự nhớ hoặc sử dụng tính năng này nếu cần)</p>
+              <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <select id="cupid-p1" class="field" style="max-width: 150px; padding: 4px;">
+                  <option value="">-- Chọn --</option>
+                  ${gameState.players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join("")}
+                </select>
+                <span>❤️</span>
+                <select id="cupid-p2" class="field" style="max-width: 150px; padding: 4px;">
+                  <option value="">-- Chọn --</option>
+                  ${gameState.players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join("")}
+                </select>
+                <button class="btn btn-primary" data-action="gm-set-cupid-link" onclick="
+                  const p1 = document.getElementById('cupid-p1').value;
+                  const p2 = document.getElementById('cupid-p2').value;
+                  if(p1 === p2 || !p1 || !p2) {
+                    alert('Vui lòng chọn 2 người khác nhau.');
+                    event.stopPropagation();
+                    return false;
+                  }
+                  this.dataset.p1Id = p1;
+                  this.dataset.p2Id = p2;
+                ">Ghép đôi</button>
+              </div>
+            `}
+          </div>
+        ` : ""}
+        
+        ${hasFox ? `
+          <div class="effect-row" style="background: var(--surface-hover); padding: 12px; border-radius: 8px;">
+            <strong>🦊 Cáo (Mất năng lực)</strong>
+            <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+              ${gameState.players.filter(p => p.roleId === "fox").map(fox => {
+                const isLost = foxLostPower.includes(fox.id);
+                return `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>${escapeHtml(fox.name)} ${isLost ? "❌ Đã mất năng lực" : "✅ Còn năng lực"}</span>
+                    <button class="btn ${isLost ? 'btn-secondary' : 'btn-danger'}" data-action="gm-toggle-fox-power" data-player-id="${fox.id}">
+                      ${isLost ? 'Phục hồi' : 'Tước năng lực'}
+                    </button>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        ` : ""}
+      </div>
+    </article>
+  `;
+}
+
+function renderHunterPendingShot(gameState) {
+  const pendingShotId = gameState.gm.roleStates?.hunter?.pendingShot;
+  if (!pendingShotId) return "";
+
+  const hunter = gameState.players.find(p => p.id === pendingShotId);
+  return `
+    <article class="panel pulse-danger" style="grid-column: 1 / -1; border-color: red; background: rgba(255, 0, 0, 0.1);">
+      <div class="panel-header">
+        <div>
+          <h2 style="color: #ff6b6b;">🚨 Thợ săn trả đũa</h2>
+          <p style="color: #fca5a5;">Thợ săn (${escapeHtml(hunter?.name || "")}) đã chết và có thể bắn 1 người. Yêu cầu chọn người bị bắn ngay!</p>
+        </div>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        ${gameState.players.filter(p => p.alive).map(p => `
+          <button class="btn btn-danger" data-action="gm-hunter-shoot" data-player-id="${p.id}">Bắn ${escapeHtml(p.name)}</button>
+        `).join("")}
+        <button class="btn btn-secondary" data-action="gm-hunter-shoot" data-player-id="skip">Không bắn ai</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderNightResults(gameState) {
+  const results = gameState.gm.nightResults;
+  if (!results || results.length === 0 || gameState.phase.key !== "morning") return "";
+
+  return `
+    <article class="panel" style="grid-column: 1 / -1; border-color: var(--accent); background: rgba(139, 92, 246, 0.08);">
+      <div class="panel-header">
+        <div>
+          <h2 style="color: #ddd1ff;">🌅 Tóm tắt đêm qua</h2>
+          <p style="color: #b6a9d6;">Thông báo cho Làng kết quả sau khi Đêm kết thúc.</p>
+        </div>
+      </div>
+      <ul style="margin-top: 12px; padding-left: 20px; font-size: 1.1rem; line-height: 1.6;">
+        ${results.map(r => `<li style="margin-bottom: 8px;">${escapeHtml(r)}</li>`).join("")}
+      </ul>
+    </article>
+  `;
+}
+
+export function renderGm(gameState, phases, currentPhase, getRoleDefinition, networkAdapter = null) {
   const visiblePlayers = gameState.players.filter(player => {
     const role = getRoleDefinition(player.roleId);
-    // If roles are hidden, team filters don't apply unless the GM explicitly wants to filter by team (but they shouldn't see it if they hide roles).
-    // Let's implement this: if showRoles is false and filter is wolf/village, show nothing or just ignore team filters.
-    // Actually, "Khi bật 'Hiện vai', filter theo phe mới hiện". So if showRoles is false, hide team filters completely in UI, or just default them to "all".
-    // I will show team filters only when showRoles is true.
     return shouldShowByFilter(player, role, gameState.gm.filter);
   });
 
@@ -81,10 +196,10 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
           <span class="tag">Chu kỳ ${gameState.phase.cycle}</span>
         </div>
 
-        <div class="summary-card">
-          <p class="muted">Phase hiện tại</p>
-          <h3>${currentPhase.label}</h3>
-          <p class="helper">${currentPhase.description}</p>
+        <div class="summary-card" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4);">
+          <p style="color: #ddd1ff; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Phase hiện tại</p>
+          <h3 style="font-size: 1.8rem; margin: 4px 0;">${currentPhase.label}</h3>
+          <p style="color: #ddd1ff; opacity: 0.9;">${currentPhase.description}</p>
         </div>
 
         <div class="phase-track" style="margin-top: 14px;">
@@ -100,10 +215,15 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
         </div>
 
         <div class="footer-actions">
-          <button class="btn btn-primary" data-action="gm-next-phase">Phase tiếp theo</button>
+          <button class="btn btn-primary" data-action="gm-next-phase" ${gameState.gm.roleStates?.hunter?.pendingShot ? 'disabled title="Phải chọn người bị Thợ săn bắn"' : ''}>Phase tiếp theo</button>
           <button class="btn btn-secondary" data-action="gm-toggle-roles">
             ${gameState.gm.showRoles ? "Ẩn vai" : "Hiện vai"}
           </button>
+          ${networkAdapter && networkAdapter.isHost() ? `
+          <button class="btn btn-secondary" data-action="GM_FORCE_BROADCAST" title="Gửi lại dữ liệu cho người chơi">
+            Gửi lại (Sync)
+          </button>
+          ` : ''}
           <button class="btn btn-danger" data-action="gm-end-game">Kết thúc ván</button>
         </div>
       </article>
@@ -133,6 +253,12 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
       </article>
 
       ${renderVotingSection(gameState)}
+      
+      ${renderRoleEffectsSection(gameState)}
+      
+      ${renderHunterPendingShot(gameState)}
+      
+      ${renderNightResults(gameState)}
 
       <article class="panel" style="grid-column: 1 / -1;">
         <div class="panel-header">
@@ -144,7 +270,12 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
         </div>
         <div class="player-list">
           ${visiblePlayers
-            .map((player) => renderPlayerCard(player, gameState, getRoleDefinition, true))
+            .map((player) => {
+              const networkStatus = networkAdapter && networkAdapter.isHost() && !player.id.startsWith("p-") 
+                                    ? networkAdapter.getConnectionStatus(player.id) 
+                                    : undefined;
+              return renderPlayerCard(player, gameState, getRoleDefinition, true, networkStatus);
+            })
             .join("")}
           ${visiblePlayers.length === 0 ? '<div class="empty-state">Không có người chơi nào khớp với bộ lọc.</div>' : ''}
         </div>
@@ -178,48 +309,50 @@ export function renderGm(gameState, phases, currentPhase, getRoleDefinition) {
           gameState.gm.history.length
             ? `
               <div class="history-list">
-                ${gameState.gm.history.slice(0, 20)
-                  .map(
-                    (item) => `
-                      <article class="history-card">
-                        <div class="history-top">
-                          <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
-                          <span class="history-time">${formatTime(item.timestamp)}</span>
-                        </div>
-                        <div class="history-content" style="margin-top: 8px;">
-                          <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
-                          ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
-                          <span class="muted">${escapeHtml(item.message)}</span>
-                        </div>
-                      </article>
-                    `,
-                  )
-                  .join("")}
-                
-                ${gameState.gm.history.length > 20 ? `
-                  <details style="margin-top: 10px;">
-                    <summary style="cursor: pointer; color: var(--muted); padding: 8px 0; font-weight: bold;">Xem thêm lịch sử cũ (${gameState.gm.history.length - 20} sự kiện)</summary>
-                    <div style="display: grid; gap: 12px; margin-top: 12px;">
-                      ${gameState.gm.history.slice(20)
-                        .map(
-                          (item) => `
-                            <article class="history-card" style="opacity: 0.8;">
-                              <div class="history-top">
-                                <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
-                                <span class="history-time">${formatTime(item.timestamp)}</span>
-                              </div>
-                              <div class="history-content" style="margin-top: 8px;">
-                                <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
-                                ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
-                                <span class="muted">${escapeHtml(item.message)}</span>
-                              </div>
-                            </article>
-                          `,
-                        )
-                        .join("")}
-                    </div>
-                  </details>
-                ` : ''}
+                <div class="history-timeline">
+                  ${gameState.gm.history.slice(0, 20)
+                    .map(
+                      (item) => `
+                        <article class="history-card-timeline">
+                          <div class="history-top">
+                            <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
+                            <span class="history-time">${formatTime(item.timestamp)}</span>
+                          </div>
+                          <div class="history-content" style="margin-top: 8px;">
+                            <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
+                            ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
+                            <span class="muted">${escapeHtml(item.message)}</span>
+                          </div>
+                        </article>
+                      `,
+                    )
+                    .join("")}
+                  
+                  ${gameState.gm.history.length > 20 ? `
+                    <details style="margin-top: 10px;">
+                      <summary style="cursor: pointer; color: var(--muted); padding: 8px 0; font-weight: bold;">Xem thêm lịch sử cũ (${gameState.gm.history.length - 20} sự kiện)</summary>
+                      <div style="display: flex; flex-direction: column; gap: 0; margin-top: 12px;">
+                        ${gameState.gm.history.slice(20)
+                          .map(
+                            (item) => `
+                              <article class="history-card-timeline" style="opacity: 0.8;">
+                                <div class="history-top">
+                                  <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
+                                  <span class="history-time">${formatTime(item.timestamp)}</span>
+                                </div>
+                                <div class="history-content" style="margin-top: 8px;">
+                                  <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
+                                  ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
+                                  <span class="muted">${escapeHtml(item.message)}</span>
+                                </div>
+                              </article>
+                            `,
+                          )
+                          .join("")}
+                      </div>
+                    </details>
+                  ` : ""}
+                </div>
               </div>
             `
             : '<div class="empty-state">Chưa có lịch sử nào. Hãy dùng phase và ghi chú để theo dõi ván.</div>'

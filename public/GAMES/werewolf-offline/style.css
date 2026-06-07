@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'DearPix';
+  src: url('../den-story/font/dearpix/dearpix-2-01.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #0b0a14;
   --bg-soft: rgba(21, 18, 40, 0.92);
@@ -138,6 +146,11 @@ p {
   margin: 0;
 }
 
+h1, h2, h3, .btn, .eyebrow, .role-name, .preset-option-title {
+  font-family: 'DearPix', Inter, sans-serif;
+  letter-spacing: 0.05em;
+}
+
 .hero h1 {
   margin-top: 16px;
   font-size: clamp(2rem, 7vw, 3.35rem);
@@ -207,6 +220,7 @@ p {
   color: var(--text);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid transparent;
+  font-size: 1.1rem;
   transition:
     transform var(--transition),
     background var(--transition),
@@ -539,6 +553,38 @@ p {
   font-size: 0.85rem;
 }
 
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 12px;
+  border-left: 2px solid rgba(139, 92, 246, 0.3);
+  margin-left: 8px;
+}
+
+.history-card-timeline {
+  position: relative;
+  padding: 14px 14px 14px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-card-timeline:last-child {
+  border-bottom: none;
+}
+
+.history-card-timeline::before {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--panel);
+}
+
 .empty-state {
   padding: 20px;
   border-radius: 18px;
@@ -679,6 +725,36 @@ p {
   border-radius: 10px;
 }
 
+.preset-option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.preset-option-card:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.preset-option-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.preset-option-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 @media (max-width: 400px) {
   .hero h1 {
     font-size: 2.2rem;
@@ -714,7 +790,23 @@ p {
   
   .player-actions {
     margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .player-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 8px;
   }
 }
 
+.pulse-danger {
+  animation: pulse-danger 1.5s infinite;
+}
 
+@keyframes pulse-danger {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}

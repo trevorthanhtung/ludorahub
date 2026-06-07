@@ -28,6 +28,13 @@ import {
   revivePlayer,
   checkWinCondition
 } from "./game-state.js";
+import { 
+  applyCupidLink, 
+  toggleFoxPower,
+  setNightAction,
+  witchUsePotion,
+  hunterShoot
+} from "./role-effects.js";
 
 // Helper functions moved from app.js to keep dispatcher pure
 function advanceReveal(gameState) {
@@ -88,14 +95,37 @@ export function dispatchAction(gameState, action) {
     return gameState;
   }
 
+  // Handle mode switches and network setup
+  if (type === ACTION_TYPES.HOME_NEW_HOST) {
+    return { ...gameState, screen: "host-lobby", hostLobby: { roomCode: null, players: [] } };
+  }
+  if (type === ACTION_TYPES.HOME_JOIN_CLIENT) {
+    return { ...gameState, screen: "client-join", clientStatus: { error: "" } };
+  }
+  if (type === ACTION_TYPES.HOST_LOBBY_START) {
+    // Go to setup with the players from the lobby
+    const newState = createSetupDraft(gameState, gameState.hostLobby.players.length, true, "basic");
+    newState.setup.players = gameState.hostLobby.players.map((p, i) => ({ id: p.id, name: p.name, sessionId: p.sessionId, order: i + 1 }));
+    return newState;
+  }
+  if (type === ACTION_TYPES.CLIENT_JOIN_SUBMIT) {
+    // Return loading state, app.js will handle the actual network connection
+    return { ...gameState, screen: "client-wait", clientStatus: { roomCode: payload.roomCode, playerName: payload.playerName } };
+  }
+  if (type === ACTION_TYPES.CLIENT_DISCONNECT) {
+    return goHome(gameState);
+  }
+
   // If we are in offline mode, process everything locally
   if (mode === APP_MODES.OFFLINE || source === "offline") {
     return processOfflineAction(gameState, action);
   }
-
-  // Future modes (host, client) will have different dispatch routing
-  // E.g. sending action to Host over WebRTC
   
+  if (mode === APP_MODES.HOST) {
+    // Host processes actions normally like offline mode, but app.js will broadcast state changes
+    return processOfflineAction(gameState, action);
+  }
+
   return gameState;
 }
 
@@ -114,16 +144,34 @@ function processOfflineAction(gameState, { type, payload }) {
     case ACTION_TYPES.SETUP_INCREASE_PLAYER:
       return updateSetupPlayerCount(gameState, gameState.setup.playerCount + 1);
     case ACTION_TYPES.SETUP_APPLY_PRESET:
-      return createSetupDraft(gameState, gameState.setup.playerCount, true);
+      return createSetupDraft(gameState, gameState.setup.playerCount, true, payload.presetMode);
     case ACTION_TYPES.SETUP_LOAD_PRESET:
       return applyCustomPreset(gameState, payload.presetId);
-    case ACTION_TYPES.SETUP_ASSIGN_ROLES:
-      return createGame({
+    case ACTION_TYPES.SETUP_ASSIGN_ROLES: {
+      let newState = createGame({
         baseState: gameState,
         playerCount: gameState.setup.playerCount,
         playerNames: gameState.setup.players.map((player) => player.name),
         roleConfig: gameState.setup.roleConfig,
       });
+      // Skip reveal phase if we are host
+      if (getAppMode() === APP_MODES.HOST) {
+        newState = addHistoryEntry(
+          {
+            ...newState,
+            screen: "gm",
+            reveal: {
+              ...newState.reveal,
+              stage: "done",
+            },
+          },
+          "Bắt đầu game",
+          "system",
+          "Tất cả người chơi đã nhận vai trên máy cá nhân. Quản trò bắt đầu điều phối."
+        );
+      }
+      return newState;
+    }
     case ACTION_TYPES.REVEAL_READY:
       return updateRevealStage(gameState, "ready");
     case ACTION_TYPES.REVEAL_SHOW:
@@ -152,6 +200,23 @@ function processOfflineAction(gameState, { type, payload }) {
       return clearNoteDraft(gameState);
     case ACTION_TYPES.GM_END_GAME:
       return finishGame(gameState);
+    case ACTION_TYPES.GM_SET_CUPID_LINK:
+      return applyCupidLink(gameState, payload.p1Id, payload.p2Id);
+    case ACTION_TYPES.GM_TOGGLE_FOX_POWER:
+      return toggleFoxPower(gameState, payload.playerId);
+      
+    // Night Actions
+    case ACTION_TYPES.GM_SET_WOLF_TARGET:
+      return setNightAction(gameState, "wolfTarget", payload.playerId);
+    case ACTION_TYPES.GM_SET_GUARD_TARGET:
+      return setNightAction(gameState, "guardTarget", payload.playerId);
+    case ACTION_TYPES.GM_WITCH_HEAL:
+      return witchUsePotion(gameState, "heal");
+    case ACTION_TYPES.GM_WITCH_POISON:
+      return witchUsePotion(gameState, "poison", payload.playerId);
+    case ACTION_TYPES.GM_HUNTER_SHOOT:
+      return hunterShoot(gameState, payload.playerId);
+
     case ACTION_TYPES.SUMMARY_REPLAY:
       return restartWithSameSetup(gameState);
       

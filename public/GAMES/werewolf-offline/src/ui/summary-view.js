@@ -31,6 +31,42 @@ export function renderSummary(gameState, getRoleDefinition) {
       <article class="panel">
         <div class="panel-header">
           <div>
+            <h2>Lịch sử ván chơi</h2>
+            <p>Nhìn lại toàn bộ diễn biến của ván.</p>
+          </div>
+        </div>
+        ${
+          gameState.gm.history.length
+            ? `
+              <div class="history-list" style="max-height: 400px; overflow-y: auto;">
+                <div class="history-timeline">
+                  ${gameState.gm.history
+                    .map(
+                      (item) => `
+                        <article class="history-card-timeline">
+                          <div class="history-top">
+                            <strong>${escapeHtml(item.cycleLabel)} - ${escapeHtml(item.phaseLabel || "Ván chơi")}</strong>
+                            <span class="history-time">${formatTime(item.timestamp)}</span>
+                          </div>
+                          <div class="history-content" style="margin-top: 8px;">
+                            <span class="badge" style="margin-right: 8px;">${escapeHtml(item.action)}</span>
+                            ${item.targetName ? `<strong>${escapeHtml(item.targetName)}</strong> ` : ''}
+                            <span class="muted">${escapeHtml(item.message)}</span>
+                          </div>
+                        </article>
+                      `,
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `
+            : '<p class="muted">Chưa có lịch sử nào.</p>'
+        }
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
             <h2>Toàn bộ người chơi</h2>
             <p>Hiện role thật và trạng thái cuối ván.</p>
           </div>

@@ -1,11 +1,11 @@
-import TextBox from "../ui/TextBox.js?v=game-fonts-1";
+import TextBox from "../ui/TextBox.js?v=game-fonts-2";
+import SettingsManager from "../systems/SettingsManager.js";
 
 const INTRO_TEXT = {
   sceneOne: [
-    "Trong một góc nhỏ của thành phố, một mèo mẹ đang cố gắng nuôi những đứa con cuối cùng của mình.",
-    "Trên chiếc sofa xanh mint cũ, bốn đứa nhỏ lăn qua lăn lại như thể cả thế giới chỉ vừa mới bắt đầu.",
-    "Ba đứa tranh nhau cuộn len, cắn món đồ chơi, gọi sự chú ý bằng tất cả sức sống bé xíu của chúng.",
-    "Còn một đứa đen nhánh nằm nép hơn một chút. Nhỏ hơn. Im hơn. Nhưng đôi mắt thì không chịu tắt.",
+    "Một ngày mưa rả rích...",
+    "Tiếng sấm thỉnh thoảng vang lên ngoài cửa sổ.",
+    "Bên trong, một căn phòng nhỏ nhưng ấm áp.",
   ],
   otherKitten:
     "Có nhiều lựa chọn tốt hơn... nhưng câu chuyện này không thuộc về nó.",
@@ -19,13 +19,14 @@ const INTRO_TEXT = {
   ],
 };
 
+
 const KITTENS = [
   {
     id: "orange",
     name: "Cam",
     x: 292,
-    y: 300,
-    scale: 0.82,
+    y: 310,
+    scale: 0.68,
     body: 0xe59645,
     accent: 0xffc177,
     eye: 0x28313a,
@@ -38,8 +39,8 @@ const KITTENS = [
     id: "den",
     name: "Đen",
     x: 452,
-    y: 326,
-    scale: 0.64,
+    y: 330,
+    scale: 0.56,
     body: 0x111317,
     accent: 0x252932,
     eye: 0xb9f7ff,
@@ -53,8 +54,8 @@ const KITTENS = [
     id: "white",
     name: "Trắng",
     x: 592,
-    y: 292,
-    scale: 0.78,
+    y: 300,
+    scale: 0.66,
     body: 0xf4eee3,
     accent: 0xd7cfc4,
     eye: 0x31425a,
@@ -67,8 +68,8 @@ const KITTENS = [
     id: "tabby",
     name: "Mướp",
     x: 720,
-    y: 314,
-    scale: 0.8,
+    y: 322,
+    scale: 0.67,
     body: 0x8d745c,
     accent: 0xc2a07b,
     stripe: 0x4f3b2d,
@@ -89,7 +90,17 @@ export default class IntroScene extends Phaser.Scene {
   }
 
   init(data = {}) {
+    this.phase = "intro";
+    this.uiObjects = [];
+    this.kittenNodes = new Map();
+    this.gameSettings = SettingsManager.load();
+    SettingsManager.applyToScene(this, this.gameSettings);
     this.forceReplay = data.forceReplay === true;
+  }
+
+  saveSettings() {
+    SettingsManager.save(this.gameSettings);
+    SettingsManager.applyToScene(this, this.gameSettings);
   }
 
   preload() {
@@ -104,7 +115,6 @@ export default class IntroScene extends Phaser.Scene {
     this.sceneOneIndex = 0;
     this.destinyIndex = 0;
     this.selectionLocked = false;
-    this.kittenNodes = new Map();
     this.livingRoomObjects = [];
     this.uiObjects = [];
 
@@ -118,8 +128,9 @@ export default class IntroScene extends Phaser.Scene {
 
     this.sceneTitle = this.add
       .text(54, 44, "Đàn mèo", {
-        fontFamily: '"Silkscreen", "Pixelify Sans", system-ui, sans-serif',
-        fontSize: "22px",
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "24px",
+        fontStyle: "700",
         color: "#f7d995",
       })
       .setAlpha(0)
@@ -130,7 +141,7 @@ export default class IntroScene extends Phaser.Scene {
 
     this.fade = this.add.rectangle(480, 270, 960, 540, 0x020202, 1).setDepth(100);
     
-    this.uiObjects.push(this.sceneTitle, this.textBox.container, this.selectionHint, this.description, this.denPortrait, this.fade);
+    this.uiObjects.push(this.sceneTitle, this.textBox.container, this.descCard, this.denPortrait, this.fade);
 
     this.uiCamera = this.cameras.add(0, 0, GAME_WIDTH, GAME_HEIGHT);
     this.cameras.main.ignore(this.uiObjects);
@@ -140,9 +151,7 @@ export default class IntroScene extends Phaser.Scene {
     this.scale.on("resize", this.layoutTextBox, this);
 
     if (!this.forceReplay && window.localStorage?.getItem("den-story:intro-seen") === "true") {
-      this.fade.setAlpha(0);
-      this.livingRoomObjects.forEach(obj => obj.setAlpha(1));
-      this.showLoaoAndStart();
+      this.scene.start("ChapterOneScene");
       return;
     }
 
@@ -307,7 +316,6 @@ export default class IntroScene extends Phaser.Scene {
 
         if (kitten.isDen) {
           rect(ctx, 31+hx, 20+hy, 13, 4, "#2d3139");
-          rect(ctx, 21, 37, 19, 3, "#6c1c2e");
         }
 
         this.textures.addCanvas(`kitten-${kitten.id}-${frame}`, canvas);
@@ -332,7 +340,7 @@ export default class IntroScene extends Phaser.Scene {
     ctx.lineWidth = 8;
     ctx.strokeRect(18, 18, 284, 284);
     ctx.fillStyle = "#ffe0a1";
-    ctx.font = "bold 24px Pixelify Sans, sans-serif";
+    ctx.font = "bold 24px DearPix, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("Đặt ảnh gốc Đen", 160, 142);
     ctx.font = "18px VT323, monospace";
@@ -361,19 +369,11 @@ export default class IntroScene extends Phaser.Scene {
   createToys() {
     const yarnA = this.drawYarnBall(352, 374, 0xff7d8c);
     const yarnB = this.drawYarnBall(745, 382, 0x77c6ff);
-    const feather = this.add.container(492, 386).setDepth(13).setAlpha(0);
-    const stick = this.add.rectangle(0, 0, 90, 5, 0x7a5636, 1);
-    stick.rotation = -0.3;
-    const plumeA = this.add.triangle(45, -14, 0, 18, 18, 0, 34, 18, 0xf5d76e, 1);
-    plumeA.rotation = -0.3;
-    const plumeB = this.add.triangle(60, -6, 0, 18, 18, 0, 34, 18, 0xff8c86, 1);
-    plumeB.rotation = -0.52;
-    feather.add([stick, plumeA, plumeB]);
 
     const block = this.add.rectangle(610, 370, 28, 28, 0xf2c14e, 1).setDepth(13).setAlpha(0);
     block.rotation = 0.28;
 
-    this.livingRoomObjects.push(yarnA, yarnB, feather, block);
+    this.livingRoomObjects.push(yarnA, yarnB, block);
   }
 
   drawYarnBall(x, y, color) {
@@ -397,28 +397,26 @@ export default class IntroScene extends Phaser.Scene {
   }
 
   createSelectionUi() {
-    this.selectionHint = this.add
-      .text(480, 68, "Hãy chọn một bé mèo", {
-        fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-        fontSize: "30px",
-        color: "#fff5df",
-      })
-      .setOrigin(0.5)
-      .setAlpha(0)
-      .setDepth(48);
-
+    this.descCard = this.add.container(480, 464).setDepth(48).setAlpha(0);
+    
+    const descBg = this.add.graphics();
+    descBg.fillStyle(0x0a0908, 0.90);
+    descBg.fillRoundedRect(-340, -64, 680, 128, 12);
+    descBg.lineStyle(2, 0xffe0a1, 0.4);
+    descBg.strokeRoundedRect(-340, -64, 680, 128, 12);
+      
     this.description = this.add
-      .text(480, 114, "", {
-        fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-        fontSize: "24px",
+      .text(0, 0, "", {
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "21px",
         color: "#ffe0a1",
         align: "center",
-        lineSpacing: 8,
-        wordWrap: { width: 720 },
+        lineSpacing: 6,
+        wordWrap: { width: 620 },
       })
-      .setOrigin(0.5, 0)
-      .setAlpha(0)
-      .setDepth(48);
+      .setOrigin(0.5, 0.5);
+      
+    this.descCard.add([descBg, this.description]);
   }
 
   createDenPortrait() {
@@ -433,7 +431,7 @@ export default class IntroScene extends Phaser.Scene {
     const labelBack = this.add.rectangle(0, 156, 270, 40, 0x11100d, 0.96);
     const label = this.add
       .text(0, 156, portraitKey === "den-kitten" ? "Đen hồi nhỏ" : "Cần ảnh gốc của Đen", {
-        fontFamily: '"Pixelify Sans", system-ui, sans-serif',
+        fontFamily: '"DearPix", system-ui, sans-serif',
         fontSize: "16px",
         color: "#ffe0a1",
       })
@@ -556,10 +554,9 @@ export default class IntroScene extends Phaser.Scene {
 
   startSelection() {
     this.phase = "selection";
-    this.sceneTitle.setText("Lựa chọn");
+    this.sceneTitle.setAlpha(0);
     this.layoutTextBox();
     this.textBox.hide();
-    this.tweens.add({ targets: [this.selectionHint, this.description], alpha: 1, duration: 450 });
 
     this.kittenNodes.forEach((node) => {
       node.setInteractive(node.input.hitArea, Phaser.Geom.Rectangle.Contains);
@@ -571,7 +568,10 @@ export default class IntroScene extends Phaser.Scene {
       return;
     }
 
-    this.description.setText(`${kitten.name}: ${kitten.text}`);
+    this.description.setText(kitten.text);
+    this.tweens.killTweensOf(this.descCard);
+    this.descCard.setAlpha(1);
+
     this.tweens.killTweensOf(node);
     this.tweens.add({ targets: node, scaleX: 1.1, scaleY: 1.1, duration: 140 });
   }
@@ -581,7 +581,8 @@ export default class IntroScene extends Phaser.Scene {
       return;
     }
 
-    this.description.setText("");
+    this.tweens.add({ targets: this.descCard, alpha: 0, duration: 250 });
+    
     this.kittenNodes.forEach((node) => {
       this.tweens.add({ targets: node, scaleX: 1, scaleY: 1, duration: 140 });
     });
@@ -609,7 +610,7 @@ export default class IntroScene extends Phaser.Scene {
     
     // Fade out UI
     this.tweens.add({
-      targets: [this.selectionHint, this.description, this.textBox.container],
+      targets: [this.descCard, this.textBox.container],
       alpha: 0,
       duration: 300,
     });
@@ -633,12 +634,12 @@ export default class IntroScene extends Phaser.Scene {
 
 
   startDestiny(denNode) {
+    window.localStorage?.setItem("den-story:intro-seen", "true");
     this.phase = "destiny";
     this.sceneTitle.setText("Định mệnh");
     this.selectionLocked = true;
-    this.description.setText("");
-    this.textBox.resize(610, 46);
-    this.selectionHint.setAlpha(0);
+    this.textBox.resize(560, 60);
+    this.descCard.setAlpha(0);
 
     const introFade = this.add.rectangle(480, 270, 960, 540, 0x000000, 1).setDepth(99);
     this.tweens.add({ targets: introFade, alpha: 0, duration: 1500, delay: 200 });
@@ -672,7 +673,7 @@ export default class IntroScene extends Phaser.Scene {
     
     // Defer showing the portrait until the last text line
     this.denPortrait.setAlpha(0);
-    this.denPortrait.setX(724);
+    this.denPortrait.setX(760);
 
     this.time.delayedCall(1650, () => this.textBox.showLine(INTRO_TEXT.destiny[0], 30));
   }
@@ -709,124 +710,108 @@ export default class IntroScene extends Phaser.Scene {
     this.cameras.main.pan(GAME_WIDTH / 2, GAME_HEIGHT / 2, 900, "Sine.easeInOut");
     this.cameras.main.zoomTo(1, 900, "Sine.easeInOut");
 
-    let splashDelay = 0;
-    let splashBg = null;
-    if (this.textures.exists("background_1")) {
-      splashBg = this.add.image(480, 270, "background_1").setDepth(79).setAlpha(0).setDisplaySize(960, 540);
-      this.cameras.main.ignore(splashBg);
-      this.uiObjects.push(splashBg);
-      this.tweens.add({ targets: splashBg, alpha: 1, duration: 900, ease: "Sine.easeInOut" });
-      splashDelay = 2200; 
-      this.tweens.add({ targets: splashBg, alpha: 0, duration: 1000, delay: splashDelay + 200 });
-    }
-
-    const overlay = this.add.rectangle(480, 270, 960, 540, 0x050403, 0.86).setDepth(80).setAlpha(0);
+    let splashDelay = 1000;
+    
+    // Solid dark elegant background
+    const overlay = this.add.rectangle(480, 270, 960, 540, 0x0a0908, 1).setDepth(80).setAlpha(0);
     this.uiObjects.push(overlay);
 
-    for (let i = 0; i < 24; i++) {
-       const p = this.add.rectangle(Phaser.Math.Between(0, 960), Phaser.Math.Between(0, 540), 3, 3, 0xfce1b6, Phaser.Math.FloatBetween(0.08, 0.35)).setDepth(81).setAlpha(0);
-       this.uiObjects.push(p);
-       this.cameras.main.ignore(p);
-       this.tweens.add({
-         targets: p,
-         y: p.y - Phaser.Math.Between(40, 110),
-         alpha: { start: 0, to: p.alpha, yoyo: true },
-         duration: Phaser.Math.Between(3500, 7000),
-         delay: splashDelay + Phaser.Math.Between(0, 2000),
-         repeat: -1
-       });
-    }
+    const titleX = 480;
+    const titleY = 220;
 
-    const silhouette = this.add.image(620, 134, "kitten-den-0").setTintFill(0x000000).setAlpha(0).setDepth(81).setDisplaySize(72, 72);
-    this.uiObjects.push(silhouette);
-
-    const titleText = this.add.text(480, 160, "ĐEN", {
-      fontFamily: '"Silkscreen", system-ui, sans-serif',
-      fontSize: "116px",
+    const titleText = this.add.text(titleX, titleY, "ĐEN", {
+      fontFamily: '"DearPix", system-ui, sans-serif',
+      fontSize: "132px",
+      fontStyle: "700",
       color: "#f5e6d3",
-      shadow: { offsetX: 4, offsetY: 5, color: "#000000", blur: 0, fill: true },
+      shadow: { offsetX: 0, offsetY: 0, color: "#ffe0a1", blur: 15, fill: true },
     }).setOrigin(0.5).setDepth(82).setAlpha(0);
 
-    const subtitleText = this.add.text(480, 244, "The Story of Tí Meo", {
-      fontFamily: '"VT323", monospace',
-      fontSize: "30px",
-      color: "#d8b688",
-      shadow: { offsetX: 2, offsetY: 2, color: "#000000", blur: 0, fill: true },
-    }).setOrigin(0.5).setDepth(82).setAlpha(0);
-
-    this.uiObjects.push(titleText, subtitleText);
+    this.uiObjects.push(titleText);
 
     const hasStarted = window.localStorage?.getItem("den-story:has-started") === "true";
-    let startY = 320;
+    let startY = 360;
+    const btnX = 480;
     const buttons = [];
 
     if (hasStarted) {
-      buttons.push(this.createMainMenuButton(480, startY, "Tiếp tục", () => this.scene.start("ChapterOneScene"), true));
+      buttons.push(this.createMainMenuButton(btnX, startY, "Tiếp tục", () => this.scene.start("ChapterOneScene"), true));
       startY += 54;
-      buttons.push(this.createMainMenuButton(480, startY, "Chơi mới", () => {
+      buttons.push(this.createMainMenuButton(btnX, startY, "Chơi mới", () => {
         window.localStorage?.removeItem("den-story:intro-seen");
         window.localStorage?.removeItem("den-story:has-started");
         this.scene.restart({ forceReplay: true });
       }, false));
       startY += 54;
     } else {
-      buttons.push(this.createMainMenuButton(480, startY, "Bắt đầu", () => {
+      buttons.push(this.createMainMenuButton(btnX, startY, "Bắt đầu", () => {
+        window.localStorage?.setItem("den-story:intro-seen", "true");
         window.localStorage?.setItem("den-story:has-started", "true");
         this.scene.start("ChapterOneScene");
       }, true));
       startY += 54;
     }
 
-    buttons.push(this.createMainMenuButton(480, startY, "Cài đặt", () => this.showSettingsPanel(), false));
+    buttons.push(this.createMainMenuButton(btnX, startY, "Cài đặt", () => this.showSettingsPanel(), false));
     
-    this.cameras.main.ignore([overlay, silhouette, titleText, subtitleText, ...buttons]);
+    this.cameras.main.ignore([overlay, titleText, ...buttons]);
     this.uiObjects.push(...buttons);
 
-    this.tweens.add({ targets: [overlay, silhouette], alpha: 1, duration: 800, delay: splashDelay, ease: "Sine.easeInOut" });
-    this.tweens.add({ targets: [titleText, subtitleText], alpha: 1, y: "-=8", duration: 1000, delay: splashDelay + 300, ease: "Sine.easeOut" });
+    this.tweens.add({ targets: overlay, alpha: 1, duration: 1500, ease: "Sine.easeInOut" });
+    this.tweens.add({ targets: titleText, alpha: 1, y: "-=12", duration: 2000, delay: 500, ease: "Sine.easeOut" });
     
     buttons.forEach((b, index) => {
-      this.tweens.add({ targets: b, alpha: 1, y: "-=6", duration: 600, delay: splashDelay + 650 + (index * 120), ease: "Sine.easeOut" });
+      this.tweens.add({ targets: b, alpha: 1, y: "-=6", duration: 800, delay: 1800 + (index * 150), ease: "Sine.easeOut" });
     });
   }
 
   createMainMenuButton(x, y, label, onClick, isPrimary = false) {
     const container = this.add.container(x, y + 6).setDepth(83).setAlpha(0);
-    const width = 230;
-    const height = 42;
     
-    const bg = this.add.rectangle(0, 0, width, height, 0x11100d, 0.85)
-      .setStrokeStyle(2, isPrimary ? 0xffe0a1 : 0x5a5446, 1)
-      .setInteractive({ useHandCursor: true });
-      
     const text = this.add.text(0, 0, label, {
-      fontFamily: '"Silkscreen", "Pixelify Sans", system-ui, sans-serif',
-      fontSize: "17px",
+      fontFamily: '"DearPix", system-ui, sans-serif',
+      fontSize: "22px",
+      fontStyle: "500",
       color: isPrimary ? "#ffe0a1" : "#cfc6b8",
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+    const indicator = this.add.text(-(text.width / 2) - 16, 0, ">", {
+      fontFamily: '"DearPix", system-ui, sans-serif',
+      fontSize: "22px",
+      color: "#ffe0a1",
+    }).setOrigin(0.5).setAlpha(0);
 
-    container.add([bg, text]);
+    container.add([indicator, text]);
 
-    bg.on("pointerover", () => {
-      bg.setFillStyle(0x1a1814, 0.98);
-      bg.setStrokeStyle(2, 0xffe0a1, 1);
+    text.on("pointerover", () => {
       text.setColor("#ffffff");
-      this.tweens.add({ targets: container, scaleX: 1.05, scaleY: 1.05, duration: 120 });
+      indicator.setAlpha(1);
+      indicator.x = -(text.width / 2) - 18;
+      this.tweens.add({ targets: container, scaleX: 1.08, scaleY: 1.08, duration: 150 });
+      this.playUIHook();
     });
     
-    bg.on("pointerout", () => {
-      bg.setFillStyle(0x11100d, 0.85);
-      bg.setStrokeStyle(2, isPrimary ? 0xffe0a1 : 0x5a5446, 1);
+    text.on("pointerout", () => {
       text.setColor(isPrimary ? "#ffe0a1" : "#cfc6b8");
-      this.tweens.add({ targets: container, scaleX: 1, scaleY: 1, duration: 120 });
+      indicator.setAlpha(0);
+      this.tweens.add({ targets: container, scaleX: 1, scaleY: 1, duration: 150 });
     });
     
-    bg.on("pointerdown", (pointer, localX, localY, event) => {
+    text.on("pointerdown", (pointer, localX, localY, event) => {
       event?.stopPropagation();
+      this.playUIHook();
       onClick();
     });
 
     return container;
+  }
+
+  playUIHook() {
+    if (this.cache.audio.exists("ui-click")) {
+      this.sound.play("ui-click", { volume: 0.25 });
+    } else {
+      window.dispatchEvent(new CustomEvent("den-story:ui-click"));
+    }
   }
 
   showSettingsPanel() {
@@ -834,21 +819,17 @@ export default class IntroScene extends Phaser.Scene {
     
     this.settingsContainer = this.add.container(480, 270).setDepth(100).setAlpha(0);
     const overlay = this.add.rectangle(0, 0, 960, 540, 0x000000, 0.76).setInteractive();
-    const panel = this.add.rectangle(0, 0, 380, 220, 0x11100d, 0.96).setStrokeStyle(2, 0xffe0a1, 1);
+    const panel = this.add.rectangle(0, 0, 440, 360, 0x11100d, 0.96).setStrokeStyle(2, 0xffe0a1, 1);
     
-    const title = this.add.text(0, -60, "CÀI ĐẶT", {
-      fontFamily: '"Silkscreen", system-ui, sans-serif',
-      fontSize: "22px",
+    const title = this.add.text(0, -140, "CÀI ĐẶT", {
+      fontFamily: '"DearPix", system-ui, sans-serif',
+      fontSize: "26px",
+      fontStyle: "700",
       color: "#ffe0a1",
     }).setOrigin(0.5);
     
-    const volText = this.add.text(0, -10, "Âm thanh: 100%", {
-      fontFamily: '"Pixelify Sans", system-ui, sans-serif',
-      fontSize: "20px",
-      color: "#cfc6b8",
-    }).setOrigin(0.5);
-
-    const closeBtn = this.createMainMenuButton(0, 60, "Đóng", () => {
+    const closePanel = () => {
+      this.saveSettings();
       this.tweens.add({
         targets: this.settingsContainer,
         alpha: 0,
@@ -858,9 +839,136 @@ export default class IntroScene extends Phaser.Scene {
           this.settingsContainer = null;
         }
       });
-    }, true);
+    };
 
-    this.settingsContainer.add([overlay, panel, title, volText, closeBtn]);
+    const closeIcon = this.add.text(190, -150, "[X]", {
+      fontFamily: '"DearPix", system-ui, sans-serif',
+      fontSize: "19px",
+      fontStyle: "700",
+      color: "#cfc6b8"
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+    closeIcon.on("pointerover", () => closeIcon.setColor("#ff4444").setScale(1.2));
+    closeIcon.on("pointerout", () => closeIcon.setColor("#cfc6b8").setScale(1));
+    closeIcon.on("pointerdown", () => {
+      this.playUIHook();
+      closePanel();
+    });
+    
+    this.settingsContainer.add([overlay, panel, title, closeIcon]);
+
+    const options = [
+      { key: "soundVol", label: "Âm thanh", type: "number", min: 0, max: 10, format: (v) => `${v * 10}%` },
+      { key: "musicVol", label: "Nhạc nền", type: "number", min: 0, max: 10, format: (v) => `${v * 10}%` },
+      { key: "textSpeed", label: "Tốc độ chữ", type: "enum", values: ["Chậm", "Bình thường", "Nhanh"] },
+      { key: "autoAdvance", label: "Tự động thoại", type: "bool", values: ["Tắt", "Bật"] }
+    ];
+
+    let startY = -80;
+    options.forEach((opt) => {
+      const lbl = this.add.text(-40, startY, opt.label, {
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "20px",
+        color: "#cfc6b8",
+      }).setOrigin(1, 0.5);
+      
+      const valText = this.add.text(100, startY, "", {
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "18px",
+        fontStyle: "600",
+        color: "#ffe0a1",
+      }).setOrigin(0.5, 0.5);
+
+      const updateValText = () => {
+        let val = this.gameSettings[opt.key];
+        if (opt.type === "number") valText.setText(opt.format(val));
+        else if (opt.type === "enum") valText.setText(opt.values[val]);
+        else if (opt.type === "bool") valText.setText(opt.values[val ? 1 : 0]);
+      };
+      updateValText();
+
+      const btnLeft = this.add.text(35, startY, "<", {
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "20px",
+        fontStyle: "600",
+        color: opt.values && opt.values.length === 1 ? "#5a5446" : "#cfc6b8",
+      }).setOrigin(0.5).setInteractive({ useHandCursor: opt.values?.length !== 1 });
+      
+      btnLeft.on("pointerdown", () => {
+        if (opt.values && opt.values.length === 1) return;
+        this.playUIHook();
+        if (opt.type === "number" && this.gameSettings[opt.key] > opt.min) this.gameSettings[opt.key]--;
+        else if (opt.type === "enum" && this.gameSettings[opt.key] > 0) this.gameSettings[opt.key]--;
+        else if (opt.type === "bool") this.gameSettings[opt.key] = !this.gameSettings[opt.key];
+        updateValText();
+        this.saveSettings();
+      });
+
+      const btnRight = this.add.text(165, startY, ">", {
+        fontFamily: '"DearPix", system-ui, sans-serif',
+        fontSize: "20px",
+        fontStyle: "600",
+        color: opt.values && opt.values.length === 1 ? "#5a5446" : "#cfc6b8",
+      }).setOrigin(0.5).setInteractive({ useHandCursor: opt.values?.length !== 1 });
+      
+      btnRight.on("pointerdown", () => {
+        if (opt.values && opt.values.length === 1) return;
+        this.playUIHook();
+        if (opt.type === "number" && this.gameSettings[opt.key] < opt.max) this.gameSettings[opt.key]++;
+        else if (opt.type === "enum" && this.gameSettings[opt.key] < opt.values.length - 1) this.gameSettings[opt.key]++;
+        else if (opt.type === "bool") this.gameSettings[opt.key] = !this.gameSettings[opt.key];
+        updateValText();
+        this.saveSettings();
+      });
+      
+      if (opt.values?.length !== 1) {
+        [btnLeft, btnRight].forEach(b => {
+          b.on("pointerover", () => b.setColor("#ffffff").setScale(1.2));
+          b.on("pointerout", () => b.setColor("#cfc6b8").setScale(1));
+        });
+      }
+
+      this.settingsContainer.add([lbl, valText, btnLeft, btnRight]);
+      startY += 40;
+    });
+
+
+
+    const escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    const xKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+    const closeOnKey = () => {
+      this.playUIHook();
+      escKey.destroy();
+      xKey.destroy();
+      closePanel();
+    };
+    escKey.once("down", closeOnKey);
+    xKey.once("down", closeOnKey);
+
+    let deleteConfirmSteps = 0;
+    const deleteBtn = this.createMainMenuButton(0, startY + 54, "Xóa tiến trình", () => {
+      this.playUIHook();
+      if (deleteConfirmSteps === 0) {
+        deleteConfirmSteps = 1;
+        deleteBtn.list[1].setText("Xác nhận xóa?");
+        deleteBtn.list[1].setColor("#ff4444");
+        deleteBtn.list[0].setStrokeStyle(2, 0xff4444, 1);
+        
+        this.time.delayedCall(3000, () => {
+          if (deleteConfirmSteps === 1 && this.settingsContainer) {
+            deleteConfirmSteps = 0;
+            deleteBtn.list[1].setText("Xóa tiến trình");
+            deleteBtn.list[1].setColor("#cfc6b8");
+            deleteBtn.list[0].setStrokeStyle(2, 0x5a5446, 1);
+          }
+        });
+      } else {
+        localStorage.removeItem("den-story-has-started");
+        window.location.reload();
+      }
+    }, false);
+    
+    this.settingsContainer.add([deleteBtn]);
     this.cameras.main.ignore(this.settingsContainer);
     
     this.tweens.add({ targets: this.settingsContainer, alpha: 1, duration: 250 });

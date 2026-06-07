@@ -43,9 +43,20 @@ export function renderSetup(gameState, roleOrder, getRoleDefinition) {
               })
               .join("")}
           </div>
-          <div class="footer-actions">
-            <button class="btn btn-secondary" data-action="setup-apply-preset">Áp dụng preset tự động</button>
-            <button class="btn btn-secondary" data-action="setup-save-preset">Lưu thành Custom Preset</button>
+          <div style="margin-top: 16px; display: grid; gap: 10px;">
+            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="basic">
+              <span class="preset-option-title">Chế độ Cơ bản (Basic)</span>
+              <span class="preset-option-desc">Dễ chơi, phù hợp cho nhóm có người mới.</span>
+            </div>
+            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="balanced">
+              <span class="preset-option-title">Chế độ Cân bằng (Balanced)</span>
+              <span class="preset-option-desc">Cân bằng tốt nhất, có thêm các vai trò mở rộng thú vị.</span>
+            </div>
+            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="chaos">
+              <span class="preset-option-title">Chế độ Hỗn loạn (Chaos)</span>
+              <span class="preset-option-desc">Nhiều biến số và bất ngờ, dành cho nhóm thích hard-core.</span>
+            </div>
+            <button class="btn btn-secondary" style="margin-top: 8px;" data-action="setup-save-preset">Lưu thành Custom Preset</button>
           </div>
         </div>
       </article>

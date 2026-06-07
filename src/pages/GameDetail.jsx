@@ -17,7 +17,7 @@ const GAME_INFO = {
     title: 'Memory Flip Card',
     url: '/GAMES/memory-flip-card/index.html'
   },
-  'mafia': {
+  'werewolf': {
     title: 'Ma Sói',
     url: '/GAMES/werewolf-offline/index.html'
   }
