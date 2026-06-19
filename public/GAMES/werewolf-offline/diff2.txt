@@ -1,0 +1,772 @@
+diff --git a/public/GAMES/werewolf-offline/style.css b/public/GAMES/werewolf-offline/style.css
+index 00c5294..a74df5b 100644
+--- a/public/GAMES/werewolf-offline/style.css
++++ b/public/GAMES/werewolf-offline/style.css
+@@ -1256,3 +1256,767 @@ h1, h2, h3, .btn, .eyebrow, .role-name, .preset-option-title {
+   margin-bottom: 0;
+   max-width: none;
+ }
++
++/* Setup Screen Styles */
++.setup-screen {
++  background-color: transparent;
++  color: #F5F3EE;
++  overflow: hidden;
++  position: relative;
++  min-height: 100%;
++  padding: 0;
++  display: flex;
++  flex-direction: column;
++}
++
++.setup-fg {
++  overflow-y: auto;
++  padding: 24px 16px 120px 16px; /* Space for sticky footer */
++  flex: 1;
++  position: relative;
++  z-index: 50;
++  display: flex;
++  flex-direction: column;
++  pointer-events: auto;
++  width: 100%;
++}
++
++.setup-container {
++  display: flex;
++  flex-direction: column;
++  gap: 20px;
++  width: 100%;
++  max-width: 1000px;
++  margin: 0 auto;
++}
++
++@media (min-width: 900px) {
++  .setup-container {
++    flex-direction: row;
++    align-items: flex-start;
++  }
++  .setup-col-left {
++    flex: 3;
++  }
++  .setup-col-right {
++    flex: 2;
++  }
++}
++
++.setup-card {
++  padding: 20px;
++  display: flex;
++  flex-direction: column;
++  gap: 20px;
++  background-color: rgba(20, 15, 25, 0.95);
++  border: 2px solid rgba(242, 201, 76, 0.3);
++  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
++  border-radius: 12px;
++}
++
++.player-list-card {
++  max-height: calc(100vh - 180px);
++}
++
++.setup-header h2 {
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F2C94C;
++  font-size: 1.6rem;
++  margin: 0;
++  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
++}
++
++.setup-section h3 {
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F5F3EE;
++  font-size: 1.2rem;
++  margin: 0 0 12px 0;
++}
++
++.stepper-container {
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++}
++
++.stepper-container label {
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F5F3EE;
++  font-size: 1.2rem;
++}
++
++.stepper-row {
++  display: inline-flex;
++  align-items: center;
++  background: rgba(0, 0, 0, 0.4);
++  border: 1px solid rgba(242, 201, 76, 0.3);
++  border-radius: 8px;
++  overflow: hidden;
++  width: fit-content;
++}
++
++.stepper-btn {
++  background: rgba(192, 57, 43, 0.2);
++  color: #F2C94C;
++  border: none;
++  width: 44px;
++  height: 44px;
++  font-size: 1.5rem;
++  cursor: pointer;
++  transition: background 0.2s;
++}
++
++.stepper-btn:hover {
++  background: rgba(192, 57, 43, 0.5);
++}
++
++.stepper-input {
++  background: transparent;
++  color: #F5F3EE;
++  border: none;
++  width: 60px;
++  text-align: center;
++  font-size: 1.2rem;
++  font-weight: bold;
++}
++
++.role-chip-row {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++}
++
++.role-chip {
++  background: rgba(36, 23, 59, 0.8);
++  border: 1px solid rgba(242, 201, 76, 0.2);
++  padding: 4px 10px;
++  border-radius: 6px;
++  font-size: 0.85rem;
++  color: #D1D5DB;
++  display: flex;
++  align-items: center;
++  gap: 4px;
++}
++
++.role-chip strong {
++  color: #F2C94C;
++  font-size: 0.95rem;
++}
++
++.preset-grid {
++  display: grid;
++  grid-template-columns: 1fr;
++  gap: 8px;
++}
++
++@media (min-width: 600px) {
++  .preset-grid {
++    grid-template-columns: repeat(3, 1fr);
++  }
++}
++
++.preset-item {
++  background: rgba(0, 0, 0, 0.4);
++  border: 1px solid rgba(242, 201, 76, 0.3);
++  border-radius: 8px;
++  padding: 12px;
++  cursor: pointer;
++  transition: all 0.2s;
++  display: flex;
++  flex-direction: column;
++  gap: 4px;
++}
++
++.preset-item:hover {
++  background: rgba(192, 57, 43, 0.2);
++  border-color: rgba(242, 201, 76, 0.6);
++}
++
++.preset-item strong {
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F2C94C;
++  font-size: 1.1rem;
++}
++
++.preset-item span {
++  font-size: 0.8rem;
++  color: #9CA3AF;
++}
++
++.accordion-panel {
++  background: rgba(0, 0, 0, 0.2);
++  border: 1px solid rgba(242, 201, 76, 0.2);
++  border-radius: 8px;
++  overflow: hidden;
++}
++
++.accordion-panel summary {
++  padding: 12px 16px;
++  cursor: pointer;
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F5F3EE;
++  font-size: 1.1rem;
++  background: rgba(36, 23, 59, 0.4);
++  list-style: none;
++  outline: none;
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++}
++
++.accordion-panel summary::after {
++  content: '▼';
++  font-size: 0.8rem;
++  color: #F2C94C;
++  transition: transform 0.2s;
++}
++
++.accordion-panel[open] summary::after {
++  transform: rotate(180deg);
++}
++
++.accordion-content {
++  padding: 16px;
++  border-top: 1px solid rgba(242, 201, 76, 0.1);
++}
++
++.role-tweak-grid {
++  display: grid;
++  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
++  gap: 12px;
++}
++
++.role-tweak-item {
++  display: flex;
++  flex-direction: column;
++  gap: 4px;
++}
++
++.role-tweak-item span {
++  font-size: 0.85rem;
++  color: #D1D5DB;
++}
++
++.role-tweak-item.dimmed span {
++  color: #6B7280;
++}
++
++.role-tweak-item input {
++  background: rgba(0, 0, 0, 0.4);
++  border: 1px solid rgba(242, 201, 76, 0.3);
++  color: #F5F3EE;
++  padding: 6px;
++  border-radius: 4px;
++  text-align: center;
++  width: 100%;
++}
++
++.role-tweak-item input:focus {
++  border-color: #F2C94C;
++  outline: none;
++}
++
++.player-scroll-area {
++  overflow-y: auto;
++  padding-right: 8px;
++  display: flex;
++  flex-direction: column;
++  gap: 12px;
++}
++
++.player-scroll-area::-webkit-scrollbar {
++  width: 6px;
++}
++.player-scroll-area::-webkit-scrollbar-track {
++  background: rgba(0,0,0,0.2);
++}
++.player-scroll-area::-webkit-scrollbar-thumb {
++  background: rgba(242, 201, 76, 0.4);
++  border-radius: 3px;
++}
++
++.player-input-item {
++  display: flex;
++  flex-direction: column;
++  gap: 4px;
++}
++
++.player-input-item span {
++  font-size: 0.85rem;
++  color: #9CA3AF;
++}
++
++.player-input-item input {
++  background: rgba(0, 0, 0, 0.4);
++  border: 1px solid rgba(242, 201, 76, 0.3);
++  color: #F5F3EE;
++  padding: 10px;
++  border-radius: 6px;
++  width: 100%;
++  font-size: 0.95rem;
++}
++
++.player-input-item input:focus {
++  border-color: #F2C94C;
++  outline: none;
++  background: rgba(0, 0, 0, 0.6);
++}
++
++.setup-sticky-footer {
++  position: fixed;
++  bottom: 0;
++  left: 0;
++  right: 0;
++  padding: 16px 24px;
++  display: flex;
++  flex-direction: column;
++  gap: 12px;
++  background-color: rgba(20, 15, 25, 0.98);
++  border-top: 2px solid rgba(192, 57, 43, 0.6);
++  box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
++  z-index: 100;
++}
++
++@media (min-width: 768px) {
++  .setup-sticky-footer {
++    flex-direction: row;
++    justify-content: space-between;
++    align-items: center;
++  }
++}
++
++.validation-info {
++  display: flex;
++  flex-direction: column;
++  gap: 4px;
++}
++
++.val-stats {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  color: #D1D5DB;
++  font-size: 0.95rem;
++}
++
++.val-stats strong {
++  color: #F2C94C;
++  font-family: 'DearPix', Inter, sans-serif;
++  font-size: 1.2rem;
++  margin-left: 4px;
++}
++
++.val-stats .divider {
++  color: #4B5563;
++}
++
++.val-message {
++  font-size: 0.85rem;
++  font-weight: 500;
++}
++
++.val-ok {
++  color: #10B981;
++}
++
++.val-error {
++  color: #EF4444;
++}
++
++.val-actions {
++  display: flex;
++  gap: 12px;
++}
++
++.val-actions button {
++  min-width: 120px;
++}
++
++.mt-2 { margin-top: 8px; }
++.mt-3 { margin-top: 16px; }
++.w-100 { width: 100%; }
++.muted-text { color: #9CA3AF; font-size: 0.9rem; }
++
++.custom-preset-list {
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++}
++.custom-preset-item {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  background: rgba(0,0,0,0.3);
++  padding: 8px 12px;
++  border-radius: 6px;
++  font-size: 0.9rem;
++}
++.custom-preset-actions {
++  display: flex;
++  gap: 8px;
++}
++/* Table Setup Screen Styles (Game Master Table) */
++.table-setup {
++  background-color: #0b0a14;
++  color: #F5F3EE;
++  display: flex;
++  flex-direction: column;
++  min-height: 100vh;
++  overflow-y: auto;
++  padding: 40px 16px;
++  align-items: center;
++}
++
++.table-container {
++  width: 100%;
++  max-width: 800px;
++  display: flex;
++  flex-direction: column;
++  gap: 24px;
++}
++
++.table-header h2 {
++  font-family: 'DearPix', Inter, sans-serif;
++  color: #F2C94C;
++  font-size: 2rem;
++  margin: 0;
++  text-align: center;
++  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
++}
++
++.table-content {
++  background: rgba(20, 18, 25, 0.95);
++  border: 1px solid rgba(242, 201, 76, 0.2);
++  border-radius: 12px;
++  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
++  display: flex;
++  flex-direction: column;
++  padding: 32px;
++  gap: 32px;
++}
++
++.table-section {
++  display: flex;
++  flex-direction: column;
++  gap: 12px;
++}
++
++/* Hero Stepper */
++.hero-section {
++  align-items: center;
++  gap: 16px;
++  border-bottom: 1px dashed rgba(242, 201, 76, 0.2);
++  padding-bottom: 24px;
++}
++
++.hero-label {
++  font-family: 'DearPix', Inter, sans-serif;
++  font-size: 1.5rem;
++  color: #D1D5DB;
++}
++
++.hero-stepper {
++  display: flex;
++  align-items: center;
++  background: #0b0a14;
++  border: 2px solid rgba(242, 201, 76, 0.4);
++  border-radius: 8px;
++  overflow: hidden;
++}
++
++.hero-btn {
++  background: transparent;
++  color: #F2C94C;
++  border: none;
++  width: 56px;
++  height: 56px;
++  font-size: 2rem;
++  cursor: pointer;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  transition: background 0.2s;
++}
++
++.hero-btn:hover {
++  background: rgba(242, 201, 76, 0.1);
++}
++
++.hero-input {
++  background: transparent;
++  color: #F5F3EE;
++  border: none;
++  width: 60px;
++  text-align: center;
++  font-size: 2rem;
++  font-family: 'DearPix', Inter, sans-serif;
++  outline: none;
++}
++
++/* Preset Tabs */
++.tab-list {
++  display: flex;
++  gap: 8px;
++  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
++  padding-bottom: 4px;
++}
++
++.tab-btn {
++  background: transparent;
++  border: none;
++  color: #9CA3AF;
++  font-family: 'Inter', sans-serif;
++  font-size: 1rem;
++  padding: 8px 16px;
++  cursor: pointer;
++  position: relative;
++  transition: color 0.2s;
++}
++
++.tab-btn:hover {
++  color: #D1D5DB;
++}
++
++/* Simulate active state on focus/active */
++.tab-btn:focus, .tab-btn:active {
++  color: #F2C94C;
++  outline: none;
++}
++.tab-btn:focus::after, .tab-btn:active::after {
++  content: '';
++  position: absolute;
++  bottom: -6px;
++  left: 0;
++  right: 0;
++  height: 2px;
++  background-color: #F2C94C;
++  box-shadow: 0 0 8px rgba(242, 201, 76, 0.5);
++}
++
++.tab-desc {
++  font-size: 0.85rem;
++  color: #6B7280;
++  text-align: center;
++  margin-top: 4px;
++}
++
++/* Role Chips */
++.table-role-chips {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++  justify-content: center;
++}
++
++.tbl-chip {
++  background: rgba(255, 255, 255, 0.05);
++  border: 1px solid rgba(255, 255, 255, 0.1);
++  padding: 4px 12px;
++  border-radius: 16px;
++  font-size: 0.9rem;
++  color: #D1D5DB;
++  display: flex;
++  align-items: center;
++  gap: 6px;
++}
++
++.tbl-chip strong {
++  color: #F2C94C;
++}
++
++/* Player Grid */
++.player-grid {
++  display: grid;
++  grid-template-columns: 1fr;
++  gap: 12px;
++}
++
++@media (min-width: 600px) {
++  .player-grid {
++    grid-template-columns: 1fr 1fr;
++    gap: 16px 24px;
++  }
++}
++
++.tbl-player-row {
++  display: flex;
++  align-items: center;
++  gap: 12px;
++  background: rgba(0, 0, 0, 0.3);
++  padding: 8px 12px;
++  border-radius: 6px;
++  border: 1px solid rgba(255, 255, 255, 0.05);
++}
++
++.tbl-player-num {
++  color: #6B7280;
++  font-family: 'DearPix', Inter, sans-serif;
++  font-size: 1.1rem;
++  width: 24px;
++  text-align: center;
++}
++
++.tbl-player-row input {
++  flex: 1;
++  background: transparent;
++  border: none;
++  color: #F5F3EE;
++  font-size: 1rem;
++  outline: none;
++}
++
++.tbl-player-row input::placeholder {
++  color: #4B5563;
++}
++
++/* Advanced Accordion */
++.table-accordion {
++  background: rgba(0, 0, 0, 0.2);
++  border: 1px dashed rgba(242, 201, 76, 0.2);
++  border-radius: 8px;
++  margin-top: 16px;
++}
++
++.table-accordion summary {
++  padding: 16px;
++  cursor: pointer;
++  font-family: 'Inter', sans-serif;
++  color: #9CA3AF;
++  font-size: 0.95rem;
++  text-align: center;
++  list-style: none;
++  outline: none;
++}
++
++.table-accordion summary::-webkit-details-marker {
++  display: none;
++}
++
++.table-accordion summary::after {
++  content: ' ▼';
++  font-size: 0.7rem;
++}
++
++.table-accordion[open] summary::after {
++  content: ' ▲';
++}
++
++.adv-section {
++  padding: 0 16px;
++}
++
++.adv-title {
++  font-size: 0.85rem;
++  color: #6B7280;
++  text-transform: uppercase;
++  margin: 0 0 12px 0;
++  letter-spacing: 0.5px;
++}
++
++.tbl-tweak-list {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 8px 24px;
++  padding-bottom: 16px;
++}
++
++.tbl-preset-item {
++  background: rgba(0, 0, 0, 0.4);
++  border: 1px solid rgba(255, 255, 255, 0.05);
++}
++
++/* Validation Area */
++.table-validation-area {
++  display: flex;
++  flex-direction: column;
++  gap: 16px;
++  background: #0b0a14;
++  border: 1px solid rgba(242, 201, 76, 0.3);
++  padding: 20px;
++  border-radius: 8px;
++  margin-top: 8px;
++}
++
++@media (min-width: 600px) {
++  .table-validation-area {
++    flex-direction: row;
++    justify-content: space-between;
++    align-items: center;
++  }
++}
++
++.tbl-val-info {
++  display: flex;
++  align-items: center;
++  gap: 16px;
++}
++
++.tbl-status-icon {
++  width: 40px;
++  height: 40px;
++  border-radius: 50%;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  font-size: 1.5rem;
++  font-weight: bold;
++}
++
++.tbl-status-icon.ok {
++  background: rgba(16, 185, 129, 0.1);
++  color: #10B981;
++}
++
++.tbl-status-icon.err {
++  background: rgba(239, 68, 68, 0.1);
++  color: #EF4444;
++}
++
++.tbl-val-text {
++  display: flex;
++  flex-direction: column;
++}
++
++.tbl-val-text strong {
++  font-size: 1.1rem;
++}
++
++.tbl-val-text span {
++  font-size: 0.85rem;
++  color: #9CA3AF;
++}
++
++.tbl-val-actions {
++  display: flex;
++  gap: 12px;
++}
++
++.tbl-btn-back {
++  background: #1a1523;
++  color: #D1D5DB;
++  border: 1px solid rgba(255, 255, 255, 0.1);
++}
++
++.tbl-btn-back:hover {
++  background: #241a30;
++}
++
++.tbl-btn-primary {
++  background: #C0392B;
++  color: #F5F3EE;
++  border: 1px solid rgba(242, 201, 76, 0.4);
++  font-family: 'Inter', sans-serif;
++  font-weight: bold;
++  padding: 0 24px;
++}
++
++.tbl-btn-primary:hover:not(:disabled) {
++  background: #E74C3C;
++}
++
++.tbl-btn-primary:disabled {
++  background: #1a1523;
++  color: #4B5563;
++  border-color: rgba(255, 255, 255, 0.05);
++  cursor: not-allowed;
++}

@@ -6,155 +6,185 @@ export function renderSetup(gameState, roleOrder, getRoleDefinition) {
   const { setup } = gameState;
   const totalRoles = countRoles(setup.roleConfig);
   const customPresets = StorageAdapter.getCustomPresets();
+  const isValid = (setup.validation || { isValid: false }).isValid;
 
-  return `
-    <section class="screen two-col">
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Thiết lập ván</h2>
-            <p>Chỉnh số người, tên và số lượng role trước khi chia vai.</p>
-          </div>
-          <span class="tag">5-15 người</span>
-        </div>
+  // Role chips — only active roles
+  const activeRoleChips = roleOrder
+    .filter((roleId) => setup.roleConfig[roleId] > 0)
+    .map((roleId) => {
+      const role = getRoleDefinition(roleId);
+      const shortName = role.name
+        .replace("Dân làng", "Dân")
+        .replace("Ma sói", "Sói")
+        .replace("Tiên tri", "Tiên tri")
+        .replace("Bảo vệ", "Bảo vệ")
+        .replace("Phù thủy", "Phù thủy");
+      return `<span class="sv-chip"><span class="sv-chip-name">${shortName}</span><strong class="sv-chip-count">${setup.roleConfig[roleId]}</strong></span>`;
+    })
+    .join("");
 
-        <div class="field stepper">
-          <label for="playerCount">Số người chơi</label>
-          <div class="stepper-row">
-            <button type="button" data-action="setup-decrease" aria-label="Giảm số người chơi">−</button>
-            <input id="playerCount" data-player-count type="number" min="5" max="15" value="${setup.playerCount}" />
-            <button type="button" data-action="setup-increase" aria-label="Tăng số người chơi">+</button>
-          </div>
-        </div>
+  // Player list — 2 columns
+  const players = setup.players || [];
+  const playerItems = players
+    .map(
+      (player, index) => `
+      <label class="sv-player-row">
+        <span class="sv-player-num">${player.order}</span>
+        <input
+          class="sv-player-input"
+          data-player-name="${index}"
+          value="${escapeHtml(player.name)}"
+          maxlength="32"
+          placeholder="Người chơi ${player.order}"
+        />
+      </label>
+    `
+    )
+    .join("");
 
-        <div class="panel" style="margin-top: 16px;">
-          <div class="panel-header">
-            <div>
-              <h3>Cấu hình Role hiện tại</h3>
-              <p>Tổng role phải bằng đúng số người chơi.</p>
-            </div>
-          </div>
-          <div class="chip-row">
-            ${roleOrder
-              .filter((roleId) => setup.roleConfig[roleId] > 0)
-              .map((roleId) => {
-                const role = getRoleDefinition(roleId);
-                return `<span class="chip">${role.icon} ${role.name}: ${setup.roleConfig[roleId]}</span>`;
-              })
-              .join("")}
-          </div>
-          <div style="margin-top: 16px; display: grid; gap: 10px;">
-            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="basic">
-              <span class="preset-option-title">Chế độ Cơ bản (Basic)</span>
-              <span class="preset-option-desc">Dễ chơi, phù hợp cho nhóm có người mới.</span>
-            </div>
-            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="balanced">
-              <span class="preset-option-title">Chế độ Cân bằng (Balanced)</span>
-              <span class="preset-option-desc">Cân bằng tốt nhất, có thêm các vai trò mở rộng thú vị.</span>
-            </div>
-            <div class="preset-option-card" data-action="setup-apply-preset" data-preset-mode="chaos">
-              <span class="preset-option-title">Chế độ Hỗn loạn (Chaos)</span>
-              <span class="preset-option-desc">Nhiều biến số và bất ngờ, dành cho nhóm thích hard-core.</span>
-            </div>
-            <button class="btn btn-secondary" style="margin-top: 8px;" data-action="setup-save-preset">Lưu thành Custom Preset</button>
-          </div>
+  // Advanced accordion — role tweak + custom presets
+  const roleTweakRows = roleOrder
+    .map((roleId) => {
+      const role = getRoleDefinition(roleId);
+      const count = setup.roleConfig[roleId];
+      const dimmed = count === 0 ? "sv-tweak-dim" : "";
+      return `
+        <div class="sv-tweak-row ${dimmed}">
+          <span class="sv-tweak-name">${role.name}</span>
+          <input
+            class="sv-tweak-input"
+            data-role-count="${roleId}"
+            type="number"
+            min="0"
+            max="15"
+            value="${count}"
+          />
         </div>
-      </article>
+      `;
+    })
+    .join("");
 
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Custom Presets</h2>
-            <p>Load cấu hình bạn đã lưu.</p>
-          </div>
-        </div>
-        ${customPresets.length > 0 ? `
-          <div class="preset-list">
-            ${customPresets.map(preset => `
-              <div class="preset-card">
-                <div class="preset-meta">
-                  <strong>Cấu hình ${preset.playerCount} người</strong>
-                </div>
-                <div class="preset-actions">
-                  <button class="btn btn-secondary btn-sm" data-action="setup-load-preset" data-preset-id="${preset.id}">Tải</button>
-                  <button class="btn btn-danger btn-sm" data-action="setup-delete-preset" data-preset-id="${preset.id}">Xóa</button>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        ` : `<div class="empty-state">Chưa có preset tùy chỉnh nào.</div>`}
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Tùy chỉnh role</h2>
-            <p>Chỉnh tay nếu muốn.</p>
-          </div>
-        </div>
-        <div class="role-grid">
-          ${roleOrder
-            .map((roleId) => {
-              const role = getRoleDefinition(roleId);
-              return `
-                <label class="field role-counter">
-                  <span>${role.icon} ${role.name}</span>
-                  <input data-role-count="${roleId}" type="number" min="0" max="15" value="${setup.roleConfig[roleId]}" />
-                </label>
-              `;
-            })
-            .join("")}
-        </div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Danh sách người chơi</h2>
-            <p>Có thể sửa tên từng người trước khi chia vai.</p>
-          </div>
-        </div>
-        <div class="player-list">
-          ${setup.players
+  const customPresetList =
+    customPresets.length > 0
+      ? `<div class="sv-custom-list">
+          ${customPresets
             .map(
-              (player, index) => `
-                <label class="field">
-                  <span>${player.order}. Người chơi</span>
-                  <input data-player-name="${index}" value="${escapeHtml(player.name)}" maxlength="32" />
-                </label>
-              `,
+              (preset) => `
+            <div class="sv-custom-item">
+              <span class="sv-custom-label">${preset.playerCount} người</span>
+              <div class="sv-custom-actions">
+                <button class="sv-btn-xs sv-btn-xs-sec" data-action="setup-load-preset" data-preset-id="${preset.id}">Tải</button>
+                <button class="sv-btn-xs sv-btn-xs-del" data-action="setup-delete-preset" data-preset-id="${preset.id}">Xóa</button>
+              </div>
+            </div>
+          `
             )
             .join("")}
-        </div>
-      </article>
+        </div>`
+      : `<p class="sv-muted-sm">Chưa có preset tùy chỉnh.</p>`;
 
-      <article class="panel" style="grid-column: 1 / -1;">
-        <div class="panel-header">
-          <div>
-            <h2>Kiểm tra trước khi chia vai</h2>
-            <p>Hệ thống chỉ cho chia vai khi cấu hình hợp lệ.</p>
+  return `
+    <section class="screen setup-screen sv-screen">
+      <div class="sv-wrap">
+
+        <header class="sv-header">
+          <h2 class="sv-title">Thiết lập ván</h2>
+        </header>
+
+        <div class="sv-body">
+
+          <!-- LEFT PANEL -->
+          <div class="sv-panel sv-panel-left">
+
+            <!-- 1. Player count -->
+            <div class="sv-block sv-block-count">
+              <span class="sv-section-label">Số người chơi</span>
+              <div class="sv-stepper">
+                <button type="button" class="sv-step-btn" data-action="setup-decrease" aria-label="Giảm">−</button>
+                <input
+                  id="playerCount"
+                  class="sv-step-val"
+                  data-player-count
+                  type="number"
+                  min="5"
+                  max="15"
+                  value="${setup.playerCount}"
+                  readonly
+                />
+                <button type="button" class="sv-step-btn" data-action="setup-increase" aria-label="Tăng">+</button>
+              </div>
+            </div>
+
+            <!-- 2. Role summary chips -->
+            <div class="sv-block">
+              <span class="sv-section-label">Vai trò hiện tại</span>
+              <div class="sv-chips">
+                ${activeRoleChips || `<span class="sv-muted-sm">Chưa có vai nào.</span>`}
+              </div>
+            </div>
+
+            <!-- 3. Preset tabs -->
+            <div class="sv-block">
+              <span class="sv-section-label">Chọn preset</span>
+              <div class="sv-preset-tabs">
+                <button type="button" class="sv-preset-tab" data-action="setup-apply-preset" data-preset-mode="basic">Cơ bản</button>
+                <button type="button" class="sv-preset-tab" data-action="setup-apply-preset" data-preset-mode="balanced">Cân bằng</button>
+                <button type="button" class="sv-preset-tab" data-action="setup-apply-preset" data-preset-mode="chaos">Hỗn loạn</button>
+              </div>
+              <p class="sv-preset-desc">Khuyên dùng cho nhóm ${setup.playerCount} người. Nhấn để tự động chia vai trò.</p>
+            </div>
+
+            <!-- 4. Advanced accordion -->
+            <details class="sv-accordion">
+              <summary class="sv-accordion-summary">Tùy chọn nâng cao</summary>
+              <div class="sv-accordion-body">
+
+                <div class="sv-adv-section">
+                  <p class="sv-adv-title">Tùy chỉnh vai trò</p>
+                  <div class="sv-tweak-list">
+                    ${roleTweakRows}
+                  </div>
+                </div>
+
+                <div class="sv-adv-section">
+                  <p class="sv-adv-title">Preset của tôi</p>
+                  ${customPresetList}
+                  <button class="sv-btn-ghost" data-action="setup-save-preset">Lưu preset hiện tại</button>
+                </div>
+
+              </div>
+            </details>
+
+          </div><!-- /LEFT PANEL -->
+
+          <!-- RIGHT PANEL -->
+          <div class="sv-panel sv-panel-right">
+            <span class="sv-section-label">Danh sách người chơi</span>
+            <div class="sv-player-grid">
+              ${playerItems}
+            </div>
+          </div><!-- /RIGHT PANEL -->
+
+        </div><!-- /sv-body -->
+
+        <!-- BOTTOM ACTION BAR -->
+        <div class="sv-action-bar">
+          <div class="sv-action-status">
+            <span class="sv-status-icon ${isValid ? "sv-ok" : "sv-err"}">${isValid ? "✓" : "!"}</span>
+            <div class="sv-status-text">
+              <strong class="${isValid ? "sv-text-ok" : "sv-text-err"}">
+                ${isValid ? "Sẵn sàng chia vai" : "Chưa hợp lệ"}
+              </strong>
+              <span>${isValid ? `${setup.playerCount} người • ${totalRoles} vai` : "Tổng vai trò phải bằng số người chơi."}</span>
+            </div>
+          </div>
+          <div class="sv-action-btns">
+            <button class="sv-btn-back" data-action="nav-home">Quay lại</button>
+            <button class="sv-btn-cta" data-action="setup-assign" ${!isValid ? "disabled" : ""}>Chia vai</button>
           </div>
         </div>
-        <div class="stats-grid">
-          <div class="summary-card">
-            <p class="muted">Số người chơi</p>
-            <h3>${setup.playerCount}</h3>
-          </div>
-          <div class="summary-card">
-            <p class="muted">Tổng role</p>
-            <h3>${totalRoles}</h3>
-          </div>
-        </div>
-        <p class="${setup.validation.isValid ? "validation-ok" : "validation-error"}" style="margin-top: 14px;">
-          ${setup.validation.message}
-        </p>
-        <div class="footer-actions">
-          <button class="btn btn-primary" data-action="setup-assign" ${setup.validation.isValid ? "" : "disabled"}>
-            Chia vai
-          </button>
-          <button class="btn btn-ghost" data-action="nav-home">Về trang chủ</button>
-        </div>
-      </article>
+
+      </div><!-- /sv-wrap -->
     </section>
   `;
 }
